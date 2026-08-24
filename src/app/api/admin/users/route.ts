@@ -3,6 +3,8 @@ import { requireTenantSession, AuthError } from "@/lib/session";
 import { withApiErrors } from "@/lib/api";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/roles";
+import { getEmailDomain } from "@/lib/tenancy";
+import { issueStaffSetPasswordToken } from "@/lib/staff-invite";
 
 export async function GET() {
   return withApiErrors(async () => {
@@ -44,6 +46,11 @@ export async function POST(req: Request) {
     const body = inviteSchema.parse(await req.json());
     const email = body.email.toLowerCase();
 
+    const tenant = await prisma.tenant.findUniqueOrThrow({ where: { id: session.user.tenantId } });
+    if (tenant.domain && getEmailDomain(email) !== tenant.domain) {
+      throw new AuthError(`Staff email must be on your school's domain (${tenant.domain})`, 400);
+    }
+
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       // Never let a tenant admin retarget the platform super admin or a
@@ -76,6 +83,8 @@ export async function POST(req: Request) {
         metadata: { email, role: body.role },
       },
     });
+
+    await issueStaffSetPasswordToken(email);
 
     return user;
   });

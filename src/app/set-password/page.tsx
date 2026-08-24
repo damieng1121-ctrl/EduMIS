@@ -26,7 +26,7 @@ function SetPasswordForm() {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/parent/set-password", {
+      const res = await fetch("/api/set-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),
@@ -34,7 +34,7 @@ function SetPasswordForm() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Something went wrong");
       setDone(true);
-      setTimeout(() => router.push("/parent/login"), 1500);
+      setTimeout(() => router.push("/login"), 1500);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -86,15 +86,17 @@ function SetPasswordForm() {
   );
 }
 
-export default function ParentSetPasswordPage() {
+export default function StaffSetPasswordPage() {
   return (
     <div className="flex flex-1 items-center justify-center bg-slate-50 px-6 py-16">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm">
         <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600 font-semibold text-white">
           E
         </div>
-        <h1 className="text-xl font-semibold text-slate-900">Set your parent portal password</h1>
-        <p className="mt-2 text-sm text-slate-600">Choose a password to access your child&apos;s attendance, behaviour, and messages.</p>
+        <h1 className="text-xl font-semibold text-slate-900">Set your EduMIS password</h1>
+        <p className="mt-2 text-sm text-slate-600">
+          Choose a password to sign in directly — you can still use Google or Microsoft sign-in instead, if your school offers it.
+        </p>
         <Suspense fallback={null}>
           <SetPasswordForm />
         </Suspense>

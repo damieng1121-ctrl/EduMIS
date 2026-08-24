@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
@@ -47,10 +48,22 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
           prompt: "select_account",
         },
       },
-      // Lets a Google sign-in "claim" a User row an admin pre-created via
-      // invite (no linked account yet). Normally risky ("account takeover
-      // through a second, less-trusted provider"), but Google is the only
-      // real provider here, so there's no second provider to attack through.
+      // Lets a Google or Microsoft sign-in "claim" a User row an admin
+      // pre-created via invite (no linked account yet). Normally risky
+      // ("account takeover through a second, less-trusted provider"), but
+      // both are real SSO providers here — the actual security boundary is
+      // the domain/pre-provisioned check in the signIn callback below, not
+      // which OAuth provider was used to prove the email.
+      allowDangerousEmailAccountLinking: true,
+    }),
+    MicrosoftEntraID({
+      clientId: process.env.MICROSOFT_CLIENT_ID,
+      clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
+      // "organizations" (not the default "common") — work/school accounts
+      // only, matching Google's Workspace-only intent above. Any school's
+      // Entra tenant can sign in; this is a multi-tenant app registration,
+      // not locked to one specific Directory (tenant) ID.
+      issuer: "https://login.microsoftonline.com/organizations/v2.0",
       allowDangerousEmailAccountLinking: true,
     }),
     // Non-production only (excluded from the array entirely, not just
@@ -91,6 +104,29 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         if (!email || !password) return null;
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user || user.role !== "PARENT" || !user.passwordHash || !user.isActive) return null;
+        const valid = await bcrypt.compare(password, user.passwordHash);
+        if (!valid) return null;
+        return { id: user.id, email: user.email, name: user.name, image: user.image };
+      },
+    }),
+    // A password-based alternative to Google/Microsoft SSO for staff/admin
+    // accounts (not a replacement — an account can use either once a
+    // password is set via /set-password, which only an admin invite can
+    // trigger). Never PARENT — that's parent-login above, kept separate so
+    // a leaked staff password can't be tried against parent accounts.
+    Credentials({
+      id: "staff-login",
+      name: "Password",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const email = typeof credentials?.email === "string" ? credentials.email.toLowerCase() : undefined;
+        const password = typeof credentials?.password === "string" ? credentials.password : undefined;
+        if (!email || !password) return null;
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user || user.role === "PARENT" || !user.passwordHash || !user.isActive) return null;
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
         return { id: user.id, email: user.email, name: user.name, image: user.image };

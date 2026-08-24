@@ -2,6 +2,8 @@ import { z } from "zod";
 import { requireRole, AuthError } from "@/lib/session";
 import { withApiErrors } from "@/lib/api";
 import { prisma } from "@/lib/db";
+import { getEmailDomain } from "@/lib/tenancy";
+import { issueStaffSetPasswordToken } from "@/lib/staff-invite";
 
 export async function GET() {
   return withApiErrors(async () => {
@@ -53,6 +55,15 @@ export async function POST(req: Request) {
     const email = body.email.toLowerCase();
     const trustId = body.trustId ?? null;
 
+    // A school-scoped role's email must belong to that school's own domain —
+    // Trust/Super admins aren't tied to a single school, so they're exempt.
+    if (body.tenantId) {
+      const tenant = await prisma.tenant.findUniqueOrThrow({ where: { id: body.tenantId } });
+      if (tenant.domain && getEmailDomain(email) !== tenant.domain) {
+        throw new AuthError(`This role's email must be on the school's domain (${tenant.domain})`, 400);
+      }
+    }
+
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       return prisma.user.update({
@@ -60,8 +71,10 @@ export async function POST(req: Request) {
         data: { tenantId: body.tenantId, trustId, role: body.role, name: body.name ?? existing.name },
       });
     }
-    return prisma.user.create({
+    const user = await prisma.user.create({
       data: { email, name: body.name, role: body.role, tenantId: body.tenantId, trustId },
     });
+    await issueStaffSetPasswordToken(email);
+    return user;
   });
 }

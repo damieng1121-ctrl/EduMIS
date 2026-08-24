@@ -2,23 +2,24 @@
 
 A multi-tenant school management system (MIS) for UK primary schools: pupils, attendance,
 behaviour & welfare (including SEND), assessment, school operations (meals, clubs, staff
-records, interventions), parents' evenings, and a dedicated parent portal — with Google SSO
-and 2FA for staff.
+records, interventions), parents' evenings, and a dedicated parent portal — with Google or
+Microsoft SSO (or a password), Trust/Federation-aware multi-school access, and 2FA for staff.
 
 This is a working MVP — the full data model, auth, and every MIS module below are
 implemented end to end, runnable locally today via a one-click dev login with no external
-credentials needed. Real Google OAuth credentials, a production deployment, and a few
-smaller gaps are documented as next steps below.
+credentials needed. Real OAuth credentials, a production deployment, and a few smaller
+gaps are documented as next steps below.
 
 ## Stack
 
 - **Next.js 16** (App Router, TypeScript, Tailwind CSS)
 - **PostgreSQL** via **Prisma 6**
-- **Auth.js (NextAuth v5)** with the Google provider, restricted per-tenant by Google
-  Workspace domain — designed to sit behind **Google Identity Platform** in production
-- **TOTP-based 2FA** (`otplib`), enforced as a second factor after Google SSO for staff
+- **Auth.js (NextAuth v5)** with Google and Microsoft Entra ID providers (each restricted
+  per-tenant by the school's SSO domain) plus an email+password fallback for staff
+- **TOTP-based 2FA** (`otplib`), enforced as a second factor for elevated staff regardless
+  of sign-in method
 - A separate **parent portal** (`/parent`) using email + password sign-in (guardians have
-  no Google Workspace account)
+  no school SSO account)
 
 ## Getting started
 
@@ -33,7 +34,7 @@ npm run db:seed             # seeds a demo school with pupils, staff, and parent
 npm run dev
 ```
 
-Visit `http://localhost:3002`. **No Google OAuth credentials?** `npm run dev` shows a
+Visit `http://localhost:3002`. **No SSO credentials set up yet?** `npm run dev` shows a
 "Dev login (local only)" section on the sign-in page — one click to sign in as any
 seeded demo user, no Google account needed. It only exists in `next dev` (see below),
 so there's no risk of it shipping to a real deployment.
@@ -50,10 +51,11 @@ container start (`docker-entrypoint.sh`), and serves the app at `http://localhos
 Set `SEED_ON_START=true` in `.env` to also load the demo school on first boot. To seed
 manually against the compose stack instead: `docker compose exec app npx prisma db seed`.
 
-Either way, staff sign-in requires a real Google OAuth client — see below — with
-`http://localhost:3002/api/auth/callback/google` as an authorized redirect URI, and at
-least one `Tenant.domain` in the database matching the email domain you sign in with
-(the seed script creates one: `willowbrook-primary.sch.uk`).
+Either way, SSO sign-in requires a real Google and/or Microsoft OAuth client — see
+below — with the matching authorized redirect URI, and at least one `Tenant.domain` in
+the database matching the email domain you sign in with (the seed script creates one:
+`willowbrook-primary.sch.uk`). Or set a password via an admin invite and skip SSO
+entirely — see **Authentication & 2FA** below.
 
 ### Required environment variables
 
@@ -81,27 +83,42 @@ rationale and the (cosmetic, non-security) subdomain-routing helper.
 
 ## Authentication & 2FA
 
-- Staff sign-in is Google-only, matched against each `Tenant.domain` (a school's Google
-  Workspace domain, e.g. `willowbrook-primary.sch.uk`). The first person from a
-  registered domain to sign in is auto-provisioned as `STAFF`; a `TENANT_ADMIN` promotes
-  staff to `TENANT_ADMIN` from **Users**, and flags class teachers with `isTeacher` to
-  grant MIS classroom access regardless of role.
+- Staff can sign in with **Google Workspace SSO, Microsoft Entra ID (Microsoft 365)
+  SSO, or a password** — an account can use any combination once set up; none of these
+  replace the others. SSO auto-provisioning is matched against each `Tenant.domain`
+  (e.g. `willowbrook-primary.sch.uk`): the first person from a registered domain to sign
+  in is auto-provisioned as `STAFF`. A `TENANT_ADMIN` promotes staff to `TENANT_ADMIN`
+  from **Users**, and flags class teachers with `isTeacher` to grant MIS classroom
+  access regardless of role.
+- **Every staff/admin invite is domain-locked**: adding a `STAFF` or `TENANT_ADMIN` user
+  (via **Users**, or the platform Users page) requires their email to be on that
+  school's own registered domain — you can't add `someone@gmail.com` as a Willowbrook
+  staff member. `SUPER_ADMIN`/`TRUST_ADMIN` are exempt (they aren't tied to a single
+  school's domain to begin with).
+- **Password sign-in for staff**: inviting a new user (any role) sends a one-time
+  set-password link (`/set-password`, `src/lib/staff-invite.ts` — same
+  issue/consume-token pattern as the parent flow below). Once set, that account can sign
+  in with email + password at any time, alongside SSO — useful for a supply teacher
+  without a school Google/Microsoft account, or simply as a non-SSO fallback.
 - A platform-level `SUPER_ADMIN` allowlist is controlled by the
   `EDUMIS_SUPER_ADMIN_EMAILS` env var (comma-separated), for EduMIS's own staff, not tied
   to any school domain. A super admin gets a **Schools** page (`/portal/super-admin`) to
   onboard new schools (name, slug, Workspace domain, phase) and suspend existing ones —
   no more direct DB/seed-script access needed for this.
-- 2FA (TOTP) is **mandatory for elevated staff** (`TENANT_ADMIN`, `SUPER_ADMIN`) and
-  optional for regular `STAFF`. An account required to enrol is redirected to
+- 2FA (TOTP) is **mandatory for elevated staff** (`TENANT_ADMIN`, `TRUST_ADMIN`,
+  `SUPER_ADMIN`) and optional for regular `STAFF`, regardless of which sign-in method
+  they used to authenticate. An account required to enrol is redirected to
   **Account → Security** on every route except that page itself until they do —
   enforced both in `src/lib/auth.config.ts` (page-level redirect) and again in
   `src/lib/session.ts`'s `requireSession()` (API-level, so a direct API call can't skip
   it). Once enabled, 2FA can't be turned back off (`/api/auth/2fa/disable` rejects it).
 - **Parents** sign in separately at `/parent/login` with email + password (set via
-  `/parent/set-password`), never through Google SSO, and never share the staff 2FA
-  requirement.
+  `/parent/set-password`), never through SSO, and never share the staff 2FA requirement.
+  There is no self-service sign-up anywhere in the product, for staff or parents —
+  every account is provisioned by an admin (or, for staff, by domain-matched SSO
+  auto-provisioning) — this is deliberate for a product holding pupil safeguarding data.
 - **Dev login** (`src/lib/auth.ts`, the `dev-login` Credentials provider): sign in as any
-  already-seeded user by email, no password or Google account required. It's only added
+  already-seeded user by email, no password or SSO account required. It's only added
   to the providers array when `NODE_ENV !== "production"` — `next build` + `next start`
   (including the Docker image) always run with `NODE_ENV=production`, so this is
   structurally absent from anything resembling a real deployment, not just hidden from
@@ -124,6 +141,24 @@ rationale and the (cosmetic, non-security) subdomain-routing helper.
 4. Register each school as a `Tenant` row with its Google Workspace `domain` — either
    via `prisma/seed.ts`-style scripts or the **Schools** super-admin page.
 
+### Setting up Microsoft Entra ID / Microsoft 365 SSO
+
+1. In the [Azure Portal](https://portal.azure.com), go to **Microsoft Entra ID → App
+   registrations → New registration**. Under "Supported account types", choose
+   **Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant)**
+   — this matches the Google setup above (work/school accounts from any organisation,
+   no personal Microsoft accounts — `src/lib/auth.ts` pins the `organizations` issuer
+   endpoint to enforce this regardless of what's chosen in the portal).
+2. Add a redirect URI (platform: **Web**):
+   - `http://localhost:3002/api/auth/callback/microsoft-entra-id` (dev)
+   - `https://<your-domain>/api/auth/callback/microsoft-entra-id` (prod)
+3. Under **Certificates & secrets**, create a new client secret.
+4. Put the Application (client) ID and secret value in `.env` as `MICROSOFT_CLIENT_ID` /
+   `MICROSOFT_CLIENT_SECRET`.
+5. Same `Tenant.domain` registration as Google above — a school's Microsoft 365 domain
+   and Google Workspace domain both just need to match `Tenant.domain` (a school
+   realistically uses one or the other, but nothing stops registering both).
+
 ## What's implemented
 
 - **Pupils** — one record per pupil: contacts, form group, year group, SEND status,
@@ -137,7 +172,7 @@ rationale and the (cosmetic, non-security) subdomain-routing helper.
   (DBS, safeguarding training), and pastoral interventions with progress notes.
 - **Parents' evenings** — events with bookable appointment slots per teacher.
 - **Parent portal** (`/parent`) — guardians see their children's attendance, messages, and
-  book parents' evening slots, signed in separately from the staff Google SSO flow.
+  book parents' evening slots, signed in separately from the staff SSO flow.
 - **Parent messaging** — staff send targeted messages by year group, form group, or pupil.
 - **Reports** (`/portal/reports`) — attendance trend, behaviour points by category,
   assessment distribution, and a persistent-absence list.
@@ -151,7 +186,7 @@ rationale and the (cosmetic, non-security) subdomain-routing helper.
 ```
 prisma/schema.prisma       Data model (multi-tenant)
 prisma/seed.ts             Demo school, staff, and pupil/MIS data
-src/lib/auth.ts            Auth.js config (Google provider, Prisma adapter, tenant resolution)
+src/lib/auth.ts            Auth.js config (Google/Microsoft/credentials providers, Prisma adapter, tenant resolution)
 src/lib/auth.config.ts     Edge-safe auth config used by middleware
 src/lib/session.ts         Server-side session/tenant/role/MIS-access guards for API routes
 src/lib/tenancy.ts         Tenant resolution helpers
@@ -176,7 +211,7 @@ by `docker-entrypoint.sh`) is written to run as-is on:
   Proxy sidecar or a private IP connection)
 - **Secret Manager** for `AUTH_SECRET`, `APP_ENCRYPTION_KEY`, and the OAuth client secret,
   mounted as env vars into Cloud Run
-- **Google Identity Platform** for staff SSO, as described above
+- **Google Identity Platform** and/or **Microsoft Entra ID** for staff SSO, as described above
 - A wildcard DNS record / Cloud Run domain mapping if you want true per-school
   subdomains (`{slug}.yourdomain.com`) — `src/lib/tenancy.ts` already resolves the
   subdomain, but tenancy is enforced by session, not subdomain, so this is optional.

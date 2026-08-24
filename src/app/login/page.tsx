@@ -1,8 +1,8 @@
 "use client";
 
+import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 
 function LoginError() {
   const params = useSearchParams();
@@ -11,9 +11,80 @@ function LoginError() {
   return (
     <p className="mt-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">
       {error === "AccessDenied"
-        ? "Your Google account's domain isn't registered to an EduMIS school yet. Ask your school's IT admin to set this up, or contact us."
+        ? "Your account's domain isn't registered to an EduMIS school yet. Ask your school's IT admin to set this up, or contact us."
         : "Something went wrong signing you in. Please try again."}
     </p>
+  );
+}
+
+function PasswordLogin() {
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await signIn("staff-login", { email, password, callbackUrl: "/portal", redirect: false });
+      if (!res || res.error) {
+        setError("Incorrect email or password.");
+        return;
+      }
+      window.location.href = res.url ?? "/portal";
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="mt-3 text-sm font-medium text-indigo-600 hover:text-indigo-700"
+      >
+        Sign in with email and password instead
+      </button>
+    );
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="mt-4 space-y-3 text-left">
+      <div>
+        <label className="block text-sm font-medium text-slate-700">Email</label>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-slate-700">Password</label>
+        <input
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+        />
+      </div>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full rounded-md bg-indigo-600 px-4 py-2.5 font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+      >
+        {loading ? "Signing in…" : "Sign in"}
+      </button>
+      <p className="text-xs text-slate-600">
+        Only works for accounts that have set a password (via a set-password link from an admin invite).
+      </p>
+    </form>
   );
 }
 
@@ -35,7 +106,7 @@ function DevLogin() {
   return (
     <div className="mt-6 border-t border-slate-200 pt-6 text-left">
       <p className="text-xs font-medium uppercase tracking-wide text-slate-600">
-        Dev login (local only — no Google OAuth needed)
+        Dev login (local only — no SSO needed)
       </p>
       <p className="mt-1 text-xs text-slate-700">
         Requires the seed script to have run. Admins will still be prompted to set up 2FA —
@@ -66,16 +137,26 @@ export default function LoginPage() {
         </div>
         <h1 className="text-xl font-semibold text-slate-900">Sign in to EduMIS</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Use your school&apos;s Google Workspace account. Admins will also be asked for a
+          Use your school&apos;s Google or Microsoft account. Admins will also be asked for a
           second factor.
         </p>
-        <button
-          onClick={() => signIn("google", { callbackUrl: "/portal" })}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2.5 font-medium text-slate-700 hover:bg-slate-50"
-        >
-          <GoogleIcon />
-          Sign in with Google
-        </button>
+        <div className="mt-6 space-y-2">
+          <button
+            onClick={() => signIn("google", { callbackUrl: "/portal" })}
+            className="flex w-full items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2.5 font-medium text-slate-700 hover:bg-slate-50"
+          >
+            <GoogleIcon />
+            Sign in with Google
+          </button>
+          <button
+            onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/portal" })}
+            className="flex w-full items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2.5 font-medium text-slate-700 hover:bg-slate-50"
+          >
+            <MicrosoftIcon />
+            Sign in with Microsoft
+          </button>
+        </div>
+        <PasswordLogin />
         <Suspense fallback={null}>
           <LoginError />
         </Suspense>
@@ -104,6 +185,17 @@ function GoogleIcon() {
         fill="#EA4335"
         d="M9 3.58c1.32 0 2.5.46 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .95 4.97l3 2.33C4.66 5.17 6.65 3.58 9 3.58z"
       />
+    </svg>
+  );
+}
+
+function MicrosoftIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
+      <rect x="0" y="0" width="8.5" height="8.5" fill="#F25022" />
+      <rect x="9.5" y="0" width="8.5" height="8.5" fill="#7FBA00" />
+      <rect x="0" y="9.5" width="8.5" height="8.5" fill="#00A4EF" />
+      <rect x="9.5" y="9.5" width="8.5" height="8.5" fill="#FFB900" />
     </svg>
   );
 }
