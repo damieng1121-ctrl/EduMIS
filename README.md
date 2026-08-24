@@ -27,7 +27,7 @@ smaller gaps are documented as next steps below.
 ```bash
 npm install
 cp .env.example .env        # then fill in real values, see below
-docker run --name edumis-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=edumis -p 5432:5432 -d postgres:16
+docker run --name edumis-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=edumis -p 5434:5432 -d postgres:16
 npm run db:migrate          # creates tables
 npm run db:seed             # seeds a demo school with pupils, staff, and parent accounts
 npm run dev
