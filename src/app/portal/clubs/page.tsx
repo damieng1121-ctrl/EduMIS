@@ -28,7 +28,7 @@ const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
 
 export default function ClubsPage() {
   const { data: session } = useSession();
-  const isAdmin = session?.user.role === "TENANT_ADMIN" || session?.user.role === "SUPER_ADMIN";
+  const isAdmin = session?.user.role === "TENANT_ADMIN" || session?.user.role === "TRUST_ADMIN" || session?.user.role === "SUPER_ADMIN";
 
   const [clubs, setClubs] = useState<Club[] | null>(null);
   const [academicYears, setAcademicYears] = useState<AcademicYear[] | null>(null);

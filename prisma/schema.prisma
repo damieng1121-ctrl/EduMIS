@@ -27,6 +27,9 @@ model Tenant {
   phase      SchoolPhase @default(PRIMARY)
   logoUrl    String?
   brandColor String      @default("#2563eb")
+  /// A Federation (2+ schools sharing leadership) or Multi-Academy Trust this school belongs to, if any. Null for a standalone school.
+  trustId    String?
+  trust      Trust?      @relation(fields: [trustId], references: [id])
   /// Overrides the "EduMIS" wordmark in the portal nav header, for schools that want to fully rebrand.
   appName    String?
   /// Portal nav sidebar background colour. Defaults to the app's standard white sidebar when unset.
@@ -74,8 +77,24 @@ enum SchoolPhase {
   MULTI_ACADEMY_TRUST
 }
 
+/// A Federation (typically 2-3 schools sharing a head/governing body) or
+/// Multi-Academy Trust (many academies under one trust). Both are the same
+/// concept here — just a group of schools with cross-school leadership —
+/// so one model covers both rather than treating them separately.
+model Trust {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenants Tenant[]
+  users   User[]   @relation("TrustAdmins")
+}
+
 enum Role {
   SUPER_ADMIN // EduMIS platform staff, cross-tenant
+  TRUST_ADMIN // Federation head / MAT trust leader — cross-school within their own Trust only
   TENANT_ADMIN // School SBM / senior leader
   STAFF // Teacher / other school staff member
   PARENT // Guardian, signed in via email+password to the separate /parent portal
@@ -85,6 +104,9 @@ model User {
   id       String  @id @default(cuid())
   tenantId String?
   tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  /// Only ever set for role=TRUST_ADMIN — which Trust they lead. A TRUST_ADMIN has tenantId=null (like SUPER_ADMIN); their access to a specific school is granted per-session via "acting as", scoped server-side to this trust's own tenants.
+  trustId  String?
+  trust    Trust?  @relation("TrustAdmins", fields: [trustId], references: [id])
   /// Globally unique (not just per-tenant): Auth.js's Prisma adapter looks
   /// users up by email directly, and in practice one Google account maps to
   /// exactly one school via its Workspace domain anyway.

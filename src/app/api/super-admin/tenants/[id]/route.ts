@@ -5,7 +5,11 @@ import { prisma } from "@/lib/db";
 
 type Params = { params: Promise<{ id: string }> };
 
-const bodySchema = z.object({ isActive: z.boolean() });
+const bodySchema = z.object({
+  isActive: z.boolean().optional(),
+  /// Move this school into a Federation/Trust, or pass null to make it standalone again.
+  trustId: z.string().nullable().optional(),
+});
 
 export async function PATCH(req: Request, { params }: Params) {
   return withApiErrors(async () => {
@@ -13,7 +17,7 @@ export async function PATCH(req: Request, { params }: Params) {
     const { id } = await params;
     const tenant = await prisma.tenant.findUnique({ where: { id } });
     if (!tenant) throw new AuthError("School not found", 404);
-    const { isActive } = bodySchema.parse(await req.json());
-    return prisma.tenant.update({ where: { id }, data: { isActive } });
+    const body = bodySchema.parse(await req.json());
+    return prisma.tenant.update({ where: { id }, data: body });
   });
 }

@@ -6,10 +6,12 @@ declare module "next-auth" {
     user: {
       id: string;
       role: Role;
-      /** For a SUPER_ADMIN "managing" a school, this is that school's id — never a real tenant membership. See actingTenantId. */
+      /** For a SUPER_ADMIN or TRUST_ADMIN "managing" a school, this is that school's id — never a real tenant membership. See actingTenantId. */
       tenantId: string | null;
-      /** Set only while a SUPER_ADMIN is managing a specific school; null otherwise (including for ordinary tenant users). */
+      /** Set only while a SUPER_ADMIN/TRUST_ADMIN is managing a specific school; null otherwise (including for ordinary tenant users). */
       actingTenantId: string | null;
+      /** Only ever set for role=TRUST_ADMIN — which Trust they lead. */
+      trustId: string | null;
       twoFactorEnabled: boolean;
       twoFactorVerified: boolean;
       /** MIS classroom access — see User.isTeacher. Only meaningful for staff roles. */
@@ -27,6 +29,7 @@ declare module "@auth/core/jwt" {
     role: Role;
     tenantId: string | null;
     actingTenantId: string | null;
+    trustId: string | null;
     twoFactorEnabled: boolean;
     twoFactorVerified: boolean;
     isTeacher: boolean;

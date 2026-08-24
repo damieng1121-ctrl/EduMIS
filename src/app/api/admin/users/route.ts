@@ -46,9 +46,12 @@ export async function POST(req: Request) {
 
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
-      // Never let a tenant admin retarget the platform super admin, or
-      // pull a user out of another school without that school's consent.
-      if (existing.role === "SUPER_ADMIN") throw new AuthError("This email is reserved", 409);
+      // Never let a tenant admin retarget the platform super admin or a
+      // Trust admin, or pull a user out of another school without that
+      // school's consent.
+      if (existing.role === "SUPER_ADMIN" || existing.role === "TRUST_ADMIN") {
+        throw new AuthError("This email is reserved", 409);
+      }
       if (existing.tenantId && existing.tenantId !== session.user.tenantId) {
         throw new AuthError("This email is already assigned to another school", 409);
       }

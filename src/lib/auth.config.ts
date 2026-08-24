@@ -22,12 +22,14 @@ export const authConfig = {
       session.user.id = token.id;
       session.user.role = token.role;
       session.user.actingTenantId = token.actingTenantId ?? null;
+      session.user.trustId = token.trustId ?? null;
       // A real tenant membership always wins; otherwise, for a SUPER_ADMIN
-      // "managing" a school, tenantId resolves to that school so every
-      // existing tenant-scoped check (requireTenantSession, API routes,
-      // page queries) just works without threading actingTenantId through
-      // each of them individually.
-      session.user.tenantId = token.tenantId ?? (token.role === "SUPER_ADMIN" ? (token.actingTenantId ?? null) : null);
+      // or TRUST_ADMIN "managing" a school, tenantId resolves to that school
+      // so every existing tenant-scoped check (requireTenantSession, API
+      // routes, page queries) just works without threading actingTenantId
+      // through each of them individually.
+      const canAct = token.role === "SUPER_ADMIN" || token.role === "TRUST_ADMIN";
+      session.user.tenantId = token.tenantId ?? (canAct ? (token.actingTenantId ?? null) : null);
       session.user.twoFactorEnabled = token.twoFactorEnabled;
       session.user.twoFactorVerified = token.twoFactorVerified;
       session.user.isTeacher = token.isTeacher ?? false;

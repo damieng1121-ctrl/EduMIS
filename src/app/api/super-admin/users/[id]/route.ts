@@ -6,10 +6,24 @@ import { prisma } from "@/lib/db";
 type Params = { params: Promise<{ id: string }> };
 
 const bodySchema = z.object({
-  role: z.enum(["STAFF", "TENANT_ADMIN", "SUPER_ADMIN"]).optional(),
+  role: z.enum(["STAFF", "TENANT_ADMIN", "TRUST_ADMIN", "SUPER_ADMIN"]).optional(),
   tenantId: z.string().nullable().optional(),
+  trustId: z.string().nullable().optional(),
   isActive: z.boolean().optional(),
 });
+
+/** SUPER_ADMIN has neither; TRUST_ADMIN has only a trust; every other role has only a school. */
+function assertRoleScope(role: string, tenantId: string | null, trustId: string | null) {
+  if (role === "SUPER_ADMIN") {
+    if (tenantId !== null || trustId !== null) throw new AuthError("Super admins have no school or Trust", 400);
+  } else if (role === "TRUST_ADMIN") {
+    if (tenantId !== null) throw new AuthError("Trust admins have no single school — assign a Trust instead", 400);
+    if (trustId === null) throw new AuthError("Trust admins need a Trust", 400);
+  } else {
+    if (tenantId === null) throw new AuthError("This role needs a school", 400);
+    if (trustId !== null) throw new AuthError("Only Trust admins have a Trust", 400);
+  }
+}
 
 export async function PATCH(req: Request, { params }: Params) {
   return withApiErrors(async () => {
@@ -23,11 +37,11 @@ export async function PATCH(req: Request, { params }: Params) {
 
     const role = body.role ?? target.role;
     const tenantId = body.tenantId !== undefined ? body.tenantId : target.tenantId;
-    if (role === "SUPER_ADMIN" !== (tenantId === null)) {
-      throw new AuthError("Super admins have no school; every other role needs one", 400);
-    }
+    // Switching role clears the other scope field automatically unless the caller explicitly set it too.
+    const trustId = body.trustId !== undefined ? body.trustId : role === target.role ? target.trustId : null;
+    assertRoleScope(role, tenantId, trustId);
 
-    const user = await prisma.user.update({ where: { id }, data: { ...body, role, tenantId } });
+    const user = await prisma.user.update({ where: { id }, data: { ...body, role, tenantId, trustId } });
 
     await prisma.auditLog.create({
       data: {

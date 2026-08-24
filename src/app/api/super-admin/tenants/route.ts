@@ -33,6 +33,8 @@ const createSchema = z.object({
     .regex(/^[a-z0-9.-]+\.[a-z]{2,}$/i, "Must be a bare domain, e.g. school-name.sch.uk"),
   phase: z.enum(["NURSERY", "PRIMARY", "SECONDARY", "ALL_THROUGH", "SPECIAL", "MULTI_ACADEMY_TRUST"]),
   urn: z.string().trim().max(20).optional(),
+  /// Assign this school to a Federation/Trust at creation time — optional, can also be set later via PATCH.
+  trustId: z.string().nullable().optional(),
 });
 
 export async function POST(req: Request) {

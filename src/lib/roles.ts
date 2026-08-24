@@ -1,6 +1,6 @@
 import type { Role } from "@prisma/client";
 
-export const ADMIN_ROLES: Role[] = ["TENANT_ADMIN", "SUPER_ADMIN"];
+export const ADMIN_ROLES: Role[] = ["TENANT_ADMIN", "TRUST_ADMIN", "SUPER_ADMIN"];
 
 export function isAdmin(role: Role): boolean {
   return ADMIN_ROLES.includes(role);

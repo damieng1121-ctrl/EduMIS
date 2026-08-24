@@ -24,7 +24,7 @@ type Result = {
 
 export default function AssessmentPage() {
   const { data: session } = useSession();
-  const isAdmin = session?.user.role === "TENANT_ADMIN" || session?.user.role === "SUPER_ADMIN";
+  const isAdmin = session?.user.role === "TENANT_ADMIN" || session?.user.role === "TRUST_ADMIN" || session?.user.role === "SUPER_ADMIN";
 
   const [subjects, setSubjects] = useState<Subject[] | null>(null);
   const [academicYears, setAcademicYears] = useState<AcademicYear[] | null>(null);

@@ -87,7 +87,7 @@ export default function BehaviourPage() {
 
 function IncidentsTab() {
   const { data: session } = useSession();
-  const isAdmin = session?.user.role === "TENANT_ADMIN" || session?.user.role === "SUPER_ADMIN";
+  const isAdmin = session?.user.role === "TENANT_ADMIN" || session?.user.role === "TRUST_ADMIN" || session?.user.role === "SUPER_ADMIN";
 
   const [pupils, setPupils] = useState<Pupil[]>([]);
   const [incidents, setIncidents] = useState<Incident[] | null>(null);

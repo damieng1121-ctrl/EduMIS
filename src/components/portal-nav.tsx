@@ -60,6 +60,7 @@ const links: NavLink[] = [
   { href: "/portal/admin/users", label: "Users", icon: Users, roles: ["TENANT_ADMIN"] },
   { href: "/portal/admin/settings", label: "Settings", icon: Settings, roles: ["TENANT_ADMIN"] },
   { href: "/portal/super-admin", label: "Schools", icon: School, roles: ["SUPER_ADMIN"] },
+  { href: "/portal/trust-admin", label: "My Trust", icon: School, roles: ["TRUST_ADMIN"] },
 ];
 
 /** Modules a school can hide entirely if they don't use them — see /portal/admin/settings. Core nav (dashboard/settings/users) always shows. */

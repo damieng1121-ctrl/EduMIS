@@ -42,7 +42,7 @@ const SEND_STYLES: Record<Pupil["sendStatus"], string> = {
 
 export default function PupilsPage() {
   const { data: session } = useSession();
-  const isAdmin = session?.user.role === "TENANT_ADMIN" || session?.user.role === "SUPER_ADMIN";
+  const isAdmin = session?.user.role === "TENANT_ADMIN" || session?.user.role === "TRUST_ADMIN" || session?.user.role === "SUPER_ADMIN";
 
   const [pupils, setPupils] = useState<Pupil[] | null>(null);
   const [formGroups, setFormGroups] = useState<FormGroup[] | null>(null);

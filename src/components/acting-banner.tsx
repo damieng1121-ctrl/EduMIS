@@ -4,7 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
-export function ActingBanner({ tenantName }: { tenantName: string }) {
+export function ActingBanner({
+  tenantName,
+  actorLabel,
+  exitHref,
+}: {
+  tenantName: string;
+  actorLabel: string;
+  exitHref: string;
+}) {
   const { update } = useSession();
   const router = useRouter();
   const [exiting, setExiting] = useState(false);
@@ -13,7 +21,7 @@ export function ActingBanner({ tenantName }: { tenantName: string }) {
     setExiting(true);
     try {
       await update({ actingTenantId: null });
-      router.push("/portal/super-admin");
+      router.push(exitHref);
       router.refresh();
     } finally {
       setExiting(false);
@@ -23,10 +31,10 @@ export function ActingBanner({ tenantName }: { tenantName: string }) {
   return (
     <div className="flex items-center justify-between border-b border-amber-200 bg-amber-50 px-6 py-2 text-sm text-amber-900">
       <span>
-        You&apos;re managing <strong>{tenantName}</strong> as an EduMIS platform admin.
+        You&apos;re managing <strong>{tenantName}</strong> as {actorLabel}.
       </span>
       <button onClick={exit} disabled={exiting} className="font-medium underline hover:no-underline disabled:opacity-50">
-        {exiting ? "Exiting…" : "Exit to platform admin"}
+        {exiting ? "Exiting…" : "Exit"}
       </button>
     </div>
   );

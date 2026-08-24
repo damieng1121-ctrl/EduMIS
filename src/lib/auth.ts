@@ -103,9 +103,14 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
       if (!user.email) return false;
       // A pre-provisioned row (an admin's manual invite/assignment) is
       // always allowed to sign in, regardless of its email's domain —
-      // that manual assignment is what makes it a member of a school.
+      // that manual assignment is what makes it a member of a school. A
+      // SUPER_ADMIN or TRUST_ADMIN legitimately has tenantId=null (a Trust
+      // admin belongs to a Trust, not a single school), so role alone
+      // grants it for those two, same as an explicit tenant membership.
       const existing = await prisma.user.findUnique({ where: { email: user.email } });
-      if (existing && (existing.tenantId !== null || existing.role === "SUPER_ADMIN")) return true;
+      if (existing && (existing.tenantId !== null || existing.role === "SUPER_ADMIN" || existing.role === "TRUST_ADMIN")) {
+        return true;
+      }
       // Otherwise fall back to domain-based auto-provisioning for a
       // genuinely first-ever sign-in.
       const resolved = await resolveTenantAndRole(user.email);
@@ -117,15 +122,19 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         // flows) — trust it rather than re-hitting the DB on every session read.
         if (typeof session.twoFactorVerified === "boolean") token.twoFactorVerified = session.twoFactorVerified;
         if (typeof session.twoFactorEnabled === "boolean") token.twoFactorEnabled = session.twoFactorEnabled;
-        // Only a real platform SUPER_ADMIN can ever set this — never an
-        // ordinary tenant user overriding their own membership. Validated
-        // against a real, active school so a stale/bogus id can't linger.
-        if ("actingTenantId" in session && token.role === "SUPER_ADMIN") {
+        // Only a real platform SUPER_ADMIN, or a TRUST_ADMIN acting within
+        // their own Trust, can ever set this — never an ordinary tenant user
+        // overriding their own membership. Validated against a real, active
+        // school (and, for a TRUST_ADMIN, that the school actually belongs
+        // to their Trust) so a stale/bogus id can't linger, and a Trust
+        // leader can never act as a school outside their own Trust.
+        if ("actingTenantId" in session && (token.role === "SUPER_ADMIN" || token.role === "TRUST_ADMIN")) {
           if (session.actingTenantId === null) {
             token.actingTenantId = null;
           } else if (typeof session.actingTenantId === "string") {
             const tenant = await prisma.tenant.findUnique({ where: { id: session.actingTenantId } });
-            token.actingTenantId = tenant?.isActive ? tenant.id : null;
+            const allowed = tenant?.isActive && (token.role === "SUPER_ADMIN" || tenant.trustId === token.trustId);
+            token.actingTenantId = allowed ? tenant.id : null;
           }
         }
         return token;
@@ -144,6 +153,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
           token.role = dbUser.role;
           token.tenantId = dbUser.tenantId;
           token.actingTenantId = null;
+          token.trustId = dbUser.trustId;
           token.twoFactorEnabled = dbUser.twoFactorEnabled;
           token.twoFactorVerified = !dbUser.twoFactorEnabled;
           token.isTeacher = dbUser.isTeacher;

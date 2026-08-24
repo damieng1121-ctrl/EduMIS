@@ -324,6 +324,97 @@ async function seedSchoolMis() {
 }
 
 /**
+ * Two multi-school groupings, alongside standalone Willowbrook, so the
+ * TRUST_ADMIN "switch between my Trust's schools" flow has something real
+ * to click through: a small Federation (two schools sharing one head) and
+ * a larger Multi-Academy Trust (three academies, one CEO/trust leader).
+ * Kept light on MIS data deliberately — Willowbrook already demonstrates
+ * that depth; these exist to demonstrate the Trust structure itself.
+ */
+async function seedTrusts() {
+  const federation = await prisma.trust.upsert({
+    where: { slug: "two-rivers-federation" },
+    create: { name: "Two Rivers Federation", slug: "two-rivers-federation" },
+    update: {},
+  });
+  const alderBank = await prisma.tenant.upsert({
+    where: { slug: "alder-bank" },
+    create: {
+      name: "Alder Bank Primary School",
+      slug: "alder-bank",
+      domain: "alder-bank.sch.uk",
+      phase: "PRIMARY",
+      brandColor: "#0d9488",
+      trustId: federation.id,
+    },
+    update: { trustId: federation.id },
+  });
+  const elmGrove = await prisma.tenant.upsert({
+    where: { slug: "elm-grove" },
+    create: {
+      name: "Elm Grove Primary School",
+      slug: "elm-grove",
+      domain: "elm-grove.sch.uk",
+      phase: "PRIMARY",
+      brandColor: "#0d9488",
+      trustId: federation.id,
+    },
+    update: { trustId: federation.id },
+  });
+  await prisma.user.upsert({
+    where: { email: "head@alder-bank.sch.uk" },
+    create: { email: "head@alder-bank.sch.uk", name: "Nadia Farooq", role: "TENANT_ADMIN", tenantId: alderBank.id, jobTitle: "Head of School" },
+    update: { tenantId: alderBank.id },
+  });
+  await prisma.user.upsert({
+    where: { email: "head@elm-grove.sch.uk" },
+    create: { email: "head@elm-grove.sch.uk", name: "Callum Reid", role: "TENANT_ADMIN", tenantId: elmGrove.id, jobTitle: "Head of School" },
+    update: { tenantId: elmGrove.id },
+  });
+  await prisma.user.upsert({
+    where: { email: "federation.head@two-rivers-federation.org" },
+    create: {
+      email: "federation.head@two-rivers-federation.org",
+      name: "Morgan Reyes",
+      role: "TRUST_ADMIN",
+      trustId: federation.id,
+      jobTitle: "Executive Headteacher",
+    },
+    update: { trustId: federation.id },
+  });
+
+  const oakTrust = await prisma.trust.upsert({
+    where: { slug: "oak-learning-trust" },
+    create: { name: "Oak Learning Trust", slug: "oak-learning-trust" },
+    update: {},
+  });
+  const oakSchools = [
+    { name: "Oakfield Primary Academy", slug: "oakfield-primary", domain: "oakfield-primary.oaklearningtrust.org", head: "Priti Malhotra" },
+    { name: "Riverside Primary Academy", slug: "riverside-primary", domain: "riverside-primary.oaklearningtrust.org", head: "Ben Sutherland" },
+    { name: "Northgate Primary Academy", slug: "northgate-primary", domain: "northgate-primary.oaklearningtrust.org", head: "Aisha Kone" },
+  ];
+  for (const school of oakSchools) {
+    const tenant = await prisma.tenant.upsert({
+      where: { slug: school.slug },
+      create: { name: school.name, slug: school.slug, domain: school.domain, phase: "PRIMARY", brandColor: "#b45309", trustId: oakTrust.id },
+      update: { trustId: oakTrust.id },
+    });
+    await prisma.user.upsert({
+      where: { email: `head@${school.domain}` },
+      create: { email: `head@${school.domain}`, name: school.head, role: "TENANT_ADMIN", tenantId: tenant.id, jobTitle: "Head of School" },
+      update: { tenantId: tenant.id },
+    });
+  }
+  await prisma.user.upsert({
+    where: { email: "ceo@oaklearningtrust.org" },
+    create: { email: "ceo@oaklearningtrust.org", name: "Dr Amara Osei", role: "TRUST_ADMIN", trustId: oakTrust.id, jobTitle: "Trust CEO" },
+    update: { trustId: oakTrust.id },
+  });
+
+  console.log("Seeded Two Rivers Federation (2 schools) and Oak Learning Trust (3 schools).");
+}
+
+/**
  * A platform-wide super admin, not tied to any school. Only usable if its
  * email is also listed in EDUMIS_SUPER_ADMIN_EMAILS — that env var is what
  * actually grants the role on sign-in (see resolveTenantAndRole in
@@ -347,13 +438,16 @@ async function seedPlatformSuperAdmin() {
 async function main() {
   await seedDemoTenant();
   await seedSchoolMis();
+  await seedTrusts();
   await seedPlatformSuperAdmin();
 
   console.log("\nDemo logins:");
-  console.log("  Super admin:  superadmin@edumis.dev");
-  console.log("  Tenant admin: admin@willowbrook-primary.sch.uk");
-  console.log("  Staff:        office@willowbrook-primary.sch.uk");
+  console.log("  Super admin:   superadmin@edumis.dev (sees every school and every Trust)");
+  console.log("  Tenant admin:  admin@willowbrook-primary.sch.uk (standalone school)");
+  console.log("  Staff:         office@willowbrook-primary.sch.uk");
   console.log("  Staff/teacher: j.taylor@willowbrook-primary.sch.uk");
+  console.log("  Federation head: federation.head@two-rivers-federation.org (Two Rivers Federation, 2 schools)");
+  console.log("  Trust CEO:       ceo@oaklearningtrust.org (Oak Learning Trust, 3 schools)");
   console.log("  (Use the 'Dev login' panel on /login in development — no password needed.)");
   console.log("  Parent portal: chinelo.bennett@example.com / tom.whitfield@example.com, password: Password123!");
 }

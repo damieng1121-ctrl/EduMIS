@@ -10,30 +10,46 @@ export default async function PortalLayout({ children }: LayoutProps<"/portal">)
   if (session.user.role === "PARENT") redirect("/parent");
   if (session.user.twoFactorEnabled && !session.user.twoFactorVerified) redirect("/verify-2fa");
 
-  const isActing = session.user.role === "SUPER_ADMIN" && Boolean(session.user.actingTenantId);
+  const canAct = session.user.role === "SUPER_ADMIN" || session.user.role === "TRUST_ADMIN";
+  const isActing = canAct && Boolean(session.user.actingTenantId);
 
-  const tenant = session.user.tenantId
-    ? await prisma.tenant.findUnique({
-        where: { id: session.user.tenantId },
-        select: { name: true, logoUrl: true, appName: true, sidebarColor: true, disabledNavItems: true },
-      })
-    : null;
+  const [tenant, trust] = await Promise.all([
+    session.user.tenantId
+      ? prisma.tenant.findUnique({
+          where: { id: session.user.tenantId },
+          select: { name: true, logoUrl: true, appName: true, sidebarColor: true, disabledNavItems: true },
+        })
+      : null,
+    // Only fetched to label the header when a TRUST_ADMIN isn't currently acting as a specific school.
+    session.user.role === "TRUST_ADMIN" && session.user.trustId && !isActing
+      ? prisma.trust.findUnique({ where: { id: session.user.trustId }, select: { name: true } })
+      : null,
+  ]);
+
+  const platformLabel = trust ? `${trust.name} — Trust admin` : "EduMIS platform admin";
 
   return (
     <div className="flex min-h-screen flex-1 flex-col bg-slate-50">
       <PortalNav
-        // A super admin managing a school gets that school's full nav (as a
-        // tenant admin would see it), not just the "Schools" platform link.
+        // A super admin or trust admin managing a school gets that school's
+        // full nav (as a tenant admin would see it), not just their own
+        // platform/trust-level link.
         role={isActing ? "TENANT_ADMIN" : session.user.role}
         userName={session.user.name ?? session.user.email ?? "Account"}
-        tenantName={tenant?.name ?? "EduMIS platform admin"}
+        tenantName={tenant?.name ?? platformLabel}
         appName={tenant?.appName ?? "EduMIS"}
         hasLogo={Boolean(tenant?.logoUrl)}
         sidebarColor={tenant?.sidebarColor ?? null}
         disabledNavItems={tenant?.disabledNavItems ?? []}
         isTeacher={isActing ? true : session.user.isTeacher}
       />
-      {isActing && <ActingBanner tenantName={tenant?.name ?? "this school"} />}
+      {isActing && (
+        <ActingBanner
+          tenantName={tenant?.name ?? "this school"}
+          actorLabel={session.user.role === "TRUST_ADMIN" ? "a Trust leader" : "an EduMIS platform admin"}
+          exitHref={session.user.role === "TRUST_ADMIN" ? "/portal/trust-admin" : "/portal/super-admin"}
+        />
+      )}
       <main className="mx-auto w-full max-w-[1600px] flex-1 p-8">{children}</main>
     </div>
   );

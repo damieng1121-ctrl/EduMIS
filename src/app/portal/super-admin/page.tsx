@@ -12,16 +12,26 @@ type Tenant = {
   phase: string;
   urn: string | null;
   isActive: boolean;
+  trustId: string | null;
   createdAt: string;
   _count: { users: number; pupils: number };
+};
+
+type Trust = {
+  id: string;
+  name: string;
+  slug: string;
+  tenants: { id: string; name: string }[];
+  _count: { tenants: number; users: number };
 };
 
 type PlatformUser = {
   id: string;
   name: string | null;
   email: string | null;
-  role: "SUPER_ADMIN" | "TENANT_ADMIN" | "STAFF";
+  role: "SUPER_ADMIN" | "TRUST_ADMIN" | "TENANT_ADMIN" | "STAFF";
   tenantId: string | null;
+  trustId: string | null;
   tenant: { name: string } | null;
   isActive: boolean;
   twoFactorEnabled: boolean;
@@ -29,7 +39,14 @@ type PlatformUser = {
 };
 
 const PHASES = ["NURSERY", "PRIMARY", "SECONDARY", "ALL_THROUGH", "SPECIAL", "MULTI_ACADEMY_TRUST"];
-const ROLES = ["STAFF", "TENANT_ADMIN", "SUPER_ADMIN"] as const;
+const ROLES = ["STAFF", "TENANT_ADMIN", "TRUST_ADMIN", "SUPER_ADMIN"] as const;
+
+function roleLabel(r: string): string {
+  if (r === "SUPER_ADMIN") return "Super admin";
+  if (r === "TRUST_ADMIN") return "Trust admin";
+  if (r === "TENANT_ADMIN") return "Admin";
+  return "Staff";
+}
 
 /** Turns withApiErrors' {error, issues} shape into a readable message instead of the generic "Invalid request". */
 function describeApiError(data: { error?: string; issues?: { path: (string | number)[]; message: string }[] }): string {
@@ -42,7 +59,7 @@ function describeApiError(data: { error?: string; issues?: { path: (string | num
 export default function SuperAdminPage() {
   const { update } = useSession();
   const router = useRouter();
-  const [tab, setTab] = useState<"schools" | "users">("schools");
+  const [tab, setTab] = useState<"schools" | "trusts" | "users">("schools");
   const [managingId, setManagingId] = useState<string | null>(null);
 
   async function manageSchool(id: string) {
@@ -50,6 +67,7 @@ export default function SuperAdminPage() {
     try {
       await update({ actingTenantId: id });
       router.push("/portal");
+      router.refresh();
     } finally {
       setManagingId(null);
     }
@@ -64,12 +82,20 @@ export default function SuperAdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const [trusts, setTrusts] = useState<Trust[] | null>(null);
+  const [trustName, setTrustName] = useState("");
+  const [trustSlug, setTrustSlug] = useState("");
+  const [trustError, setTrustError] = useState<string | null>(null);
+  const [trustSubmitting, setTrustSubmitting] = useState(false);
+
   const [users, setUsers] = useState<PlatformUser[] | null>(null);
+  const [usersError, setUsersError] = useState<string | null>(null);
   const [showInvite, setShowInvite] = useState(false);
   const [uEmail, setUEmail] = useState("");
   const [uName, setUName] = useState("");
   const [uRole, setURole] = useState<(typeof ROLES)[number]>("STAFF");
   const [uTenantId, setUTenantId] = useState("");
+  const [uTrustId, setUTrustId] = useState("");
   const [uError, setUError] = useState<string | null>(null);
   const [inviting, setInviting] = useState(false);
 
@@ -78,6 +104,11 @@ export default function SuperAdminPage() {
       .then((r) => r.json())
       .then(setTenants);
   }
+  function loadTrusts() {
+    fetch("/api/super-admin/trusts")
+      .then((r) => r.json())
+      .then(setTrusts);
+  }
   function loadUsers() {
     fetch("/api/super-admin/users")
       .then((r) => r.json())
@@ -85,6 +116,7 @@ export default function SuperAdminPage() {
   }
   useEffect(() => {
     loadTenants();
+    loadTrusts();
     loadUsers();
   }, []);
 
@@ -122,6 +154,39 @@ export default function SuperAdminPage() {
     loadTenants();
   }
 
+  async function setTenantTrust(id: string, trustId: string) {
+    await fetch(`/api/super-admin/tenants/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ trustId: trustId || null }),
+    });
+    loadTenants();
+    loadTrusts();
+  }
+
+  async function createTrust(e: React.FormEvent) {
+    e.preventDefault();
+    setTrustSubmitting(true);
+    setTrustError(null);
+    try {
+      const res = await fetch("/api/super-admin/trusts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: trustName, slug: trustSlug }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setTrustError(describeApiError(data));
+        return;
+      }
+      setTrustName("");
+      setTrustSlug("");
+      loadTrusts();
+    } finally {
+      setTrustSubmitting(false);
+    }
+  }
+
   async function inviteUser(e: React.FormEvent) {
     e.preventDefault();
     setInviting(true);
@@ -134,7 +199,8 @@ export default function SuperAdminPage() {
           email: uEmail,
           name: uName || undefined,
           role: uRole,
-          tenantId: uRole === "SUPER_ADMIN" ? null : uTenantId || null,
+          tenantId: uRole === "STAFF" || uRole === "TENANT_ADMIN" ? uTenantId || null : null,
+          trustId: uRole === "TRUST_ADMIN" ? uTrustId || null : null,
         }),
       });
       const data = await res.json();
@@ -146,6 +212,7 @@ export default function SuperAdminPage() {
       setUName("");
       setURole("STAFF");
       setUTenantId("");
+      setUTrustId("");
       setShowInvite(false);
       loadUsers();
     } finally {
@@ -153,12 +220,17 @@ export default function SuperAdminPage() {
     }
   }
 
-  async function reassignUser(id: string, patch: Partial<Pick<PlatformUser, "role" | "tenantId" | "isActive">>) {
-    await fetch(`/api/super-admin/users/${id}`, {
+  async function reassignUser(id: string, patch: Partial<Pick<PlatformUser, "role" | "tenantId" | "trustId" | "isActive">>) {
+    setUsersError(null);
+    const res = await fetch(`/api/super-admin/users/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     });
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      setUsersError(data ? describeApiError(data) : "Couldn't update that user.");
+    }
     loadUsers();
   }
 
@@ -167,21 +239,18 @@ export default function SuperAdminPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-slate-900">Platform administration</h1>
-          <p className="mt-1 text-sm text-slate-600">Manage every school and every user across EduMIS.</p>
+          <p className="mt-1 text-sm text-slate-600">Manage every school, Trust, and user across EduMIS.</p>
         </div>
         <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1">
-          <button
-            onClick={() => setTab("schools")}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium ${tab === "schools" ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:text-slate-900"}`}
-          >
-            Schools
-          </button>
-          <button
-            onClick={() => setTab("users")}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium ${tab === "users" ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:text-slate-900"}`}
-          >
-            Users
-          </button>
+          {(["schools", "trusts", "users"] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium capitalize ${tab === t ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:text-slate-900"}`}
+            >
+              {t}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -263,6 +332,7 @@ export default function SuperAdminPage() {
                 <tr>
                   <th className="p-4">School</th>
                   <th className="p-4">Domain</th>
+                  <th className="p-4">Trust</th>
                   <th className="p-4">Users</th>
                   <th className="p-4">Pupils</th>
                   <th className="p-4">Status</th>
@@ -277,6 +347,20 @@ export default function SuperAdminPage() {
                       <p className="text-xs text-slate-700">/{t.slug} · {t.phase.replace(/_/g, " ")}</p>
                     </td>
                     <td className="p-4 text-slate-600">{t.domain}</td>
+                    <td className="p-4">
+                      <select
+                        value={t.trustId ?? ""}
+                        onChange={(e) => setTenantTrust(t.id, e.target.value)}
+                        className="rounded-md border border-slate-300 px-2 py-1 text-sm"
+                      >
+                        <option value="">Standalone</option>
+                        {trusts?.map((tr) => (
+                          <option key={tr.id} value={tr.id}>
+                            {tr.name}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
                     <td className="p-4 text-slate-600">{t._count.users}</td>
                     <td className="p-4 text-slate-600">{t._count.pupils}</td>
                     <td className="p-4">
@@ -302,8 +386,87 @@ export default function SuperAdminPage() {
                 ))}
                 {tenants?.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="p-6 text-center text-sm text-slate-700">
+                    <td colSpan={7} className="p-6 text-center text-sm text-slate-700">
                       No schools yet — add one above.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      {tab === "trusts" && (
+        <>
+          <p className="mt-4 text-sm text-slate-600">
+            A Trust groups schools under shared leadership — a small Federation (2-3 schools) and a
+            large Multi-Academy Trust both work the same way. Assign schools to a Trust from the{" "}
+            <button onClick={() => setTab("schools")} className="text-indigo-600 hover:underline">
+              Schools
+            </button>{" "}
+            tab, and add a Trust admin from the Users tab once the Trust exists.
+          </p>
+
+          <form onSubmit={createTrust} className="mt-6 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-6 sm:grid-cols-3">
+            <div>
+              <label className="block text-sm font-medium text-slate-700">Trust name</label>
+              <input
+                required
+                value={trustName}
+                onChange={(e) => setTrustName(e.target.value)}
+                placeholder="Oak Learning Trust"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700">URL slug</label>
+              <input
+                required
+                value={trustSlug}
+                onChange={(e) => setTrustSlug(e.target.value.toLowerCase())}
+                placeholder="oak-learning-trust"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              />
+            </div>
+            <div className="flex items-end">
+              <button
+                type="submit"
+                disabled={trustSubmitting}
+                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+              >
+                {trustSubmitting ? "Creating…" : "Add Trust"}
+              </button>
+            </div>
+            {trustError && <p className="sm:col-span-3 text-sm text-red-600">{trustError}</p>}
+          </form>
+
+          <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+                <tr>
+                  <th className="p-4">Trust</th>
+                  <th className="p-4">Schools</th>
+                  <th className="p-4">Trust admins</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {trusts?.map((tr) => (
+                  <tr key={tr.id}>
+                    <td className="p-4">
+                      <p className="font-medium text-slate-900">{tr.name}</p>
+                      <p className="text-xs text-slate-700">/{tr.slug}</p>
+                    </td>
+                    <td className="p-4 text-slate-600">
+                      {tr.tenants.length === 0 ? "—" : tr.tenants.map((t) => t.name).join(", ")}
+                    </td>
+                    <td className="p-4 text-slate-600">{tr._count.users}</td>
+                  </tr>
+                ))}
+                {trusts?.length === 0 && (
+                  <tr>
+                    <td colSpan={3} className="p-6 text-center text-sm text-slate-700">
+                      No Trusts yet — add one above.
                     </td>
                   </tr>
                 )}
@@ -317,7 +480,7 @@ export default function SuperAdminPage() {
         <>
           <div className="mt-4 flex items-center justify-between">
             <p className="text-sm text-slate-600">
-              Every user across every school, plus platform staff. Add someone directly, or move an
+              Every user across every school and Trust, plus platform staff. Add someone directly, or move an
               existing user to a different school.
             </p>
             <button
@@ -351,23 +514,38 @@ export default function SuperAdminPage() {
               >
                 {ROLES.map((r) => (
                   <option key={r} value={r}>
-                    {r === "SUPER_ADMIN" ? "Super admin (platform)" : r.charAt(0) + r.slice(1).toLowerCase().replace("_", " ")}
+                    {roleLabel(r)}
                   </option>
                 ))}
               </select>
-              <select
-                value={uTenantId}
-                disabled={uRole === "SUPER_ADMIN"}
-                onChange={(e) => setUTenantId(e.target.value)}
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-50 disabled:text-slate-600"
-              >
-                <option value="">Select a school…</option>
-                {tenants?.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
+              {uRole === "TRUST_ADMIN" ? (
+                <select
+                  value={uTrustId}
+                  onChange={(e) => setUTrustId(e.target.value)}
+                  className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                >
+                  <option value="">Select a Trust…</option>
+                  {trusts?.map((tr) => (
+                    <option key={tr.id} value={tr.id}>
+                      {tr.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <select
+                  value={uTenantId}
+                  disabled={uRole === "SUPER_ADMIN"}
+                  onChange={(e) => setUTenantId(e.target.value)}
+                  className="rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-50 disabled:text-slate-600"
+                >
+                  <option value="">Select a school…</option>
+                  {tenants?.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
+                </select>
+              )}
               {uError && <p className="text-sm text-red-600 sm:col-span-4">{uError}</p>}
               <button
                 type="submit"
@@ -379,12 +557,14 @@ export default function SuperAdminPage() {
             </form>
           )}
 
+          {usersError && <p className="mt-4 text-sm text-red-600">{usersError}</p>}
+
           <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
                 <tr>
                   <th className="p-4">Name</th>
-                  <th className="p-4">School</th>
+                  <th className="p-4">School / Trust</th>
                   <th className="p-4">Role</th>
                   <th className="p-4">2FA</th>
                   <th className="p-4">Status</th>
@@ -407,6 +587,21 @@ export default function SuperAdminPage() {
                     <td className="p-4">
                       {u.role === "SUPER_ADMIN" ? (
                         <span className="text-xs text-slate-600">Platform (no school)</span>
+                      ) : u.role === "TRUST_ADMIN" ? (
+                        <select
+                          value={u.trustId ?? ""}
+                          onChange={(e) => reassignUser(u.id, { trustId: e.target.value || null })}
+                          className="rounded-md border border-slate-300 px-2 py-1 text-sm"
+                        >
+                          <option value="" disabled>
+                            Select a Trust…
+                          </option>
+                          {trusts?.map((tr) => (
+                            <option key={tr.id} value={tr.id}>
+                              {tr.name}
+                            </option>
+                          ))}
+                        </select>
                       ) : (
                         <select
                           value={u.tenantId ?? ""}
@@ -429,13 +624,21 @@ export default function SuperAdminPage() {
                         value={u.role}
                         onChange={(e) => {
                           const newRole = e.target.value as PlatformUser["role"];
-                          reassignUser(u.id, { role: newRole, tenantId: newRole === "SUPER_ADMIN" ? null : u.tenantId });
+                          if (newRole === "TRUST_ADMIN") {
+                            reassignUser(u.id, { role: newRole, tenantId: null, trustId: trusts?.[0]?.id ?? null });
+                          } else if (newRole === "SUPER_ADMIN") {
+                            reassignUser(u.id, { role: newRole, tenantId: null, trustId: null });
+                          } else {
+                            reassignUser(u.id, { role: newRole, tenantId: u.tenantId, trustId: null });
+                          }
                         }}
                         className="rounded-md border border-slate-300 px-2 py-1 text-sm"
                       >
-                        <option value="STAFF">Staff</option>
-                        <option value="TENANT_ADMIN">Admin</option>
-                        <option value="SUPER_ADMIN">Super admin</option>
+                        {ROLES.map((r) => (
+                          <option key={r} value={r}>
+                            {roleLabel(r)}
+                          </option>
+                        ))}
                       </select>
                     </td>
                     <td className="p-4 text-slate-700">{u.twoFactorEnabled ? "Enabled" : "Not set up"}</td>

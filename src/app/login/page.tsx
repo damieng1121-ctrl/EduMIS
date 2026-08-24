@@ -24,8 +24,10 @@ const DEV_LOGIN_ENABLED = process.env.NODE_ENV !== "production";
 
 const DEV_ACCOUNTS = [
   { email: "superadmin@edumis.dev", label: "EduMIS Platform — Super Admin" },
-  { email: "admin@willowbrook-primary.sch.uk", label: "Priya Shah — Tenant Admin" },
+  { email: "admin@willowbrook-primary.sch.uk", label: "Priya Shah — Tenant Admin (standalone school)" },
   { email: "j.taylor@willowbrook-primary.sch.uk", label: "Jamie Taylor — Staff (teacher)" },
+  { email: "federation.head@two-rivers-federation.org", label: "Morgan Reyes — Trust Admin (2-school Federation)" },
+  { email: "ceo@oaklearningtrust.org", label: "Dr Amara Osei — Trust Admin (3-school MAT)" },
 ];
 
 function DevLogin() {
