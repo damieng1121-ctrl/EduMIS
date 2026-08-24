@@ -112,7 +112,7 @@ export default function AdminSettingsPage() {
                   </button>
                 )}
               </div>
-              <p className="mt-1 text-xs text-slate-700">Shown in the portal navigation sidebar. PNG, JPEG, SVG, WebP, or GIF, up to 2MB.</p>
+              <p className="mt-1 text-xs text-slate-700">Shown in the portal navigation bar. PNG, JPEG, SVG, WebP, or GIF, up to 2MB.</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700">Brand colour</label>
@@ -140,9 +140,9 @@ export default function AdminSettingsPage() {
                 <input
                   type="checkbox"
                   checked={Boolean(tenant.sidebarColor)}
-                  onChange={(e) => setTenant({ ...tenant, sidebarColor: e.target.checked ? "#0f172a" : "" })}
+                  onChange={(e) => setTenant({ ...tenant, sidebarColor: e.target.checked ? "#4338ca" : "" })}
                 />
-                Custom sidebar colour
+                Custom nav bar colour
               </label>
               {tenant.sidebarColor && (
                 <input
@@ -155,7 +155,7 @@ export default function AdminSettingsPage() {
             </div>
             <div className="border-t border-slate-100 pt-4">
               <p className="text-sm font-medium text-slate-900">Nav modules</p>
-              <p className="mt-1 text-sm text-slate-700">Hide modules this school doesn&apos;t use from the staff sidebar.</p>
+              <p className="mt-1 text-sm text-slate-700">Hide modules this school doesn&apos;t use from the staff navigation.</p>
               <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {TOGGLEABLE_NAV_ITEMS.map((item) => (
                   <label key={item.href} className="flex items-center gap-2 text-sm text-slate-700">

@@ -20,7 +20,7 @@ export default async function PortalLayout({ children }: LayoutProps<"/portal">)
     : null;
 
   return (
-    <div className="flex min-h-screen flex-1">
+    <div className="flex min-h-screen flex-1 flex-col bg-slate-50">
       <PortalNav
         // A super admin managing a school gets that school's full nav (as a
         // tenant admin would see it), not just the "Schools" platform link.
@@ -33,10 +33,8 @@ export default async function PortalLayout({ children }: LayoutProps<"/portal">)
         disabledNavItems={tenant?.disabledNavItems ?? []}
         isTeacher={isActing ? true : session.user.isTeacher}
       />
-      <div className="flex flex-1 flex-col">
-        {isActing && <ActingBanner tenantName={tenant?.name ?? "this school"} />}
-        <main className="flex-1 bg-slate-50 p-8">{children}</main>
-      </div>
+      {isActing && <ActingBanner tenantName={tenant?.name ?? "this school"} />}
+      <main className="mx-auto w-full max-w-[1600px] flex-1 p-8">{children}</main>
     </div>
   );
 }

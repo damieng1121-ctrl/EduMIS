@@ -68,8 +68,8 @@ export const TOGGLEABLE_NAV_ITEMS = [
   { href: "/portal/meals", label: "Meals" },
 ] as const;
 
-/** Dark navy is the app-wide default sidebar — a school can override it with its own colour in Settings, but every sidebar is dark, so nav text is always light. */
-const DEFAULT_SIDEBAR_COLOR = "#0f172a";
+/** Default nav bar background is a brand gradient — a school can override it with a flat colour of its own in Settings. */
+const DEFAULT_BAR_STYLE = { backgroundImage: "linear-gradient(to right, #4338ca, #6d28d9)" };
 
 export function PortalNav({
   role,
@@ -98,49 +98,53 @@ export function PortalNav({
     .filter((l) => !l.requiresMis || canAccessMis(role, isTeacher))
     .filter((l) => !disabled.has(l.href));
 
+  const barStyle = sidebarColor ? { backgroundColor: sidebarColor } : DEFAULT_BAR_STYLE;
+
   return (
-    <aside
-      className="flex w-64 shrink-0 flex-col border-r border-black/10"
-      style={{ backgroundColor: sidebarColor || DEFAULT_SIDEBAR_COLOR }}
-    >
-      <div className="border-b border-white/10 px-5 py-4">
-        <div className="flex items-center gap-2 font-semibold text-white">
+    <header className="sticky top-0 z-20 shadow-md" style={barStyle}>
+      <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-6 py-3">
+        <div className="flex min-w-0 items-center gap-3">
           {hasLogo ? (
             // eslint-disable-next-line @next/next/no-img-element -- small admin-uploaded logo, not worth next/image's remote-loader setup
-            <img src="/api/tenant/logo" alt="" className="h-7 w-7 shrink-0 rounded-md object-contain" />
+            <img src="/api/tenant/logo" alt="" className="h-8 w-8 shrink-0 rounded-lg bg-white/10 object-contain" />
           ) : (
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-indigo-500 text-sm text-white">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/15 text-sm font-semibold text-white backdrop-blur">
               {appName.charAt(0).toUpperCase()}
             </span>
           )}
-          {appName}
+          <div className="min-w-0 leading-tight">
+            <p className="truncate font-semibold text-white">{appName}</p>
+            <p className="truncate text-xs text-white/70">{tenantName}</p>
+          </div>
         </div>
-        <p className="mt-1 truncate text-xs text-white/60">{tenantName}</p>
+
+        <div className="flex shrink-0 items-center gap-1">
+          <Link
+            href="/portal/account/security"
+            className="flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-white/85 transition-colors hover:bg-white/15 hover:text-white"
+          >
+            <UserIcon size={16} className="shrink-0" />
+            <span className="hidden max-w-[10rem] truncate sm:inline">{userName}</span>
+          </Link>
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            title="Sign out"
+            className="flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/15 hover:text-white"
+          >
+            <LogOut size={16} className="shrink-0" />
+            <span className="hidden sm:inline">Sign out</span>
+          </button>
+        </div>
       </div>
 
-      <nav className="flex-1 space-y-1 overflow-y-auto p-3">
-        {visible.map((l) => (
-          <NavItem key={l.href} link={l} pathname={pathname} />
-        ))}
+      <nav className="border-t border-white/10 bg-black/10">
+        <div className="mx-auto flex max-w-[1600px] flex-wrap gap-1 px-4 py-2">
+          {visible.map((l) => (
+            <NavItem key={l.href} link={l} pathname={pathname} />
+          ))}
+        </div>
       </nav>
-
-      <div className="border-t border-white/10 p-3">
-        <Link
-          href="/portal/account/security"
-          className="flex items-center gap-3 truncate rounded-lg px-3 py-2 text-sm text-white/70 hover:bg-white/10 hover:text-white"
-        >
-          <UserIcon size={17} className="shrink-0" />
-          <span className="truncate">{userName}</span>
-        </Link>
-        <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
-          className="mt-1 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-white/50 hover:bg-white/10 hover:text-white/90"
-        >
-          <LogOut size={17} className="shrink-0" />
-          Sign out
-        </button>
-      </div>
-    </aside>
+    </header>
   );
 }
 
@@ -151,11 +155,11 @@ function NavItem({ link, pathname }: { link: NavLink; pathname: string }) {
     <Link
       href={link.href}
       className={clsx(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-        active ? "bg-indigo-600 text-white shadow-sm" : "text-white/70 hover:bg-white/10 hover:text-white",
+        "flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+        active ? "bg-white text-indigo-700 shadow-sm" : "text-white/80 hover:bg-white/15 hover:text-white",
       )}
     >
-      <Icon size={17} className="shrink-0" />
+      <Icon size={15} className="shrink-0" />
       {link.label}
     </Link>
   );
