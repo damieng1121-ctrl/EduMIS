@@ -5,7 +5,7 @@ import { getNotificationProvider } from "@/lib/notifications";
 const TOKEN_TTL_HOURS = 48;
 
 function setPasswordUrl(token: string): string {
-  const base = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+  const base = process.env.NEXTAUTH_URL ?? "http://localhost:3002";
   return `${base}/parent/set-password?token=${token}`;
 }
 

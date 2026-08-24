@@ -16,7 +16,7 @@
  */
 
 export function getRootDomain(): string {
-  return process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost:3000";
+  return process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost:3002";
 }
 
 /** Extract the tenant subdomain from a request host header, if present. */

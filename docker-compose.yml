@@ -23,16 +23,16 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "3000:3000"
+      - "3002:3002"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/edumis
       AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env — generate with openssl rand -base64 32}
-      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3002}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:?set GOOGLE_CLIENT_ID in .env}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:?set GOOGLE_CLIENT_SECRET in .env}
       APP_ENCRYPTION_KEY: ${APP_ENCRYPTION_KEY:?set APP_ENCRYPTION_KEY in .env — generate with openssl rand -hex 32}
       EDUMIS_SUPER_ADMIN_EMAILS: ${EDUMIS_SUPER_ADMIN_EMAILS:-}
-      NEXT_PUBLIC_ROOT_DOMAIN: ${NEXT_PUBLIC_ROOT_DOMAIN:-localhost:3000}
+      NEXT_PUBLIC_ROOT_DOMAIN: ${NEXT_PUBLIC_ROOT_DOMAIN:-localhost:3002}
       SEED_ON_START: ${SEED_ON_START:-false}
 
 volumes:

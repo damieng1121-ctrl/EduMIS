@@ -33,7 +33,7 @@ npm run db:seed             # seeds a demo school with pupils, staff, and parent
 npm run dev
 ```
 
-Visit `http://localhost:3000`. **No Google OAuth credentials?** `npm run dev` shows a
+Visit `http://localhost:3002`. **No Google OAuth credentials?** `npm run dev` shows a
 "Dev login (local only)" section on the sign-in page — one click to sign in as any
 seeded demo user, no Google account needed. It only exists in `next dev` (see below),
 so there's no risk of it shipping to a real deployment.
@@ -46,12 +46,12 @@ docker compose up --build
 ```
 
 This builds the app image (see `Dockerfile`), starts Postgres, applies migrations on
-container start (`docker-entrypoint.sh`), and serves the app at `http://localhost:3000`.
+container start (`docker-entrypoint.sh`), and serves the app at `http://localhost:3002`.
 Set `SEED_ON_START=true` in `.env` to also load the demo school on first boot. To seed
 manually against the compose stack instead: `docker compose exec app npx prisma db seed`.
 
 Either way, staff sign-in requires a real Google OAuth client — see below — with
-`http://localhost:3000/api/auth/callback/google` as an authorized redirect URI, and at
+`http://localhost:3002/api/auth/callback/google` as an authorized redirect URI, and at
 least one `Tenant.domain` in the database matching the email domain you sign in with
 (the seed script creates one: `willowbrook-primary.sch.uk`).
 
@@ -118,7 +118,7 @@ rationale and the (cosmetic, non-security) subdomain-routing helper.
    MFA policy if you want to enforce 2FA at the IdP level instead of/alongside the
    in-app TOTP here).
 2. Create an OAuth 2.0 Client ID (Web application). Add authorized redirect URIs:
-   - `http://localhost:3000/api/auth/callback/google` (dev)
+   - `http://localhost:3002/api/auth/callback/google` (dev)
    - `https://<your-domain>/api/auth/callback/google` (prod)
 3. Put the client ID/secret in `.env` as `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`.
 4. Register each school as a `Tenant` row with its Google Workspace `domain` — either
