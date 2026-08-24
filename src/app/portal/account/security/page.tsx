@@ -31,7 +31,11 @@ function SecurityPageInner() {
   async function beginSetup() {
     setError(null);
     const res = await fetch("/api/auth/2fa/setup", { method: "POST" });
-    const data = await res.json();
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data?.qrCodeDataUrl) {
+      setError(data?.error ?? "Couldn't start 2FA setup — please try again.");
+      return;
+    }
     setQrCodeDataUrl(data.qrCodeDataUrl);
     setSecret(data.secret);
     setStep("confirm");
@@ -101,6 +105,8 @@ function SecurityPageInner() {
             )
           )}
         </div>
+
+        {error && step !== "confirm" && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
         {step === "confirm" && qrCodeDataUrl && (
           <div className="mt-6 border-t border-slate-100 pt-6">
