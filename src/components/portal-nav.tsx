@@ -70,7 +70,7 @@ export const TOGGLEABLE_NAV_ITEMS = [
 ] as const;
 
 /** Default nav bar background is a brand gradient — a school can override it with a flat colour of its own in Settings. */
-const DEFAULT_BAR_STYLE = { backgroundImage: "linear-gradient(to right, #4338ca, #6d28d9)" };
+const DEFAULT_BAR_STYLE = { backgroundImage: "linear-gradient(to right, #6366f1, #8b5cf6)" };
 
 export function PortalNav({
   role,

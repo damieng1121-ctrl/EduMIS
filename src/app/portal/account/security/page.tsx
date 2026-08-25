@@ -4,6 +4,8 @@ import { Suspense, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
 
 export default function SecurityPage() {
   return (
@@ -69,8 +71,7 @@ function SecurityPageInner() {
 
   return (
     <div className="max-w-xl">
-      <h1 className="text-2xl font-semibold text-slate-900">Account security</h1>
-      <p className="mt-1 text-sm text-slate-600">Signed in as {session?.user.email}</p>
+      <PageHeader module="security" title="Account security" subtitle={`Signed in as ${session?.user.email}`} />
 
       {mandatorySetup && !enabled && (
         <div className="mt-4 rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-800">
@@ -93,15 +94,15 @@ function SecurityPageInner() {
           </div>
           {enabled ? (
             !isStaff && (
-              <button onClick={disable} className="rounded-md border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50">
+              <Button variant="danger" size="sm" onClick={disable}>
                 Turn off
-              </button>
+              </Button>
             )
           ) : (
             step === "idle" && (
-              <button onClick={beginSetup} className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700">
+              <Button size="sm" onClick={beginSetup}>
                 Set up
-              </button>
+              </Button>
             )
           )}
         </div>
@@ -122,9 +123,9 @@ function SecurityPageInner() {
                 placeholder="123456"
                 className="w-32 rounded-md border border-slate-300 px-3 py-2 text-center tracking-widest"
               />
-              <button type="submit" className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+              <Button type="submit">
                 Confirm
-              </button>
+              </Button>
             </form>
             {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
           </div>

@@ -47,7 +47,7 @@ export default function CensusPage() {
         actions={
           <a
             href="/api/census/export"
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="rounded-md bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600"
           >
             Download CSV export
           </a>

@@ -146,7 +146,7 @@ export default function ParentParentsEveningsPage() {
                         <button
                           onClick={() => book(s.id)}
                           disabled={booking === s.id}
-                          className="rounded-md bg-indigo-600 px-3 py-1 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                          className="rounded-md bg-indigo-500 px-3 py-1 text-xs font-medium text-white hover:bg-indigo-600 disabled:opacity-50"
                         >
                           Book
                         </button>

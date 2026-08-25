@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { Users } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 
 type Relationship = "MOTHER" | "FATHER" | "GUARDIAN" | "GRANDPARENT" | "CARER" | "OTHER";
 
@@ -97,18 +101,16 @@ export default function PupilGuardiansPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Parents &amp; guardians</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          {showForm ? "Cancel" : "Add guardian"}
-        </button>
-      </div>
-      <p className="mt-1 text-sm text-slate-700">
-        Linked guardians can sign in to the parent portal to see this pupil&apos;s attendance, behaviour, and messages.
-      </p>
+      <PageHeader
+        module="pupils"
+        title="Parents & guardians"
+        subtitle="Linked guardians can sign in to the parent portal to see this pupil's attendance, behaviour, and messages."
+        actions={
+          <Button variant={showForm ? "secondary" : "primary"} onClick={() => setShowForm(!showForm)}>
+            {showForm ? "Cancel" : "Add guardian"}
+          </Button>
+        }
+      />
 
       {showForm && (
         <form onSubmit={addGuardian} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
@@ -142,9 +144,9 @@ export default function PupilGuardiansPage() {
           <p className="text-xs text-slate-600 sm:col-span-2">
             If no account exists for this email, one will be created and an invite emailed to set a password.
           </p>
-          <button type="submit" disabled={submitting} className="sm:col-span-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+          <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Adding…" : "Add guardian"}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -183,7 +185,9 @@ export default function PupilGuardiansPage() {
             ))}
             {links?.length === 0 && (
               <tr>
-                <td colSpan={4} className="p-6 text-center text-sm text-slate-700">No guardians linked yet.</td>
+                <td colSpan={4}>
+                  <EmptyState icon={Users} title="No guardians linked yet" description="Add a guardian so they can sign in to the parent portal." />
+                </td>
               </tr>
             )}
           </tbody>

@@ -16,7 +16,7 @@ export function ParentNav({ userName }: { userName: string }) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-64 shrink-0 flex-col border-r border-black/10 bg-slate-900">
+    <aside className="flex w-64 shrink-0 flex-col border-r border-white/10 bg-gradient-to-b from-indigo-500 to-violet-500">
       <div className="border-b border-white/10 px-5 py-4">
         <div className="flex items-center gap-2 font-semibold text-white">
           <span className="flex h-7 w-7 items-center justify-center rounded-md bg-indigo-500 text-sm text-white">E</span>
@@ -35,7 +35,7 @@ export function ParentNav({ userName }: { userName: string }) {
               href={l.href}
               className={clsx(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                active ? "bg-indigo-600 text-white shadow-sm" : "text-white/70 hover:bg-white/10 hover:text-white",
+                active ? "bg-white text-indigo-700 shadow-sm" : "text-white/80 hover:bg-white/15 hover:text-white",
               )}
             >
               <Icon size={17} className="shrink-0" />

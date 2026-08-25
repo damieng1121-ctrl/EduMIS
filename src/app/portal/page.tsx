@@ -21,10 +21,10 @@ function StatCard({
   color: "blue" | "green" | "indigo" | "red";
 }) {
   const badgeStyles = {
-    blue: "bg-blue-500",
-    green: "bg-green-500",
-    indigo: "bg-indigo-500",
-    red: "bg-red-500",
+    blue: "bg-blue-400",
+    green: "bg-green-400",
+    indigo: "bg-indigo-400",
+    red: "bg-red-400",
   }[color];
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">

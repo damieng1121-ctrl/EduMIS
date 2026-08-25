@@ -48,7 +48,7 @@ export default function Home() {
       <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2 font-semibold text-slate-900">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-sm">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-sm">
               E
             </span>
             EduMIS
@@ -59,7 +59,7 @@ export default function Home() {
             </Link>
             <Link
               href="/login"
-              className="rounded-md bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm transition-colors hover:bg-indigo-700"
+              className="rounded-md bg-indigo-500 px-4 py-2 font-medium text-white shadow-sm transition-colors hover:bg-indigo-600"
             >
               Get started
             </Link>
@@ -79,7 +79,7 @@ export default function Home() {
             </span>
             <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
               One school management system for{" "}
-              <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent">
                 every school
               </span>{" "}
               in your trust
@@ -91,7 +91,7 @@ export default function Home() {
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Link
                 href="/login"
-                className="group inline-flex items-center gap-2 rounded-md bg-indigo-600 px-6 py-3 font-medium text-white shadow-md shadow-indigo-600/20 transition-colors hover:bg-indigo-700"
+                className="group inline-flex items-center gap-2 rounded-md bg-indigo-500 px-6 py-3 font-medium text-white shadow-md shadow-indigo-500/20 transition-colors hover:bg-indigo-600"
               >
                 Sign in with Google
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
@@ -118,7 +118,7 @@ export default function Home() {
                   key={f.title}
                   className="group rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md"
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-colors group-hover:bg-indigo-600 group-hover:text-white">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-colors group-hover:bg-indigo-500 group-hover:text-white">
                     <f.icon size={20} />
                   </span>
                   <h3 className="mt-4 font-semibold text-slate-900">{f.title}</h3>
@@ -129,7 +129,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border-t border-slate-200 bg-gradient-to-br from-indigo-600 to-violet-600 py-16">
+        <section className="border-t border-slate-200 bg-gradient-to-br from-indigo-500 to-violet-500 py-16">
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 text-center sm:flex-row sm:justify-between sm:text-left">
             <div>
               <h2 className="text-2xl font-bold text-white">Ready to see it in action?</h2>

@@ -42,23 +42,27 @@ export type ModuleKey =
   | "school"
   | "security";
 
-/** Literal (never interpolated) Tailwind classes — required for the JIT compiler to pick them up. */
+/**
+ * Literal (never interpolated) Tailwind classes — required for the JIT
+ * compiler to pick them up. The 400 shade reads noticeably lighter/warmer
+ * than the previous 500 while staying dark enough for a white icon on top.
+ */
 const BADGE = {
-  indigo: "bg-indigo-500",
-  blue: "bg-blue-500",
-  emerald: "bg-emerald-500",
-  amber: "bg-amber-500",
-  violet: "bg-violet-500",
-  cyan: "bg-cyan-500",
-  rose: "bg-rose-500",
-  orange: "bg-orange-500",
-  pink: "bg-pink-500",
-  lime: "bg-lime-500",
-  sky: "bg-sky-500",
-  teal: "bg-teal-500",
-  slate: "bg-slate-500",
-  purple: "bg-purple-500",
-  fuchsia: "bg-fuchsia-500",
+  indigo: "bg-indigo-400",
+  blue: "bg-blue-400",
+  emerald: "bg-emerald-400",
+  amber: "bg-amber-400",
+  violet: "bg-violet-400",
+  cyan: "bg-cyan-400",
+  rose: "bg-rose-400",
+  orange: "bg-orange-400",
+  pink: "bg-pink-400",
+  lime: "bg-lime-400",
+  sky: "bg-sky-400",
+  teal: "bg-teal-400",
+  slate: "bg-slate-400",
+  purple: "bg-purple-400",
+  fuchsia: "bg-fuchsia-400",
 } as const;
 
 /** One icon + accent color per portal module, reused across nav, page headers, and stat cards. */

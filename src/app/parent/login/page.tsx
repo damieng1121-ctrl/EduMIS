@@ -56,7 +56,7 @@ function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-md bg-indigo-600 px-4 py-2.5 font-medium text-white hover:bg-indigo-500 disabled:opacity-60"
+        className="w-full rounded-md bg-indigo-500 px-4 py-2.5 font-medium text-white hover:bg-indigo-600 disabled:opacity-60"
       >
         {loading ? "Signing in…" : "Sign in"}
       </button>
@@ -66,10 +66,10 @@ function LoginForm() {
 
 export default function ParentLoginPage() {
   return (
-    <div className="flex flex-1 items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-white px-6 py-16">
+    <div className="flex flex-1 items-center justify-center bg-gradient-to-br from-indigo-50 via-violet-50 to-white px-6 py-16">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 text-center shadow-lg">
-        <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600 font-semibold text-white">
-          N
+        <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500 font-semibold text-white shadow-sm">
+          E
         </div>
         <h1 className="text-xl font-semibold text-slate-900">Parent portal sign in</h1>
         <p className="mt-2 text-sm text-slate-600">

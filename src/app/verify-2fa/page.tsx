@@ -35,7 +35,7 @@ export default function Verify2faPage() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-white px-6 py-16">
+    <div className="flex flex-1 items-center justify-center bg-gradient-to-br from-indigo-50 via-violet-50 to-white px-6 py-16">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-xl font-semibold text-slate-900">Two-factor verification</h1>
         <p className="mt-2 text-sm text-slate-600">
@@ -53,7 +53,7 @@ export default function Verify2faPage() {
           <button
             type="submit"
             disabled={submitting || code.length < 6}
-            className="w-full rounded-md bg-indigo-600 px-4 py-2.5 font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+            className="w-full rounded-md bg-indigo-500 px-4 py-2.5 font-medium text-white hover:bg-indigo-600 disabled:opacity-50"
           >
             {submitting ? "Verifying…" : "Verify"}
           </button>
