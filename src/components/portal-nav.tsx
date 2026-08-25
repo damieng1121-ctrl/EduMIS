@@ -94,9 +94,17 @@ export function PortalNav({
   const pathname = usePathname();
   const disabled = new Set(disabledNavItems);
 
+  // A platform/Trust admin only gets a real tenantId (and this component's
+  // `role` prop gets remapped to "TENANT_ADMIN") while actively managing one
+  // school — see portal/layout.tsx. So a bare "SUPER_ADMIN"/"TRUST_ADMIN"
+  // here always means "not currently managing any school", even though
+  // canAccessMis() would otherwise allow it platform-wide. Without this,
+  // MIS tabs (Pupils, Attendance, ...) show in the nav with nothing to
+  // scope them to, and every fetch on those pages 403s.
+  const isManagingNoSchool = role === "SUPER_ADMIN" || role === "TRUST_ADMIN";
   const visible = links
     .filter((l) => !l.roles || (l.roles as readonly string[]).includes(role))
-    .filter((l) => !l.requiresMis || canAccessMis(role, isTeacher))
+    .filter((l) => !l.requiresMis || (!isManagingNoSchool && canAccessMis(role, isTeacher)))
     .filter((l) => !disabled.has(l.href));
 
   const barStyle = sidebarColor ? { backgroundColor: sidebarColor } : DEFAULT_BAR_STYLE;

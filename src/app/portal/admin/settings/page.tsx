@@ -20,7 +20,7 @@ export default function AdminSettingsPage() {
   const [logoNonce, setLogoNonce] = useState(0);
 
   useEffect(() => {
-    fetch("/api/admin/tenant").then((r) => r.json()).then(setTenant);
+    fetch("/api/admin/tenant").then((r) => (r.ok ? r.json() : null)).then(setTenant);
   }, []);
 
   async function uploadLogo(e: React.ChangeEvent<HTMLInputElement>) {

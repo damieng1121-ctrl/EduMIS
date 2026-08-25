@@ -49,13 +49,13 @@ export default function AssessmentPage() {
   const [submitting, setSubmitting] = useState(false);
 
   function loadReference() {
-    fetch("/api/assessment-subjects").then((r) => r.json()).then(setSubjects);
-    fetch("/api/academic-years").then((r) => r.json()).then((years) => {
+    fetch("/api/assessment-subjects").then((r) => (r.ok ? r.json() : [])).then(setSubjects);
+    fetch("/api/academic-years").then((r) => (r.ok ? r.json() : [])).then((years) => {
       setAcademicYears(years);
       const current = years.find((y: AcademicYear) => y.isCurrent);
       if (current) setAcademicYearId((prev) => prev || current.id);
     });
-    fetch("/api/pupils").then((r) => r.json()).then(setPupils);
+    fetch("/api/pupils").then((r) => (r.ok ? r.json() : [])).then(setPupils);
   }
 
   function loadResults() {

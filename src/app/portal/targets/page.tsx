@@ -40,15 +40,15 @@ export default function TargetsPage() {
   const [submitting, setSubmitting] = useState(false);
 
   function loadReference() {
-    fetch("/api/assessment-subjects").then((r) => r.json()).then(setSubjects);
-    fetch("/api/pupils").then((r) => r.json()).then(setPupils);
+    fetch("/api/assessment-subjects").then((r) => (r.ok ? r.json() : [])).then(setSubjects);
+    fetch("/api/pupils").then((r) => (r.ok ? r.json() : [])).then(setPupils);
   }
 
   function loadTargets() {
     const params = new URLSearchParams();
     if (filterPupilId) params.set("pupilId", filterPupilId);
     fetch(`/api/targets?${params.toString()}`)
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setTargets);
   }
 

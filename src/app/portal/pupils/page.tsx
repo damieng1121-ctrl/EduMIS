@@ -72,12 +72,12 @@ export default function PupilsPage() {
     if (search) params.set("search", search);
     if (formGroupFilter) params.set("formGroupId", formGroupFilter);
     fetch(`/api/pupils?${params.toString()}`)
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setPupils);
   }
   function loadRefs() {
-    fetch("/api/form-groups").then((r) => r.json()).then(setFormGroups);
-    fetch("/api/academic-years").then((r) => r.json()).then(setAcademicYears);
+    fetch("/api/form-groups").then((r) => (r.ok ? r.json() : [])).then(setFormGroups);
+    fetch("/api/academic-years").then((r) => (r.ok ? r.json() : [])).then(setAcademicYears);
   }
 
   useEffect(loadRefs, []);

@@ -49,17 +49,17 @@ export default function ClubsPage() {
   const [submitting, setSubmitting] = useState(false);
 
   function load() {
-    fetch("/api/clubs").then((r) => r.json()).then(setClubs);
+    fetch("/api/clubs").then((r) => (r.ok ? r.json() : [])).then(setClubs);
   }
 
   useEffect(() => {
     load();
-    fetch("/api/academic-years").then((r) => r.json()).then((years) => {
+    fetch("/api/academic-years").then((r) => (r.ok ? r.json() : [])).then((years) => {
       setAcademicYears(years);
       const current = years.find((y: AcademicYear) => y.isCurrent);
       if (current) setAcademicYearId((prev) => prev || current.id);
     });
-    fetch("/api/pupils").then((r) => r.json()).then(setPupils);
+    fetch("/api/pupils").then((r) => (r.ok ? r.json() : [])).then(setPupils);
     if (isAdmin) fetch("/api/staff-profiles").then((r) => (r.ok ? r.json() : [])).then(setStaff);
   }, [isAdmin]);
 
