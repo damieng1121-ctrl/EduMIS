@@ -1,6 +1,11 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
+import { ClipboardPlus } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type SendStatus = "NONE" | "SEND_SUPPORT" | "EHCP";
 type PrimaryNeed = "COMMUNICATION" | "COGNITION" | "SEMH" | "SENSORY_PHYSICAL";
@@ -40,7 +45,7 @@ export default function SendPage() {
 
   function load() {
     fetch("/api/send")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setPlans);
     fetch("/api/pupils")
       .then((r) => r.json())
@@ -59,8 +64,11 @@ export default function SendPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900">SEND</h1>
-      <p className="mt-1 text-sm text-slate-700">{plans ? `${sendPupils.length} pupils with SEND status` : ""}</p>
+      <PageHeader
+        module="send"
+        title="SEND"
+        subtitle={plans ? `${sendPupils.length} pupils with SEND status` : undefined}
+      />
 
       <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
         <table className="w-full text-left text-sm">
@@ -73,6 +81,7 @@ export default function SendPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {plans === null && <TableSkeleton rows={5} cols={4} />}
             {sendPupils.map((p) => {
               const pupilPlans = plansByPupil.get(p.id) ?? [];
               const expanded = expandedPupilId === p.id;
@@ -85,9 +94,9 @@ export default function SendPage() {
                     </td>
                     <td className="p-4 text-slate-600">{pupilPlans.length}</td>
                     <td className="p-4">
-                      <button onClick={() => setExpandedPupilId(expanded ? null : p.id)} className="text-xs text-indigo-600 hover:underline">
+                      <Button variant="ghost" onClick={() => setExpandedPupilId(expanded ? null : p.id)} className="text-xs">
                         {expanded ? "Collapse" : "View / edit"}
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                   {expanded && (
@@ -108,8 +117,12 @@ export default function SendPage() {
             })}
             {plans && sendPupils.length === 0 && (
               <tr>
-                <td colSpan={4} className="p-6 text-center text-sm text-slate-700">
-                  No pupils currently on SEND support or EHCP.
+                <td colSpan={4}>
+                  <EmptyState
+                    icon={ClipboardPlus}
+                    title="No pupils on SEND support"
+                    description="Pupils marked SEND Support or EHCP will appear here."
+                  />
                 </td>
               </tr>
             )}
@@ -165,9 +178,9 @@ function TargetsEditor({ targets, onChange }: { targets: Target[]; onChange: (t:
           </div>
         </div>
       ))}
-      <button type="button" onClick={() => onChange([...targets, { target: "", progress: "", reviewDate: "" }])} className="text-xs text-indigo-600 hover:underline">
+      <Button type="button" variant="ghost" onClick={() => onChange([...targets, { target: "", progress: "", reviewDate: "" }])} className="text-xs">
         + Add target
-      </button>
+      </Button>
     </div>
   );
 }
@@ -225,12 +238,12 @@ function NewPlanForm({ pupilId, onCancel, onCreated }: { pupilId: string; onCanc
       <input value={externalAgencies} onChange={(e) => setExternalAgencies(e.target.value)} placeholder="External agencies" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
       <input type="date" value={reviewDate} onChange={(e) => setReviewDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
       <div className="sm:col-span-2 flex gap-2">
-        <button type="submit" disabled={submitting} className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+        <Button type="submit" disabled={submitting}>
           {submitting ? "Saving…" : "Save plan"}
-        </button>
-        <button type="button" onClick={onCancel} className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+        </Button>
+        <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -257,9 +270,9 @@ function PupilSendDetail({
       {showNewForm ? (
         <NewPlanForm pupilId={pupilId} onCancel={onToggleNewForm} onCreated={() => { onToggleNewForm(); onChanged(); }} />
       ) : (
-        <button onClick={onToggleNewForm} className="text-xs text-indigo-600 hover:underline">
+        <Button variant="ghost" onClick={onToggleNewForm} className="text-xs">
           + New SEND plan
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -305,9 +318,9 @@ function PlanCard({ plan, onChanged }: { plan: SendPlan; onChanged: () => void }
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[plan.status]}`}>{plan.status.replace("_", " ")}</span>
             {plan.primaryNeed && <span className="ml-2 text-xs text-slate-600">{plan.primaryNeed.replace("_", " ")}</span>}
           </div>
-          <button onClick={() => setEditing(true)} className="text-xs text-indigo-600 hover:underline">
+          <Button variant="ghost" onClick={() => setEditing(true)} className="text-xs">
             Edit
-          </button>
+          </Button>
         </div>
         <p className="mt-2 text-sm text-slate-700">{plan.description}</p>
         {plan.targets?.length > 0 && (
@@ -348,12 +361,12 @@ function PlanCard({ plan, onChanged }: { plan: SendPlan; onChanged: () => void }
       <input value={externalAgencies} onChange={(e) => setExternalAgencies(e.target.value)} placeholder="External agencies" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
       <input type="date" value={reviewDate} onChange={(e) => setReviewDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
       <div className="sm:col-span-2 flex gap-2">
-        <button onClick={save} disabled={submitting} className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+        <Button onClick={save} disabled={submitting}>
           {submitting ? "Saving…" : "Save changes"}
-        </button>
-        <button onClick={() => setEditing(false)} className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+        </Button>
+        <Button variant="secondary" onClick={() => setEditing(false)}>
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

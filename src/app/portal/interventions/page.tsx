@@ -1,6 +1,11 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
+import { TrendingUp } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type Pupil = { id: string; firstName: string; lastName: string };
 type InterventionStatus = "PLANNED" | "ACTIVE" | "COMPLETED";
@@ -57,7 +62,7 @@ export default function InterventionsPage() {
 
   function load() {
     fetch("/api/interventions")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setInterventions);
     fetch("/api/pupils")
       .then((r) => r.json())
@@ -108,16 +113,16 @@ export default function InterventionsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Interventions</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          {showForm ? "Cancel" : "New intervention"}
-        </button>
-      </div>
-      <p className="mt-1 text-sm text-slate-700">{interventions ? `${interventions.length} interventions` : ""}</p>
+      <PageHeader
+        module="interventions"
+        title="Interventions"
+        subtitle={interventions ? `${interventions.length} interventions` : undefined}
+        actions={
+          <Button variant={showForm ? "secondary" : "primary"} onClick={() => setShowForm(!showForm)}>
+            {showForm ? "Cancel" : "New intervention"}
+          </Button>
+        }
+      />
 
       {showForm && (
         <form onSubmit={createIntervention} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
@@ -137,9 +142,9 @@ export default function InterventionsPage() {
             <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} placeholder="End date" className="w-1/2 rounded-md border border-slate-300 px-3 py-2 text-sm" />
           </div>
           <textarea required value={targetOutcome} onChange={(e) => setTargetOutcome(e.target.value)} placeholder="Target outcome" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm" rows={2} />
-          <button type="submit" disabled={submitting} className="sm:col-span-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+          <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Saving…" : "Save intervention"}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -155,6 +160,7 @@ export default function InterventionsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {interventions === null && <TableSkeleton rows={5} cols={5} />}
             {interventions?.map((i) => {
               const expanded = expandedId === i.id;
               return (
@@ -181,9 +187,9 @@ export default function InterventionsPage() {
                       </select>
                     </td>
                     <td className="p-4">
-                      <button onClick={() => setExpandedId(expanded ? null : i.id)} className="text-xs text-indigo-600 hover:underline">
+                      <Button variant="ghost" onClick={() => setExpandedId(expanded ? null : i.id)} className="text-xs">
                         {expanded ? "Collapse" : `Notes (${i.notes.length})`}
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                   {expanded && (
@@ -198,8 +204,8 @@ export default function InterventionsPage() {
             })}
             {interventions?.length === 0 && (
               <tr>
-                <td colSpan={5} className="p-6 text-center text-sm text-slate-700">
-                  No interventions logged yet.
+                <td colSpan={5}>
+                  <EmptyState icon={TrendingUp} title="No interventions yet" description="Interventions you start will appear here." />
                 </td>
               </tr>
             )}
@@ -261,9 +267,9 @@ function InterventionDetail({ intervention, onChanged }: { intervention: Interve
           placeholder="Add a note…"
           className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
         />
-        <button type="submit" disabled={submitting} className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+        <Button type="submit" disabled={submitting}>
           Add
-        </button>
+        </Button>
       </form>
     </div>
   );

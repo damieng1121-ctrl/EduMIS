@@ -14,7 +14,7 @@ export default function ParentMessagesPage() {
 
   function load() {
     fetch("/api/parent/messages")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setRecipients);
   }
   useEffect(load, []);

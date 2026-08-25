@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { HeartHandshake, AlertTriangle } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type Pupil = { id: string; firstName: string; lastName: string };
 
@@ -65,7 +70,7 @@ export default function BehaviourPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900">Behaviour &amp; wellbeing</h1>
+      <PageHeader module="behaviour" title="Behaviour & wellbeing" />
       <div className="mt-4 flex gap-1 rounded-lg bg-slate-100 p-1 w-fit">
         {(["incidents", "accidents"] as const).map((t) => (
           <button
@@ -106,7 +111,7 @@ function IncidentsTab() {
 
   function load() {
     fetch("/api/behaviour")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setIncidents);
     fetch("/api/pupils")
       .then((r) => r.json())
@@ -153,12 +158,9 @@ function IncidentsTab() {
     <div>
       <div className="flex items-center justify-between">
         <p className="text-sm text-slate-700">{incidents ? `${incidents.length} incidents` : ""}</p>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
+        <Button onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancel" : "Log incident"}
-        </button>
+        </Button>
       </div>
 
       {showForm && (
@@ -192,9 +194,9 @@ function IncidentsTab() {
           {(category === "SAFEGUARDING" || category === "BULLYING") && (
             <p className="sm:col-span-2 text-xs text-red-700">This incident will be marked confidential automatically and hidden from non-admin staff.</p>
           )}
-          <button type="submit" disabled={submitting} className="sm:col-span-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+          <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Saving…" : "Save incident"}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -211,6 +213,7 @@ function IncidentsTab() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {incidents === null && <TableSkeleton rows={5} cols={6} />}
             {incidents?.map((i) => (
               <tr key={i.id}>
                 <td className="p-4 font-medium text-slate-900">{pupilName(i.pupil)}</td>
@@ -230,8 +233,8 @@ function IncidentsTab() {
             ))}
             {incidents?.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-6 text-center text-sm text-slate-700">
-                  No behaviour incidents logged yet.
+                <td colSpan={6}>
+                  <EmptyState icon={HeartHandshake} title="No incidents yet" description="Logged behaviour incidents will appear here." />
                 </td>
               </tr>
             )}
@@ -261,7 +264,7 @@ function AccidentsTab() {
 
   function load() {
     fetch("/api/accidents")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setAccidents);
     fetch("/api/pupils")
       .then((r) => r.json())
@@ -318,12 +321,9 @@ function AccidentsTab() {
     <div>
       <div className="flex items-center justify-between">
         <p className="text-sm text-slate-700">{accidents ? `${accidents.length} accident reports` : ""}</p>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
+        <Button onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancel" : "Log accident"}
-        </button>
+        </Button>
       </div>
 
       {showForm && (
@@ -353,9 +353,9 @@ function AccidentsTab() {
           </label>
           <textarea required value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What happened?" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm" rows={3} />
           <textarea required value={actionTaken} onChange={(e) => setActionTaken(e.target.value)} placeholder="Action taken" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm" rows={2} />
-          <button type="submit" disabled={submitting} className="sm:col-span-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+          <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Saving…" : "Save report"}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -372,6 +372,7 @@ function AccidentsTab() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {accidents === null && <TableSkeleton rows={5} cols={6} />}
             {accidents?.map((a) => (
               <tr key={a.id}>
                 <td className="p-4 font-medium text-slate-900">{pupilName(a.pupil)}</td>
@@ -389,9 +390,9 @@ function AccidentsTab() {
                   {a.parentNotified ? (
                     <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Notified</span>
                   ) : (
-                    <button onClick={() => markParentNotified(a.id)} className="text-xs text-indigo-600 hover:underline">
+                    <Button variant="ghost" onClick={() => markParentNotified(a.id)} className="text-xs">
                       Mark notified
-                    </button>
+                    </Button>
                   )}
                 </td>
                 <td className="p-4"></td>
@@ -399,8 +400,8 @@ function AccidentsTab() {
             ))}
             {accidents?.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-6 text-center text-sm text-slate-700">
-                  No accident reports logged yet.
+                <td colSpan={6}>
+                  <EmptyState icon={AlertTriangle} title="No accident reports yet" description="Logged accident reports will appear here." />
                 </td>
               </tr>
             )}

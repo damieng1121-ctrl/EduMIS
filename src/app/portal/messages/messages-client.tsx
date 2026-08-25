@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Send } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type FormGroup = { id: string; name: string };
 type Pupil = { id: string; firstName: string; lastName: string };
@@ -35,7 +40,7 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
 
   function load() {
     fetch("/api/parent-messages")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setMessages);
   }
   useEffect(load, []);
@@ -68,15 +73,15 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Parent messages</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          {showForm ? "Cancel" : "Compose message"}
-        </button>
-      </div>
+      <PageHeader
+        module="messages"
+        title="Parent messages"
+        actions={
+          <Button variant={showForm ? "secondary" : "primary"} onClick={() => setShowForm(!showForm)}>
+            {showForm ? "Cancel" : "Compose message"}
+          </Button>
+        }
+      />
 
       {showForm && (
         <form onSubmit={send} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5">
@@ -125,9 +130,9 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
           </div>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
-          <button type="submit" disabled={submitting} className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+          <Button type="submit" disabled={submitting}>
             {submitting ? "Sending…" : "Send message"}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -142,6 +147,7 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {messages === null && <TableSkeleton rows={5} cols={4} />}
             {messages?.map((m) => (
               <tr key={m.id}>
                 <td className="p-4">
@@ -155,7 +161,13 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
             ))}
             {messages?.length === 0 && (
               <tr>
-                <td colSpan={4} className="p-6 text-center text-sm text-slate-700">No messages sent yet.</td>
+                <td colSpan={4}>
+                  <EmptyState
+                    icon={Send}
+                    title="No messages sent yet"
+                    description="Compose your first message to parents to get started."
+                  />
+                </td>
               </tr>
             )}
           </tbody>

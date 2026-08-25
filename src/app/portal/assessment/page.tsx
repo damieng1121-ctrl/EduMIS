@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { ClipboardList } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type Subject = { id: string; name: string; order: number };
 type AcademicYear = { id: string; name: string; isCurrent: boolean };
@@ -64,7 +69,7 @@ export default function AssessmentPage() {
     if (filterSubjectId) params.set("subjectId", filterSubjectId);
     if (filterYearId) params.set("academicYearId", filterYearId);
     fetch(`/api/assessment-results?${params.toString()}`)
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setResults);
   }
 
@@ -119,7 +124,7 @@ export default function AssessmentPage() {
   if (academicYears && academicYears.length === 0) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Assessment</h1>
+        <PageHeader module="assessment" title="Assessment" />
         <p className="mt-4 text-sm text-slate-700">Set up an academic year first.</p>
       </div>
     );
@@ -127,23 +132,23 @@ export default function AssessmentPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Assessment</h1>
-        <button
-          onClick={() => setShowResultForm(!showResultForm)}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          {showResultForm ? "Cancel" : "Log result"}
-        </button>
-      </div>
+      <PageHeader
+        module="assessment"
+        title="Assessment"
+        actions={
+          <Button variant={showResultForm ? "secondary" : "primary"} onClick={() => setShowResultForm(!showResultForm)}>
+            {showResultForm ? "Cancel" : "Log result"}
+          </Button>
+        }
+      />
 
       {isAdmin && (
         <div className="mt-4 rounded-xl border border-slate-200 bg-white p-5">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-slate-900">Subjects</h2>
-            <button onClick={() => setShowSubjectForm(!showSubjectForm)} className="text-xs font-medium text-indigo-600 hover:underline">
+            <Button variant="ghost" onClick={() => setShowSubjectForm(!showSubjectForm)} className="text-xs font-medium">
               {showSubjectForm ? "Cancel" : "+ Add subject"}
-            </button>
+            </Button>
           </div>
           <div className="mt-2 flex flex-wrap gap-2">
             {subjects?.map((s) => (
@@ -161,9 +166,9 @@ export default function AssessmentPage() {
                 placeholder="Subject name"
                 className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
               />
-              <button type="submit" className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+              <Button type="submit">
                 Add
-              </button>
+              </Button>
             </form>
           )}
         </div>
@@ -205,9 +210,9 @@ export default function AssessmentPage() {
             className="sm:col-span-3 rounded-md border border-slate-300 px-3 py-2 text-sm"
             rows={2}
           />
-          <button type="submit" disabled={submitting} className="sm:col-span-3 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+          <Button type="submit" disabled={submitting} className="sm:col-span-3">
             {submitting ? "Saving…" : "Save result"}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -252,6 +257,7 @@ export default function AssessmentPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {results === null && <TableSkeleton rows={5} cols={7} />}
             {results?.map((r) => (
               <tr key={r.id}>
                 <td className="p-4 font-medium text-slate-900">
@@ -273,8 +279,8 @@ export default function AssessmentPage() {
             ))}
             {results?.length === 0 && (
               <tr>
-                <td colSpan={7} className="p-6 text-center text-sm text-slate-700">
-                  No assessment results logged yet.
+                <td colSpan={7}>
+                  <EmptyState icon={ClipboardList} title="No results yet" description="Logged assessment results will appear here." />
                 </td>
               </tr>
             )}

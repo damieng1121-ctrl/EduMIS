@@ -4,6 +4,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { canAccessMis } from "@/lib/roles";
 import { isAttendedSession } from "@/lib/attendance-codes";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
 
 function StatCard({
   label,
@@ -25,7 +27,7 @@ function StatCard({
     red: "bg-red-500",
   }[color];
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5">
+    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-slate-600">{label}</p>
@@ -48,8 +50,8 @@ export default async function DashboardPage() {
     const tenantCount = await prisma.tenant.count();
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Platform admin</h1>
-        <p className="mt-2 text-slate-600">
+        <PageHeader module="school" title="Platform admin" />
+        <p className="mt-4 text-slate-600">
           You&apos;re signed in as an EduMIS platform administrator. School portal features (pupils,
           attendance, behaviour) are scoped per-tenant, so there&apos;s nothing school-specific to show
           here — manage schools from{" "}
@@ -66,8 +68,8 @@ export default async function DashboardPage() {
   if (!canAccessMis(session!.user.role, session!.user.isTeacher)) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
-        <p className="mt-2 text-slate-600">
+        <PageHeader module="dashboard" title="Dashboard" />
+        <p className="mt-4 text-slate-600">
           Welcome, {session!.user.name ?? session!.user.email}. This account doesn&apos;t have MIS
           classroom access — contact your school admin if you believe this is wrong.
         </p>
@@ -105,7 +107,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
+      <PageHeader module="dashboard" title="Dashboard" subtitle={`Welcome back, ${session!.user.name ?? session!.user.email}.`} />
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
@@ -146,9 +148,11 @@ export default async function DashboardPage() {
           </Link>
         </div>
         <div className="mt-3 divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white">
-          {recentIncidents.length === 0 && <p className="p-5 text-sm text-slate-700">No incidents logged yet.</p>}
+          {recentIncidents.length === 0 && (
+            <EmptyState icon={HeartHandshake} title="No incidents logged yet" description="Nothing to review — behaviour incidents you log will show up here." />
+          )}
           {recentIncidents.map((i) => (
-            <div key={i.id} className="p-4">
+            <div key={i.id} className="p-4 transition-colors hover:bg-slate-50">
               <p className="font-medium text-slate-900">
                 {i.pupil.firstName} {i.pupil.lastName} — {i.category.charAt(0) + i.category.slice(1).toLowerCase()}
               </p>

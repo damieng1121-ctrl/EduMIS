@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { UserCheck } from "lucide-react";
 import { AttendanceTrendChart, BehaviourPointsChart, AssessmentDistributionChart } from "@/components/mis-charts";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
 
 type Summary = {
   attendanceTrend: { week: string; attendancePct: number }[];
@@ -30,7 +33,7 @@ export default function ReportsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900">Reports</h1>
+      <PageHeader module="reports" title="Reports" />
 
       {summaryDenied ? (
         <AccessDenied />
@@ -97,7 +100,11 @@ function MisReports({
         <div className="rounded-xl border border-slate-200 bg-white p-5">
           <h2 className="font-semibold text-slate-900">Persistent absence (below 90%)</h2>
           {summary.persistentAbsence.length === 0 ? (
-            <p className="mt-4 text-sm text-slate-600">No pupils currently below the persistent-absence threshold.</p>
+            <EmptyState
+              icon={UserCheck}
+              title="No pupils below the threshold"
+              description="Everyone is currently at or above 90% attendance."
+            />
           ) : (
             <table className="mt-4 w-full text-sm">
               <thead>

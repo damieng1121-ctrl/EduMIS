@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
 
 type Tenant = {
   id: string;
@@ -101,17 +103,17 @@ export default function SuperAdminPage() {
 
   function loadTenants() {
     fetch("/api/super-admin/tenants")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setTenants);
   }
   function loadTrusts() {
     fetch("/api/super-admin/trusts")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setTrusts);
   }
   function loadUsers() {
     fetch("/api/super-admin/users")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setUsers);
   }
   useEffect(() => {
@@ -236,23 +238,24 @@ export default function SuperAdminPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Platform administration</h1>
-          <p className="mt-1 text-sm text-slate-600">Manage every school, Trust, and user across EduMIS.</p>
-        </div>
-        <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1">
-          {(["schools", "trusts", "users"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium capitalize ${tab === t ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:text-slate-900"}`}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-      </div>
+      <PageHeader
+        module="school"
+        title="Platform administration"
+        subtitle="Manage every school, Trust, and user across EduMIS."
+        actions={
+          <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1">
+            {(["schools", "trusts", "users"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className={`rounded-md px-3 py-1.5 text-sm font-medium capitalize ${tab === t ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:text-slate-900"}`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        }
+      />
 
       {tab === "schools" && (
         <>
@@ -315,13 +318,9 @@ export default function SuperAdminPage() {
               />
             </div>
             <div className="flex items-end">
-              <button
-                type="submit"
-                disabled={submitting}
-                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-              >
+              <Button type="submit" disabled={submitting}>
                 {submitting ? "Creating…" : "Add school"}
-              </button>
+              </Button>
             </div>
             {error && <p className="sm:col-span-2 text-sm text-red-600">{error}</p>}
           </form>
@@ -374,13 +373,14 @@ export default function SuperAdminPage() {
                       </button>
                     </td>
                     <td className="p-4 text-right">
-                      <button
+                      <Button
+                        variant="secondary"
+                        size="sm"
                         onClick={() => manageSchool(t.id)}
                         disabled={managingId === t.id || !t.isActive}
-                        className="rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
                       >
                         {managingId === t.id ? "Opening…" : "Manage"}
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -430,13 +430,9 @@ export default function SuperAdminPage() {
               />
             </div>
             <div className="flex items-end">
-              <button
-                type="submit"
-                disabled={trustSubmitting}
-                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-              >
+              <Button type="submit" disabled={trustSubmitting}>
                 {trustSubmitting ? "Creating…" : "Add Trust"}
-              </button>
+              </Button>
             </div>
             {trustError && <p className="sm:col-span-3 text-sm text-red-600">{trustError}</p>}
           </form>
@@ -483,12 +479,9 @@ export default function SuperAdminPage() {
               Every user across every school and Trust, plus platform staff. Add someone directly, or move an
               existing user to a different school.
             </p>
-            <button
-              onClick={() => setShowInvite(!showInvite)}
-              className="shrink-0 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-            >
+            <Button className="shrink-0" onClick={() => setShowInvite(!showInvite)}>
               {showInvite ? "Cancel" : "Add user"}
-            </button>
+            </Button>
           </div>
 
           {showInvite && (
@@ -547,13 +540,9 @@ export default function SuperAdminPage() {
                 </select>
               )}
               {uError && <p className="text-sm text-red-600 sm:col-span-4">{uError}</p>}
-              <button
-                type="submit"
-                disabled={inviting}
-                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 sm:col-span-4"
-              >
+              <Button type="submit" disabled={inviting} className="sm:col-span-4">
                 {inviting ? "Adding…" : "Add user"}
-              </button>
+              </Button>
             </form>
           )}
 

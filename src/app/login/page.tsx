@@ -130,9 +130,9 @@ function DevLogin() {
 
 export default function LoginPage() {
   return (
-    <div className="flex flex-1 items-center justify-center bg-slate-50 px-6 py-16">
-      <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-        <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600 font-semibold text-white">
+    <div className="flex flex-1 items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-white px-6 py-16">
+      <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 text-center shadow-lg">
+        <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600 font-semibold text-white shadow-sm">
           E
         </div>
         <h1 className="text-xl font-semibold text-slate-900">Sign in to EduMIS</h1>

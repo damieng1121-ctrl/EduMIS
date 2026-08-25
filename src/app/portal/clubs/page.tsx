@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { PartyPopper } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 
 type AcademicYear = { id: string; name: string; isCurrent: boolean };
 type Pupil = { id: string; firstName: string; lastName: string };
@@ -116,7 +120,7 @@ export default function ClubsPage() {
   if (academicYears && academicYears.length === 0) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Clubs</h1>
+        <PageHeader module="clubs" title="Clubs" />
         <p className="mt-4 text-sm text-slate-700">Set up an academic year first.</p>
       </div>
     );
@@ -124,17 +128,17 @@ export default function ClubsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Clubs</h1>
-        {isAdmin && (
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-          >
-            {showForm ? "Cancel" : "New club"}
-          </button>
-        )}
-      </div>
+      <PageHeader
+        module="clubs"
+        title="Clubs"
+        actions={
+          isAdmin && (
+            <Button variant={showForm ? "secondary" : "primary"} onClick={() => setShowForm(!showForm)}>
+              {showForm ? "Cancel" : "New club"}
+            </Button>
+          )
+        }
+      />
 
       {showForm && (
         <form onSubmit={createClub} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3">
@@ -172,9 +176,9 @@ export default function ClubsPage() {
               </option>
             ))}
           </select>
-          <button type="submit" disabled={submitting} className="sm:col-span-3 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+          <Button type="submit" disabled={submitting} className="sm:col-span-3">
             {submitting ? "Saving…" : "Create club"}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -201,13 +205,13 @@ export default function ClubsPage() {
                     {c.capacity ? ` / ${c.capacity}` : ""} members
                     {waitlist.length > 0 ? ` · ${waitlist.length} waitlisted` : ""}
                   </span>
-                  <button onClick={() => setExpandedId(isExpanded ? null : c.id)} className="text-xs font-medium text-indigo-600 hover:underline">
+                  <Button variant="ghost" onClick={() => setExpandedId(isExpanded ? null : c.id)}>
                     {isExpanded ? "Hide" : "Manage"}
-                  </button>
+                  </Button>
                   {isAdmin && (
-                    <button onClick={() => deleteClub(c.id)} className="text-xs text-red-600 hover:underline">
+                    <Button variant="danger" size="sm" onClick={() => deleteClub(c.id)}>
                       Delete
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
@@ -223,9 +227,9 @@ export default function ClubsPage() {
                         </option>
                       ))}
                     </select>
-                    <button onClick={() => addMember(c.id)} className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+                    <Button onClick={() => addMember(c.id)}>
                       Add
-                    </button>
+                    </Button>
                   </div>
 
                   <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -237,9 +241,9 @@ export default function ClubsPage() {
                             <span>
                               {m.pupil.firstName} {m.pupil.lastName}
                             </span>
-                            <button onClick={() => removeMember(c.id, m.pupilId)} className="text-xs text-red-600 hover:underline">
+                            <Button variant="danger" size="sm" onClick={() => removeMember(c.id, m.pupilId)}>
                               Remove
-                            </button>
+                            </Button>
                           </li>
                         ))}
                         {active.length === 0 && <li className="text-xs text-slate-500">No members yet.</li>}
@@ -253,9 +257,9 @@ export default function ClubsPage() {
                             <span>
                               {m.pupil.firstName} {m.pupil.lastName}
                             </span>
-                            <button onClick={() => removeMember(c.id, m.pupilId)} className="text-xs text-red-600 hover:underline">
+                            <Button variant="danger" size="sm" onClick={() => removeMember(c.id, m.pupilId)}>
                               Remove
-                            </button>
+                            </Button>
                           </li>
                         ))}
                         {waitlist.length === 0 && <li className="text-xs text-slate-500">Nobody waiting.</li>}
@@ -267,7 +271,13 @@ export default function ClubsPage() {
             </div>
           );
         })}
-        {clubs?.length === 0 && <p className="text-sm text-slate-700">No clubs set up yet.</p>}
+        {clubs?.length === 0 && (
+          <EmptyState
+            icon={PartyPopper}
+            title="No clubs yet"
+            description="Create your first club to get pupils signed up."
+          />
+        )}
       </div>
     </div>
   );

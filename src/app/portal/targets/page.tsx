@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Target as TargetIcon } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 
 type Status = "NOT_STARTED" | "IN_PROGRESS" | "ACHIEVED";
 
@@ -92,15 +96,15 @@ export default function TargetsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Pupil targets</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          {showForm ? "Cancel" : "New target"}
-        </button>
-      </div>
+      <PageHeader
+        module="targets"
+        title="Pupil targets"
+        actions={
+          <Button variant={showForm ? "secondary" : "primary"} onClick={() => setShowForm(!showForm)}>
+            {showForm ? "Cancel" : "New target"}
+          </Button>
+        }
+      />
 
       {showForm && (
         <form onSubmit={createTarget} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
@@ -132,9 +136,9 @@ export default function TargetsPage() {
             Target date
             <input type="date" value={targetDate} onChange={(e) => setTargetDate(e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
           </label>
-          <button type="submit" disabled={submitting} className="sm:col-span-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+          <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Saving…" : "Save target"}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -180,7 +184,9 @@ export default function TargetsPage() {
                     </select>
                   </div>
                 ))}
-              {targets?.filter((t) => t.status === col.status).length === 0 && <p className="text-xs text-slate-500">Nothing here.</p>}
+              {targets?.filter((t) => t.status === col.status).length === 0 && (
+                <EmptyState icon={TargetIcon} title="Nothing here yet" />
+              )}
             </div>
           </div>
         ))}

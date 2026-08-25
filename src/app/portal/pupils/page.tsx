@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { GraduationCap } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type YearGroup =
   | "NURSERY" | "RECEPTION" | "YEAR_1" | "YEAR_2" | "YEAR_3" | "YEAR_4" | "YEAR_5"
@@ -141,24 +146,24 @@ export default function PupilsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Pupils</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          {showForm ? "Cancel" : "Add pupil"}
-        </button>
-      </div>
-      <p className="mt-1 text-sm text-slate-700">{pupils ? `${pupils.length} pupil${pupils.length === 1 ? "" : "s"}` : ""}</p>
+      <PageHeader
+        module="pupils"
+        title="Pupils"
+        subtitle={pupils ? `${pupils.length} pupil${pupils.length === 1 ? "" : "s"}` : undefined}
+        actions={
+          <Button variant={showForm ? "secondary" : "primary"} onClick={() => setShowForm(!showForm)}>
+            {showForm ? "Cancel" : "Add pupil"}
+          </Button>
+        }
+      />
 
       {needsSetup && isAdmin && (
         <div className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 p-5">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-indigo-900">Set up your first academic year &amp; form group</h2>
-            <button onClick={() => setShowSetup(!showSetup)} className="text-sm text-indigo-700 hover:underline">
+            <Button variant="ghost" onClick={() => setShowSetup(!showSetup)}>
               {showSetup ? "Cancel" : "Get started"}
-            </button>
+            </Button>
           </div>
           <p className="mt-1 text-sm text-indigo-800">You need at least one academic year and form group before adding pupils.</p>
           {showSetup && (
@@ -178,9 +183,9 @@ export default function PupilsPage() {
                   <option key={yg} value={yg}>{yearGroupLabel(yg)}</option>
                 ))}
               </select>
-              <button type="submit" disabled={settingUp} className="sm:col-span-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+              <Button type="submit" disabled={settingUp} className="sm:col-span-2">
                 {settingUp ? "Setting up…" : "Create academic year & form group"}
-              </button>
+              </Button>
             </form>
           )}
         </div>
@@ -228,9 +233,9 @@ export default function PupilsPage() {
               <option key={fg.id} value={fg.id}>{fg.name}</option>
             ))}
           </select>
-          <button type="submit" disabled={submitting} className="sm:col-span-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+          <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Adding…" : "Add pupil"}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -245,8 +250,9 @@ export default function PupilsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {pupils === null && <TableSkeleton rows={5} cols={4} />}
             {pupils?.map((p) => (
-              <tr key={p.id} className="hover:bg-slate-50">
+              <tr key={p.id} className="transition-colors hover:bg-slate-50">
                 <td className="p-4">
                   <Link href={`/portal/pupils/${p.id}`} className="font-medium text-slate-900 hover:text-indigo-600 hover:underline">
                     {p.lastName}, {p.preferredName || p.firstName}
@@ -269,8 +275,12 @@ export default function PupilsPage() {
             ))}
             {pupils?.length === 0 && (
               <tr>
-                <td colSpan={4} className="p-6 text-center text-sm text-slate-700">
-                  No pupils found.
+                <td colSpan={4}>
+                  <EmptyState
+                    icon={GraduationCap}
+                    title="No pupils yet"
+                    description={search || formGroupFilter ? "No pupils match your search or filter." : "Add your first pupil to get started."}
+                  />
                 </td>
               </tr>
             )}

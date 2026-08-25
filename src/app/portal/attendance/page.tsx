@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { CalendarCheck } from "lucide-react";
 import { ATTENDANCE_CODES, getAttendanceCode, isAttendedSession } from "@/lib/attendance-codes";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type FormGroup = { id: string; name: string; yearGroup: string };
 
@@ -27,7 +32,7 @@ export default function AttendancePage() {
 
   useEffect(() => {
     fetch("/api/form-groups")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then((groups: FormGroup[]) => {
         setFormGroups(groups);
         if (groups.length > 0) setFormGroupId((prev) => prev || groups[0].id);
@@ -38,7 +43,7 @@ export default function AttendancePage() {
     if (!formGroupId || !date || !attSession) return;
     const params = new URLSearchParams({ formGroupId, date, session: attSession });
     fetch(`/api/attendance?${params.toString()}`)
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then((data: RegisterEntry[]) => {
         setEntries(data);
         const next: Record<string, string> = {};
@@ -100,7 +105,7 @@ export default function AttendancePage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900">Attendance register</h1>
+      <PageHeader module="attendance" title="Attendance register" />
 
       <div className="mt-4 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4">
         <label className="text-xs text-slate-600">
@@ -122,13 +127,9 @@ export default function AttendancePage() {
             <option value="PM">PM</option>
           </select>
         </label>
-        <button
-          onClick={saveRegister}
-          disabled={saving || !formGroupId}
-          className="ml-auto rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-        >
+        <Button onClick={saveRegister} disabled={saving || !formGroupId} className="ml-auto">
           {saving ? "Saving…" : "Save register"}
-        </button>
+        </Button>
       </div>
 
       <div className="mt-3 flex gap-4 text-sm text-slate-700">
@@ -147,6 +148,7 @@ export default function AttendancePage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {entries === null && <TableSkeleton rows={5} cols={2} />}
             {entries?.map((e) => (
               <tr key={e.pupil.id}>
                 <td className="p-4 font-medium text-slate-900">
@@ -168,8 +170,12 @@ export default function AttendancePage() {
             ))}
             {entries?.length === 0 && (
               <tr>
-                <td colSpan={2} className="p-6 text-center text-sm text-slate-700">
-                  No pupils in this form group.
+                <td colSpan={2}>
+                  <EmptyState
+                    icon={CalendarCheck}
+                    title="No pupils in this group"
+                    description="Choose a different form group, date, or session to take the register."
+                  />
                 </td>
               </tr>
             )}

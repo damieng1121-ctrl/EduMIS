@@ -35,7 +35,7 @@ export default function Verify2faPage() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-slate-50 px-6 py-16">
+    <div className="flex flex-1 items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-50 to-white px-6 py-16">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="text-xl font-semibold text-slate-900">Two-factor verification</h1>
         <p className="mt-2 text-sm text-slate-600">

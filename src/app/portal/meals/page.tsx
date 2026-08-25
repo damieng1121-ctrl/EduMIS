@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Utensils } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type FormGroup = { id: string; name: string; yearGroup: string };
 type MealType = "SCHOOL_MEAL" | "PACKED_LUNCH" | "HOME" | "FSM";
@@ -27,7 +32,7 @@ export default function MealsPage() {
 
   useEffect(() => {
     fetch("/api/form-groups")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then((groups) => {
         setFormGroups(groups);
         if (groups.length > 0) setFormGroupId((prev) => prev || groups[0].id);
@@ -37,7 +42,7 @@ export default function MealsPage() {
   function load() {
     if (!formGroupId || !date) return;
     fetch(`/api/meals?date=${date}&formGroupId=${formGroupId}`)
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setRows);
   }
 
@@ -66,7 +71,7 @@ export default function MealsPage() {
   if (formGroups && formGroups.length === 0) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Meal register</h1>
+        <PageHeader module="meals" title="Meal register" />
         <p className="mt-4 text-sm text-slate-700">Set up an academic year first.</p>
       </div>
     );
@@ -74,16 +79,15 @@ export default function MealsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Meal register</h1>
-        <button
-          onClick={save}
-          disabled={saving || !rows || rows.length === 0}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-        >
-          {saving ? "Saving…" : "Save"}
-        </button>
-      </div>
+      <PageHeader
+        module="meals"
+        title="Meal register"
+        actions={
+          <Button onClick={save} disabled={saving || !rows || rows.length === 0}>
+            {saving ? "Saving…" : "Save"}
+          </Button>
+        }
+      />
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <select
@@ -121,6 +125,7 @@ export default function MealsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {rows === null && <TableSkeleton rows={5} cols={2} />}
             {rows?.map((r) => (
               <tr key={r.pupilId}>
                 <td className="p-4 font-medium text-slate-900">
@@ -144,8 +149,12 @@ export default function MealsPage() {
             ))}
             {rows?.length === 0 && (
               <tr>
-                <td colSpan={2} className="p-6 text-center text-sm text-slate-700">
-                  No pupils in this form group.
+                <td colSpan={2}>
+                  <EmptyState
+                    icon={Utensils}
+                    title="No pupils to register"
+                    description="This form group has no pupils yet."
+                  />
                 </td>
               </tr>
             )}

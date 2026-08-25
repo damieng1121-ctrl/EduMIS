@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type User = {
   id: string;
@@ -23,7 +26,7 @@ export default function UsersAdminPage() {
 
   function load() {
     fetch("/api/admin/users")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setUsers);
   }
   useEffect(load, []);
@@ -64,22 +67,22 @@ export default function UsersAdminPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Users</h1>
-          <p className="mt-1 text-sm text-slate-600">
+      <PageHeader
+        module="users"
+        title="Users"
+        subtitle={
+          <>
             Anyone signing in with a matching Google Workspace account is added automatically as a
             Requester. Invite someone directly to pre-assign their school and role — e.g. a personal
             email, or staff whose email domain doesn&apos;t match this school.
-          </p>
-        </div>
-        <button
-          onClick={() => setShowInvite(!showInvite)}
-          className="shrink-0 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          {showInvite ? "Cancel" : "Invite user"}
-        </button>
-      </div>
+          </>
+        }
+        actions={
+          <Button onClick={() => setShowInvite(!showInvite)}>
+            {showInvite ? "Cancel" : "Invite user"}
+          </Button>
+        }
+      />
 
       {showInvite && (
         <form onSubmit={inviteUser} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3">
@@ -106,13 +109,9 @@ export default function UsersAdminPage() {
             <option value="TENANT_ADMIN">Admin</option>
           </select>
           {error && <p className="text-sm text-red-600 sm:col-span-3">{error}</p>}
-          <button
-            type="submit"
-            disabled={inviting}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 sm:col-span-3"
-          >
+          <Button type="submit" disabled={inviting} className="sm:col-span-3">
             {inviting ? "Inviting…" : "Send invite"}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -127,6 +126,7 @@ export default function UsersAdminPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {users === null && <TableSkeleton rows={5} cols={4} />}
             {users?.map((u) => (
               <tr key={u.id}>
                 <td className="p-4">

@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { IdCard } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type StaffType = "TEACHING" | "TEACHING_ASSISTANT" | "ADMIN" | "SITE" | "MIDDAY" | "SENCO" | "OTHER";
 
@@ -105,8 +110,11 @@ export default function StaffPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900">Staff records</h1>
-      <p className="mt-1 text-sm text-slate-700">DBS and safeguarding details are visible to admins only.</p>
+      <PageHeader
+        module="staff"
+        title="Staff records"
+        subtitle="DBS and safeguarding details are visible to admins only."
+      />
 
       <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white">
         <table className="w-full min-w-[900px] text-left text-sm">
@@ -124,6 +132,7 @@ export default function StaffPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {staff === null && <TableSkeleton rows={5} cols={9} />}
             {staff?.map((m) => {
               const d = drafts[m.id];
               if (!d) return null;
@@ -166,21 +175,21 @@ export default function StaffPage() {
                     />
                   </td>
                   <td className="p-4">
-                    <button
-                      onClick={() => save(m.id)}
-                      disabled={savingId === m.id}
-                      className="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-                    >
+                    <Button size="sm" onClick={() => save(m.id)} disabled={savingId === m.id}>
                       {savingId === m.id ? "Saving…" : "Save"}
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               );
             })}
             {staff?.length === 0 && (
               <tr>
-                <td colSpan={9} className="p-6 text-center text-sm text-slate-700">
-                  No staff found.
+                <td colSpan={9}>
+                  <EmptyState
+                    icon={IdCard}
+                    title="No staff yet"
+                    description="Staff profiles will appear here once added."
+                  />
                 </td>
               </tr>
             )}

@@ -45,7 +45,7 @@ export default function PupilGuardiansPage() {
 
   function load() {
     fetch(`/api/pupils/${pupilId}/guardians`)
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setLinks);
   }
   useEffect(load, [pupilId]);

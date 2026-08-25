@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { TOGGLEABLE_NAV_ITEMS } from "@/components/portal-nav";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
 
 type Tenant = {
   name: string;
@@ -69,7 +71,7 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="max-w-2xl space-y-8">
-      <h1 className="text-2xl font-semibold text-slate-900">Settings</h1>
+      <PageHeader module="settings" title="Settings" />
 
       <section className="rounded-xl border border-slate-200 bg-white p-6">
         <h2 className="font-semibold text-slate-900">School details</h2>
@@ -176,13 +178,9 @@ export default function AdminSettingsPage() {
                 ))}
               </div>
             </div>
-            <button
-              onClick={saveTenant}
-              disabled={savingTenant}
-              className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-            >
+            <Button onClick={saveTenant} disabled={savingTenant}>
               {savingTenant ? "Saving…" : "Save"}
-            </button>
+            </Button>
           </div>
         )}
       </section>

@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { School } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type Tenant = {
   id: string;
@@ -48,10 +53,11 @@ export default function TrustAdminPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900">My Trust</h1>
-      <p className="mt-1 text-sm text-slate-600">
-        Every school in your Trust. Open a school to see and manage its full dashboard.
-      </p>
+      <PageHeader
+        module="school"
+        title="My Trust"
+        subtitle="Every school in your Trust. Open a school to see and manage its full dashboard."
+      />
 
       <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
         <table className="w-full text-left text-sm">
@@ -66,6 +72,7 @@ export default function TrustAdminPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {tenants === null && <TableSkeleton rows={5} cols={6} />}
             {tenants?.map((t) => (
               <tr key={t.id}>
                 <td className="p-4">
@@ -85,20 +92,25 @@ export default function TrustAdminPage() {
                   </span>
                 </td>
                 <td className="p-4 text-right">
-                  <button
+                  <Button
+                    variant="secondary"
+                    size="sm"
                     onClick={() => manageSchool(t.id)}
                     disabled={managingId === t.id || !t.isActive}
-                    className="rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
                   >
                     {managingId === t.id ? "Opening…" : "Manage"}
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))}
             {tenants?.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-6 text-center text-sm text-slate-700">
-                  No schools in your Trust yet — ask a platform admin to add one.
+                <td colSpan={6}>
+                  <EmptyState
+                    icon={School}
+                    title="No schools in your Trust yet"
+                    description="Ask a platform admin to add one."
+                  />
                 </td>
               </tr>
             )}

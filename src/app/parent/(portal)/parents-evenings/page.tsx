@@ -34,7 +34,7 @@ export default function ParentParentsEveningsPage() {
 
   function load() {
     fetch("/api/parent/parents-evenings")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : { children: [], events: [] }))
       .then((data) => {
         setChildren(data.children);
         setEvents(data.events);

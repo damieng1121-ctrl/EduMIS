@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { isAdmin } from "@/lib/roles";
+import { PageHeader } from "@/components/ui/page-header";
 
 type Readiness = {
   totalPupils: number;
@@ -28,7 +29,7 @@ export default function CensusPage() {
   useEffect(() => {
     if (!session?.user || !isAdmin(session.user.role)) return;
     fetch("/api/census/readiness")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : null))
       .then(setReadiness);
   }, [session]);
 
@@ -40,15 +41,18 @@ export default function CensusPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Census readiness</h1>
-        <a
-          href="/api/census/export"
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          Download CSV export
-        </a>
-      </div>
+      <PageHeader
+        module="census"
+        title="Census readiness"
+        actions={
+          <a
+            href="/api/census/export"
+            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+          >
+            Download CSV export
+          </a>
+        }
+      />
 
       <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
         This is a data-readiness and export tool, not an official DfE school census submission. It helps you find

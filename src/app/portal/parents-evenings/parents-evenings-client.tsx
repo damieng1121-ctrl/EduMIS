@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CalendarClock } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TableSkeleton } from "@/components/ui/skeleton";
 
 type FormGroup = { id: string; name: string; yearGroup: string };
 type Teacher = { id: string; name: string | null; email: string | null };
@@ -51,7 +56,7 @@ export function ParentsEveningsClient({ formGroups, teachers }: { formGroups: Fo
 
   function load() {
     fetch("/api/parents-evenings")
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then(setEvents);
   }
   useEffect(load, []);
@@ -90,15 +95,15 @@ export function ParentsEveningsClient({ formGroups, teachers }: { formGroups: Fo
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Parents&apos; evenings</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          {showForm ? "Cancel" : "New event"}
-        </button>
-      </div>
+      <PageHeader
+        module="parents-evenings"
+        title="Parents' evenings"
+        actions={
+          <Button variant={showForm ? "secondary" : "primary"} onClick={() => setShowForm(!showForm)}>
+            {showForm ? "Cancel" : "New event"}
+          </Button>
+        }
+      />
 
       {showForm && (
         <form onSubmit={createEvent} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
@@ -136,9 +141,9 @@ export function ParentsEveningsClient({ formGroups, teachers }: { formGroups: Fo
             </div>
           </div>
 
-          <button type="submit" disabled={submitting} className="sm:col-span-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+          <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Creating…" : "Create event"}
-          </button>
+          </Button>
         </form>
       )}
 
@@ -154,6 +159,7 @@ export function ParentsEveningsClient({ formGroups, teachers }: { formGroups: Fo
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {events === null && <TableSkeleton rows={5} cols={5} />}
             {events?.map((ev) => (
               <tr key={ev.id}>
                 <td className="p-4 font-medium text-slate-900">{ev.title}</td>
@@ -161,15 +167,21 @@ export function ParentsEveningsClient({ formGroups, teachers }: { formGroups: Fo
                 <td className="p-4 text-slate-600">{ev.startTime}–{ev.endTime}</td>
                 <td className="p-4 text-slate-600">{ev._count.slots}</td>
                 <td className="p-4">
-                  <button onClick={() => setSelectedEventId(ev.id)} className="text-xs font-medium text-indigo-600 hover:underline">
+                  <Button variant="ghost" onClick={() => setSelectedEventId(ev.id)}>
                     View slots
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))}
             {events?.length === 0 && (
               <tr>
-                <td colSpan={5} className="p-6 text-center text-sm text-slate-700">No events yet.</td>
+                <td colSpan={5}>
+                  <EmptyState
+                    icon={CalendarClock}
+                    title="No events yet"
+                    description="Create your first parents' evening to get started."
+                  />
+                </td>
               </tr>
             )}
           </tbody>
@@ -204,7 +216,7 @@ function EventDetail({
 
   function load() {
     fetch(`/api/parents-evenings/${eventId}`)
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : { event: null, slots: [] }))
       .then((data) => {
         setEvent(data.event);
         setSlots(data.slots);
@@ -249,9 +261,9 @@ function EventDetail({
         </select>
         <input type="time" value={rangeStart} onChange={(e) => setRangeStart(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
         <input type="time" value={rangeEnd} onChange={(e) => setRangeEnd(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-        <button type="submit" disabled={generating || !teacherId} className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+        <Button type="submit" disabled={generating || !teacherId}>
           {generating ? "Generating…" : "Generate slots"}
-        </button>
+        </Button>
         {error && <p className="text-sm text-red-600 sm:col-span-4">{error}</p>}
       </form>
 
@@ -266,6 +278,7 @@ function EventDetail({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
+            {slots === null && <TableSkeleton rows={5} cols={4} />}
             {slots?.map((s) => (
               <tr key={s.id}>
                 <td className="p-3 text-slate-700">{s.teacher.name ?? s.teacher.email}</td>
@@ -282,7 +295,13 @@ function EventDetail({
             ))}
             {slots?.length === 0 && (
               <tr>
-                <td colSpan={4} className="p-6 text-center text-sm text-slate-700">No slots yet — generate some above.</td>
+                <td colSpan={4}>
+                  <EmptyState
+                    icon={CalendarClock}
+                    title="No slots yet"
+                    description="Generate slots using the form above."
+                  />
+                </td>
               </tr>
             )}
           </tbody>
