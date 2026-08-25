@@ -28,14 +28,9 @@ export async function GET() {
       orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
     });
 
-    const issuesByField: Record<(typeof CHECKED_FIELDS)[number], number> = {
-      upn: 0,
-      dob: 0,
-      gender: 0,
-      ethnicity: 0,
-      postcode: 0,
-      admissionDate: 0,
-    };
+    const issuesByField: Record<(typeof CHECKED_FIELDS)[number], number> = Object.fromEntries(
+      CHECKED_FIELDS.map((f) => [f, 0]),
+    ) as Record<(typeof CHECKED_FIELDS)[number], number>;
     const pupilsWithIssues: { id: string; name: string; yearGroup: string; missingFields: string[] }[] = [];
 
     for (const p of pupils) {

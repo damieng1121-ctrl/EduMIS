@@ -17,7 +17,7 @@ export default async function PortalLayout({ children }: LayoutProps<"/portal">)
     session.user.tenantId
       ? prisma.tenant.findUnique({
           where: { id: session.user.tenantId },
-          select: { name: true, logoUrl: true, appName: true, sidebarColor: true, disabledNavItems: true },
+          select: { name: true, logoUrl: true, appName: true, sidebarColor: true, disabledNavItems: true, enabledFeatures: true },
         })
       : null,
     // Only fetched to label the header when a TRUST_ADMIN isn't currently acting as a specific school.
@@ -41,6 +41,7 @@ export default async function PortalLayout({ children }: LayoutProps<"/portal">)
         hasLogo={Boolean(tenant?.logoUrl)}
         sidebarColor={tenant?.sidebarColor ?? null}
         disabledNavItems={tenant?.disabledNavItems ?? []}
+        enabledFeatures={tenant?.enabledFeatures ?? []}
         isTeacher={isActing ? true : session.user.isTeacher}
       />
       {isActing && (

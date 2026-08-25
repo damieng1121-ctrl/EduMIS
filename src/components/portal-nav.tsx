@@ -25,9 +25,13 @@ import {
   CalendarClock,
   Send,
   FileSpreadsheet,
+  FileOutput,
+  ShieldAlert,
+  Network,
   type LucideIcon,
 } from "lucide-react";
 import { canAccessMis } from "@/lib/roles";
+import type { FeatureKey } from "@/lib/features";
 
 type NavLink = {
   href: string;
@@ -36,6 +40,8 @@ type NavLink = {
   roles: readonly string[] | null;
   /** MIS links are additionally gated by canAccessMis(role, isTeacher) on top of `roles`. */
   requiresMis?: boolean;
+  /** Optional-module links only show once the tenant has this feature switched on from Super Admin. */
+  feature?: FeatureKey;
 };
 
 // Admin/reporting links are tenant-scoped, so they only make sense for staff
@@ -55,9 +61,12 @@ const links: NavLink[] = [
   { href: "/portal/parents-evenings", label: "Parents' evenings", icon: CalendarClock, roles: null, requiresMis: true },
   { href: "/portal/messages", label: "Messages", icon: Send, roles: null, requiresMis: true },
   { href: "/portal/staff", label: "Staff records", icon: IdCard, roles: ["TENANT_ADMIN"] },
+  { href: "/portal/scr", label: "Single Central Record", icon: ShieldAlert, roles: ["TENANT_ADMIN"], feature: "SCR" },
+  { href: "/portal/ctf", label: "CTF exchange", icon: FileOutput, roles: ["TENANT_ADMIN"], feature: "CTF_EXCHANGE" },
   { href: "/portal/census", label: "Census readiness", icon: FileSpreadsheet, roles: ["TENANT_ADMIN"] },
   { href: "/portal/reports", label: "Reports", icon: BarChart3, roles: ["TENANT_ADMIN"] },
   { href: "/portal/admin/users", label: "Users", icon: Users, roles: ["TENANT_ADMIN"] },
+  { href: "/portal/admin/wonde", label: "Wonde", icon: Network, roles: ["TENANT_ADMIN"], feature: "WONDE" },
   { href: "/portal/admin/settings", label: "Settings", icon: Settings, roles: ["TENANT_ADMIN"] },
   { href: "/portal/super-admin", label: "Schools", icon: School, roles: ["SUPER_ADMIN"] },
   { href: "/portal/trust-admin", label: "My Trust", icon: School, roles: ["TRUST_ADMIN"] },
@@ -80,6 +89,7 @@ export function PortalNav({
   hasLogo = false,
   sidebarColor,
   disabledNavItems = [],
+  enabledFeatures = [],
   isTeacher = false,
 }: {
   role: Role;
@@ -89,10 +99,12 @@ export function PortalNav({
   hasLogo?: boolean;
   sidebarColor?: string | null;
   disabledNavItems?: string[];
+  enabledFeatures?: string[];
   isTeacher?: boolean;
 }) {
   const pathname = usePathname();
   const disabled = new Set(disabledNavItems);
+  const enabled = new Set(enabledFeatures);
 
   // A platform/Trust admin only gets a real tenantId (and this component's
   // `role` prop gets remapped to "TENANT_ADMIN") while actively managing one
@@ -105,6 +117,7 @@ export function PortalNav({
   const visible = links
     .filter((l) => !l.roles || (l.roles as readonly string[]).includes(role))
     .filter((l) => !l.requiresMis || (!isManagingNoSchool && canAccessMis(role, isTeacher)))
+    .filter((l) => !l.feature || enabled.has(l.feature))
     .filter((l) => !disabled.has(l.href));
 
   const barStyle = sidebarColor ? { backgroundColor: sidebarColor } : DEFAULT_BAR_STYLE;

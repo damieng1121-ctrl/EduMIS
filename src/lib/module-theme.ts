@@ -19,6 +19,10 @@ import {
   Settings,
   School,
   ShieldCheck,
+  FileOutput,
+  ShieldAlert,
+  Network,
+  Puzzle,
 } from "lucide-react";
 
 export type ModuleKey =
@@ -40,7 +44,11 @@ export type ModuleKey =
   | "users"
   | "settings"
   | "school"
-  | "security";
+  | "security"
+  | "ctf"
+  | "scr"
+  | "features"
+  | "wonde";
 
 /**
  * Literal (never interpolated) Tailwind classes — required for the JIT
@@ -86,4 +94,8 @@ export const MODULE_THEME: Record<ModuleKey, { icon: LucideIcon; badge: string }
   settings: { icon: Settings, badge: BADGE.slate },
   school: { icon: School, badge: BADGE.indigo },
   security: { icon: ShieldCheck, badge: BADGE.indigo },
+  ctf: { icon: FileOutput, badge: BADGE.cyan },
+  scr: { icon: ShieldAlert, badge: BADGE.rose },
+  features: { icon: Puzzle, badge: BADGE.violet },
+  wonde: { icon: Network, badge: BADGE.orange },
 };

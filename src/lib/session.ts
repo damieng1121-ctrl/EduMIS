@@ -1,6 +1,8 @@
 import { auth } from "@/lib/auth";
 import type { Role } from "@prisma/client";
 import { canAccessMis } from "@/lib/roles";
+import { prisma } from "@/lib/db";
+import type { FeatureKey } from "@/lib/features";
 
 export class AuthError extends Error {
   status: number;
@@ -60,6 +62,25 @@ export async function requireMisSession() {
   const session = await requireTenantSession();
   if (!canAccessMis(session.user.role, session.user.isTeacher)) {
     throw new AuthError("This area is only available to teachers and school admins", 403);
+  }
+  return session;
+}
+
+/**
+ * Same as requireTenantSession, but also requires the school to have this
+ * optional module switched on from Super Admin (see src/lib/features.ts).
+ * The nav already hides these links when a feature is off, but that's a
+ * client-side convenience only — this is the actual boundary, so a direct
+ * API call can't reach a module the school hasn't been given.
+ */
+export async function requireFeatureSession(feature: FeatureKey) {
+  const session = await requireTenantSession();
+  const tenant = await prisma.tenant.findUnique({
+    where: { id: session.user.tenantId },
+    select: { enabledFeatures: true },
+  });
+  if (!tenant?.enabledFeatures.includes(feature)) {
+    throw new AuthError("This module isn't switched on for your school", 403);
   }
   return session;
 }

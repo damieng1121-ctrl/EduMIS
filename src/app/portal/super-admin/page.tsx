@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
+import { FEATURE_KEYS, FEATURE_INFO, type FeatureKey } from "@/lib/features";
 
 type Tenant = {
   id: string;
@@ -15,6 +16,7 @@ type Tenant = {
   urn: string | null;
   isActive: boolean;
   trustId: string | null;
+  enabledFeatures: string[];
   createdAt: string;
   _count: { users: number; pupils: number };
 };
@@ -61,7 +63,7 @@ function describeApiError(data: { error?: string; issues?: { path: (string | num
 export default function SuperAdminPage() {
   const { update } = useSession();
   const router = useRouter();
-  const [tab, setTab] = useState<"schools" | "trusts" | "users">("schools");
+  const [tab, setTab] = useState<"schools" | "trusts" | "users" | "features">("schools");
   const [managingId, setManagingId] = useState<string | null>(null);
 
   async function manageSchool(id: string) {
@@ -76,6 +78,14 @@ export default function SuperAdminPage() {
   }
 
   const [tenants, setTenants] = useState<Tenant[] | null>(null);
+  // Refs update synchronously (unlike state, which batches) — toggleFeature reads
+  // this instead of its own `tenant` argument so that clicking several checkboxes
+  // in quick succession each computes its diff against the truly latest list,
+  // instead of a stale snapshot from the render that queued the click.
+  const tenantsRef = useRef<Tenant[] | null>(null);
+  useEffect(() => {
+    tenantsRef.current = tenants;
+  }, [tenants]);
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [domain, setDomain] = useState("");
@@ -166,6 +176,25 @@ export default function SuperAdminPage() {
     loadTrusts();
   }
 
+  async function toggleFeature(tenantId: string, key: FeatureKey) {
+    // Read the freshest list via the ref, not the `tenant` object captured at
+    // render time — clicking several checkboxes on the same row in quick
+    // succession would otherwise each diff against the same stale snapshot
+    // and the later PATCHes would silently overwrite the earlier ones.
+    const current = tenantsRef.current?.find((t) => t.id === tenantId)?.enabledFeatures ?? [];
+    const enabledFeatures = current.includes(key) ? current.filter((f) => f !== key) : [...current, key];
+    // Optimistic update so the checkbox responds immediately, not after a
+    // round-trip — and it's the only update, since a follow-up full reload
+    // here would risk resolving late and clobbering a more recent toggle
+    // with stale server data (the same race this whole function exists to avoid).
+    setTenants((prev) => prev?.map((t) => (t.id === tenantId ? { ...t, enabledFeatures } : t)) ?? prev);
+    await fetch(`/api/super-admin/tenants/${tenantId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ enabledFeatures }),
+    });
+  }
+
   async function createTrust(e: React.FormEvent) {
     e.preventDefault();
     setTrustSubmitting(true);
@@ -244,7 +273,7 @@ export default function SuperAdminPage() {
         subtitle="Manage every school, Trust, and user across EduMIS."
         actions={
           <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1">
-            {(["schools", "trusts", "users"] as const).map((t) => (
+            {(["schools", "trusts", "users", "features"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
@@ -388,6 +417,59 @@ export default function SuperAdminPage() {
                   <tr>
                     <td colSpan={7} className="p-6 text-center text-sm text-slate-700">
                       No schools yet — add one above.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      {tab === "features" && (
+        <>
+          <p className="mt-4 text-sm text-slate-600">
+            Switch optional modules on per school. Nothing here is on by default — a school only sees a
+            module once you&apos;ve enabled it for them.
+          </p>
+
+          <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200 bg-white">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+                <tr>
+                  <th className="p-4">School</th>
+                  {FEATURE_KEYS.map((key) => (
+                    <th key={key} className="p-4" title={FEATURE_INFO[key].description}>
+                      {FEATURE_INFO[key].label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {tenants?.map((t) => (
+                  <tr key={t.id}>
+                    <td className="p-4">
+                      <p className="font-medium text-slate-900">{t.name}</p>
+                      <p className="text-xs text-slate-700">/{t.slug}</p>
+                    </td>
+                    {FEATURE_KEYS.map((key) => (
+                      <td key={key} className="p-4">
+                        <label className="flex items-center gap-2 text-slate-700">
+                          <input
+                            type="checkbox"
+                            checked={t.enabledFeatures.includes(key)}
+                            onChange={() => toggleFeature(t.id, key)}
+                          />
+                          <span className="sr-only">{FEATURE_INFO[key].label}</span>
+                        </label>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                {tenants?.length === 0 && (
+                  <tr>
+                    <td colSpan={FEATURE_KEYS.length + 1} className="p-6 text-center text-sm text-slate-700">
+                      No schools yet — add one from the Schools tab.
                     </td>
                   </tr>
                 )}

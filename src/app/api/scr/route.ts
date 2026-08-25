@@ -1,12 +1,13 @@
 import { z } from "zod";
-import { requireMisSession, AuthError } from "@/lib/session";
+import { requireFeatureSession, AuthError } from "@/lib/session";
 import { withApiErrors } from "@/lib/api";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/roles";
 
+/** The Single Central Record — every current staff member plus their KCSIE vetting checks. */
 export async function GET() {
   return withApiErrors(async () => {
-    const session = await requireMisSession();
+    const session = await requireFeatureSession("SCR");
     if (!isAdmin(session.user.role)) throw new AuthError("Admins only", 403);
 
     return prisma.user.findMany({
@@ -19,8 +20,6 @@ export async function GET() {
         id: true,
         name: true,
         email: true,
-        role: true,
-        jobTitle: true,
         isTeacher: true,
         staffProfile: true,
       },
@@ -28,29 +27,33 @@ export async function GET() {
   });
 }
 
-// Nullable-datetime fields share the same "undefined = don't touch, null = clear it,
-// string = set it" tri-state — this list drives both the schema and the update mapping below.
-// The remaining KCSIE checks (identity, right to work, barred list, ...) are deliberately NOT
-// editable here — they're gated behind the SCR feature flag and live at /api/scr instead, so a
-// school without that module enabled can't read or write them just by calling this endpoint.
-const DATE_FIELDS = ["dbsCheckDate", "startDate", "endDate", "safeguardingTrainingDate"] as const;
-
 const dateField = z.string().datetime().nullable().optional();
+
+const DATE_FIELDS = [
+  "identityCheckDate",
+  "rightToWorkCheckDate",
+  "barredListCheckDate",
+  "prohibitionCheckDate",
+  "qualificationsCheckedDate",
+  "referencesObtainedDate",
+  "overseasCheckDate",
+] as const;
 
 const upsertSchema = z.object({
   userId: z.string().min(1),
-  staffType: z.enum(["TEACHING", "TEACHING_ASSISTANT", "ADMIN", "SITE", "MIDDAY", "SENCO", "OTHER"]),
-  dbsNumber: z.string().max(60).nullable().optional(),
-  contractType: z.string().max(60).nullable().optional(),
-  dbsCheckDate: dateField,
-  startDate: dateField,
-  endDate: dateField,
-  safeguardingTrainingDate: dateField,
+  rightToWorkEvidence: z.string().max(100).nullable().optional(),
+  identityCheckDate: dateField,
+  rightToWorkCheckDate: dateField,
+  barredListCheckDate: dateField,
+  prohibitionCheckDate: dateField,
+  qualificationsCheckedDate: dateField,
+  referencesObtainedDate: dateField,
+  overseasCheckDate: dateField,
 });
 
 export async function POST(req: Request) {
   return withApiErrors(async () => {
-    const session = await requireMisSession();
+    const session = await requireFeatureSession("SCR");
     if (!isAdmin(session.user.role)) throw new AuthError("Admins only", 403);
     const { userId, ...body } = upsertSchema.parse(await req.json());
 
@@ -60,16 +63,14 @@ export async function POST(req: Request) {
     const dates = Object.fromEntries(
       DATE_FIELDS.map((f) => [f, body[f] === undefined ? undefined : body[f] ? new Date(body[f]) : null]),
     );
-    const data = {
-      staffType: body.staffType,
-      dbsNumber: body.dbsNumber,
-      contractType: body.contractType,
-      ...dates,
-    };
+    const data = { rightToWorkEvidence: body.rightToWorkEvidence, ...dates };
 
+    // A staff member's core StaffProfile row (staffType etc.) may not exist yet if an
+    // admin heads straight to the SCR page before visiting Staff records — default to
+    // "OTHER" rather than failing, since staffType isn't this page's concern.
     return prisma.staffProfile.upsert({
       where: { userId },
-      create: { tenantId: session.user.tenantId, userId, ...data },
+      create: { tenantId: session.user.tenantId, userId, staffType: "OTHER", ...data },
       update: data,
     });
   });
