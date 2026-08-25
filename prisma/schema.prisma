@@ -27,6 +27,18 @@ model Tenant {
   phase      SchoolPhase @default(PRIMARY)
   logoUrl    String?
   brandColor String      @default("#2563eb")
+
+  // Physical address and a named point of contact — neither is needed for the
+  // app to function (sign-in is domain-based, not address-based), but a real
+  // school onboarding wants this captured somewhere rather than nowhere, for
+  // correspondence, CTF exports, and just knowing who to call.
+  addressLine1    String?
+  addressLine2    String?
+  city            String?
+  postcode        String?
+  headteacherName String?
+  contactEmail    String?
+  contactPhone    String?
   /// A Federation (2+ schools sharing leadership) or Multi-Academy Trust this school belongs to, if any. Null for a standalone school.
   trustId    String?
   trust      Trust?      @relation(fields: [trustId], references: [id])

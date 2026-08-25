@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { PageHeader } from "@/components/ui/page-header";
@@ -17,6 +17,14 @@ type Tenant = {
   isActive: boolean;
   trustId: string | null;
   enabledFeatures: string[];
+  brandColor: string;
+  addressLine1: string | null;
+  addressLine2: string | null;
+  city: string | null;
+  postcode: string | null;
+  headteacherName: string | null;
+  contactEmail: string | null;
+  contactPhone: string | null;
   createdAt: string;
   _count: { users: number; pupils: number };
 };
@@ -94,6 +102,35 @@ export default function SuperAdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // "More details" on the Add school form — collapsed by default so onboarding a
+  // school stays a quick five-field form unless you actually have this to hand.
+  const [showMoreDetails, setShowMoreDetails] = useState(false);
+  const [newTrustId, setNewTrustId] = useState("");
+  const [newBrandColor, setNewBrandColor] = useState("#2563eb");
+  const [newAddressLine1, setNewAddressLine1] = useState("");
+  const [newAddressLine2, setNewAddressLine2] = useState("");
+  const [newCity, setNewCity] = useState("");
+  const [newPostcode, setNewPostcode] = useState("");
+  const [newHeadteacherName, setNewHeadteacherName] = useState("");
+  const [newContactEmail, setNewContactEmail] = useState("");
+  const [newContactPhone, setNewContactPhone] = useState("");
+  const [newFeatures, setNewFeatures] = useState<Set<FeatureKey>>(new Set());
+
+  // Inline "edit details" row for an existing school in the table below —
+  // only one open at a time, keyed by tenant id.
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editBrandColor, setEditBrandColor] = useState("#2563eb");
+  const [editAddressLine1, setEditAddressLine1] = useState("");
+  const [editAddressLine2, setEditAddressLine2] = useState("");
+  const [editCity, setEditCity] = useState("");
+  const [editPostcode, setEditPostcode] = useState("");
+  const [editHeadteacherName, setEditHeadteacherName] = useState("");
+  const [editContactEmail, setEditContactEmail] = useState("");
+  const [editContactPhone, setEditContactPhone] = useState("");
+  const [editUrn, setEditUrn] = useState("");
+  const [editError, setEditError] = useState<string | null>(null);
+  const [editSubmitting, setEditSubmitting] = useState(false);
+
   const [trusts, setTrusts] = useState<Trust[] | null>(null);
   const [trustName, setTrustName] = useState("");
   const [trustSlug, setTrustSlug] = useState("");
@@ -140,7 +177,23 @@ export default function SuperAdminPage() {
       const res = await fetch("/api/super-admin/tenants", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, slug, domain, phase, urn: urn || undefined }),
+        body: JSON.stringify({
+          name,
+          slug,
+          domain,
+          phase,
+          urn: urn || undefined,
+          trustId: newTrustId || undefined,
+          brandColor: newBrandColor,
+          addressLine1: newAddressLine1 || undefined,
+          addressLine2: newAddressLine2 || undefined,
+          city: newCity || undefined,
+          postcode: newPostcode || undefined,
+          headteacherName: newHeadteacherName || undefined,
+          contactEmail: newContactEmail || undefined,
+          contactPhone: newContactPhone || undefined,
+          enabledFeatures: newFeatures.size ? Array.from(newFeatures) : undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -151,6 +204,17 @@ export default function SuperAdminPage() {
       setSlug("");
       setDomain("");
       setUrn("");
+      setNewTrustId("");
+      setNewBrandColor("#2563eb");
+      setNewAddressLine1("");
+      setNewAddressLine2("");
+      setNewCity("");
+      setNewPostcode("");
+      setNewHeadteacherName("");
+      setNewContactEmail("");
+      setNewContactPhone("");
+      setNewFeatures(new Set());
+      setShowMoreDetails(false);
       loadTenants();
     } finally {
       setSubmitting(false);
@@ -174,6 +238,52 @@ export default function SuperAdminPage() {
     });
     loadTenants();
     loadTrusts();
+  }
+
+  function startEdit(t: Tenant) {
+    setEditingId((current) => (current === t.id ? null : t.id));
+    setEditError(null);
+    setEditBrandColor(t.brandColor || "#2563eb");
+    setEditAddressLine1(t.addressLine1 ?? "");
+    setEditAddressLine2(t.addressLine2 ?? "");
+    setEditCity(t.city ?? "");
+    setEditPostcode(t.postcode ?? "");
+    setEditHeadteacherName(t.headteacherName ?? "");
+    setEditContactEmail(t.contactEmail ?? "");
+    setEditContactPhone(t.contactPhone ?? "");
+    setEditUrn(t.urn ?? "");
+  }
+
+  async function saveEdit(id: string, e: React.FormEvent) {
+    e.preventDefault();
+    setEditSubmitting(true);
+    setEditError(null);
+    try {
+      const res = await fetch(`/api/super-admin/tenants/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          urn: editUrn || null,
+          brandColor: editBrandColor,
+          addressLine1: editAddressLine1 || null,
+          addressLine2: editAddressLine2 || null,
+          city: editCity || null,
+          postcode: editPostcode || null,
+          headteacherName: editHeadteacherName || null,
+          contactEmail: editContactEmail || null,
+          contactPhone: editContactPhone || null,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setEditError(describeApiError(data));
+        return;
+      }
+      setEditingId(null);
+      loadTenants();
+    } finally {
+      setEditSubmitting(false);
+    }
   }
 
   async function toggleFeature(tenantId: string, key: FeatureKey) {
@@ -346,6 +456,124 @@ export default function SuperAdminPage() {
                 className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
               />
             </div>
+            <div className="sm:col-span-2">
+              <button
+                type="button"
+                onClick={() => setShowMoreDetails((v) => !v)}
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+              >
+                {showMoreDetails ? "− Hide more details" : "+ Add more details (trust, address, contact, modules)"}
+              </button>
+            </div>
+
+            {showMoreDetails && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">Trust (optional)</label>
+                  <select
+                    value={newTrustId}
+                    onChange={(e) => setNewTrustId(e.target.value)}
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  >
+                    <option value="">Standalone</option>
+                    {trusts?.map((tr) => (
+                      <option key={tr.id} value={tr.id}>
+                        {tr.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">Brand colour</label>
+                  <input
+                    type="color"
+                    value={newBrandColor}
+                    onChange={(e) => setNewBrandColor(e.target.value)}
+                    className="mt-1 h-9 w-full rounded-md border border-slate-300 px-1 py-1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">Address line 1</label>
+                  <input
+                    value={newAddressLine1}
+                    onChange={(e) => setNewAddressLine1(e.target.value)}
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">Address line 2</label>
+                  <input
+                    value={newAddressLine2}
+                    onChange={(e) => setNewAddressLine2(e.target.value)}
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">City / town</label>
+                  <input
+                    value={newCity}
+                    onChange={(e) => setNewCity(e.target.value)}
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">Postcode</label>
+                  <input
+                    value={newPostcode}
+                    onChange={(e) => setNewPostcode(e.target.value.toUpperCase())}
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">Headteacher name</label>
+                  <input
+                    value={newHeadteacherName}
+                    onChange={(e) => setNewHeadteacherName(e.target.value)}
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">Contact email</label>
+                  <input
+                    type="email"
+                    value={newContactEmail}
+                    onChange={(e) => setNewContactEmail(e.target.value)}
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">Contact phone</label>
+                  <input
+                    value={newContactPhone}
+                    onChange={(e) => setNewContactPhone(e.target.value)}
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium text-slate-700">Modules to enable now (optional)</label>
+                  <div className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {FEATURE_KEYS.map((key) => (
+                      <label key={key} className="flex items-center gap-2 text-sm text-slate-700">
+                        <input
+                          type="checkbox"
+                          checked={newFeatures.has(key)}
+                          onChange={(e) =>
+                            setNewFeatures((prev) => {
+                              const next = new Set(prev);
+                              if (e.target.checked) next.add(key);
+                              else next.delete(key);
+                              return next;
+                            })
+                          }
+                        />
+                        {FEATURE_INFO[key].label}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+
             <div className="flex items-end">
               <Button type="submit" disabled={submitting}>
                 {submitting ? "Creating…" : "Add school"}
@@ -369,49 +597,145 @@ export default function SuperAdminPage() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {tenants?.map((t) => (
-                  <tr key={t.id}>
-                    <td className="p-4">
-                      <p className="font-medium text-slate-900">{t.name}</p>
-                      <p className="text-xs text-slate-700">/{t.slug} · {t.phase.replace(/_/g, " ")}</p>
-                    </td>
-                    <td className="p-4 text-slate-600">{t.domain}</td>
-                    <td className="p-4">
-                      <select
-                        value={t.trustId ?? ""}
-                        onChange={(e) => setTenantTrust(t.id, e.target.value)}
-                        className="rounded-md border border-slate-300 px-2 py-1 text-sm"
-                      >
-                        <option value="">Standalone</option>
-                        {trusts?.map((tr) => (
-                          <option key={tr.id} value={tr.id}>
-                            {tr.name}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="p-4 text-slate-600">{t._count.users}</td>
-                    <td className="p-4 text-slate-600">{t._count.pupils}</td>
-                    <td className="p-4">
-                      <button
-                        onClick={() => toggleActive(t.id, t.isActive)}
-                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          t.isActive ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-700"
-                        }`}
-                      >
-                        {t.isActive ? "Active" : "Suspended"}
-                      </button>
-                    </td>
-                    <td className="p-4 text-right">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => manageSchool(t.id)}
-                        disabled={managingId === t.id || !t.isActive}
-                      >
-                        {managingId === t.id ? "Opening…" : "Manage"}
-                      </Button>
-                    </td>
-                  </tr>
+                  <Fragment key={t.id}>
+                    <tr>
+                      <td className="p-4">
+                        <p className="font-medium text-slate-900">{t.name}</p>
+                        <p className="text-xs text-slate-700">/{t.slug} · {t.phase.replace(/_/g, " ")}</p>
+                      </td>
+                      <td className="p-4 text-slate-600">{t.domain}</td>
+                      <td className="p-4">
+                        <select
+                          value={t.trustId ?? ""}
+                          onChange={(e) => setTenantTrust(t.id, e.target.value)}
+                          className="rounded-md border border-slate-300 px-2 py-1 text-sm"
+                        >
+                          <option value="">Standalone</option>
+                          {trusts?.map((tr) => (
+                            <option key={tr.id} value={tr.id}>
+                              {tr.name}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="p-4 text-slate-600">{t._count.users}</td>
+                      <td className="p-4 text-slate-600">{t._count.pupils}</td>
+                      <td className="p-4">
+                        <button
+                          onClick={() => toggleActive(t.id, t.isActive)}
+                          className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                            t.isActive ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-700"
+                          }`}
+                        >
+                          {t.isActive ? "Active" : "Suspended"}
+                        </button>
+                      </td>
+                      <td className="p-4 text-right space-x-2 whitespace-nowrap">
+                        <Button variant="secondary" size="sm" onClick={() => startEdit(t)}>
+                          {editingId === t.id ? "Close" : "Details"}
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => manageSchool(t.id)}
+                          disabled={managingId === t.id || !t.isActive}
+                        >
+                          {managingId === t.id ? "Opening…" : "Manage"}
+                        </Button>
+                      </td>
+                    </tr>
+                    {editingId === t.id && (
+                      <tr>
+                        <td colSpan={7} className="bg-slate-50 p-4">
+                          <form onSubmit={(e) => saveEdit(t.id, e)} className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700">DfE URN</label>
+                              <input
+                                value={editUrn}
+                                onChange={(e) => setEditUrn(e.target.value)}
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700">Brand colour</label>
+                              <input
+                                type="color"
+                                value={editBrandColor}
+                                onChange={(e) => setEditBrandColor(e.target.value)}
+                                className="mt-1 h-9 w-full rounded-md border border-slate-300 px-1 py-1"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700">Headteacher name</label>
+                              <input
+                                value={editHeadteacherName}
+                                onChange={(e) => setEditHeadteacherName(e.target.value)}
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700">Address line 1</label>
+                              <input
+                                value={editAddressLine1}
+                                onChange={(e) => setEditAddressLine1(e.target.value)}
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700">Address line 2</label>
+                              <input
+                                value={editAddressLine2}
+                                onChange={(e) => setEditAddressLine2(e.target.value)}
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700">City / town</label>
+                              <input
+                                value={editCity}
+                                onChange={(e) => setEditCity(e.target.value)}
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700">Postcode</label>
+                              <input
+                                value={editPostcode}
+                                onChange={(e) => setEditPostcode(e.target.value.toUpperCase())}
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700">Contact email</label>
+                              <input
+                                type="email"
+                                value={editContactEmail}
+                                onChange={(e) => setEditContactEmail(e.target.value)}
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700">Contact phone</label>
+                              <input
+                                value={editContactPhone}
+                                onChange={(e) => setEditContactPhone(e.target.value)}
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                              />
+                            </div>
+                            <div className="flex items-end gap-2">
+                              <Button type="submit" size="sm" disabled={editSubmitting}>
+                                {editSubmitting ? "Saving…" : "Save details"}
+                              </Button>
+                              <Button type="button" variant="secondary" size="sm" onClick={() => setEditingId(null)}>
+                                Cancel
+                              </Button>
+                            </div>
+                            {editError && <p className="sm:col-span-3 text-sm text-red-600">{editError}</p>}
+                          </form>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
                 ))}
                 {tenants?.length === 0 && (
                   <tr>

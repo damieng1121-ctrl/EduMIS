@@ -2,6 +2,7 @@ import { z } from "zod";
 import { requireRole } from "@/lib/session";
 import { withApiErrors } from "@/lib/api";
 import { prisma } from "@/lib/db";
+import { FEATURE_KEYS } from "@/lib/features";
 
 export async function GET() {
   return withApiErrors(async () => {
@@ -35,6 +36,16 @@ const createSchema = z.object({
   urn: z.string().trim().max(20).optional(),
   /// Assign this school to a Federation/Trust at creation time — optional, can also be set later via PATCH.
   trustId: z.string().nullable().optional(),
+  brandColor: z.string().trim().regex(/^#[0-9a-fA-F]{6}$/, "Must be a hex colour, e.g. #2563eb").optional(),
+  addressLine1: z.string().trim().max(200).optional(),
+  addressLine2: z.string().trim().max(200).optional(),
+  city: z.string().trim().max(100).optional(),
+  postcode: z.string().trim().max(20).optional(),
+  headteacherName: z.string().trim().max(150).optional(),
+  contactEmail: z.string().trim().email().max(150).optional(),
+  contactPhone: z.string().trim().max(30).optional(),
+  /// Modules to switch on immediately, instead of a separate trip to the Features tab after onboarding.
+  enabledFeatures: z.array(z.enum(FEATURE_KEYS as [string, ...string[]])).optional(),
 });
 
 export async function POST(req: Request) {

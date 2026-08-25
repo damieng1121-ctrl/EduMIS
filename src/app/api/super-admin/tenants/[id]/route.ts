@@ -12,6 +12,15 @@ const bodySchema = z.object({
   trustId: z.string().nullable().optional(),
   /// Full replacement list of this school's optional-module toggles (see src/lib/features.ts).
   enabledFeatures: z.array(z.enum(FEATURE_KEYS as [string, ...string[]])).optional(),
+  urn: z.string().trim().max(20).nullable().optional(),
+  brandColor: z.string().trim().regex(/^#[0-9a-fA-F]{6}$/, "Must be a hex colour, e.g. #2563eb").optional(),
+  addressLine1: z.string().trim().max(200).nullable().optional(),
+  addressLine2: z.string().trim().max(200).nullable().optional(),
+  city: z.string().trim().max(100).nullable().optional(),
+  postcode: z.string().trim().max(20).nullable().optional(),
+  headteacherName: z.string().trim().max(150).nullable().optional(),
+  contactEmail: z.string().trim().email().max(150).nullable().optional(),
+  contactPhone: z.string().trim().max(30).nullable().optional(),
 });
 
 export async function PATCH(req: Request, { params }: Params) {
