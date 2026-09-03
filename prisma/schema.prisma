@@ -905,6 +905,8 @@ model ParentMessage {
   audience MessageAudience
   /// Depending on `audience`: a YearGroup value, a FormGroup id, or a Pupil id. Null for ALL_PARENTS.
   audienceRef String?
+  /// Sent as an SMS alert (attendance/safeguarding-grade) as well as email, to every guardian with a phone number on file.
+  urgentSms Boolean @default(false)
 
   sentAt DateTime @default(now())
 

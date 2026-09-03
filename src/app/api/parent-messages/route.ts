@@ -2,7 +2,7 @@ import { z } from "zod";
 import { requireMisSession, AuthError } from "@/lib/session";
 import { withApiErrors } from "@/lib/api";
 import { prisma } from "@/lib/db";
-import { getNotificationProvider } from "@/lib/notifications";
+import { getNotificationProvider, getSmsProvider, toE164UK } from "@/lib/notifications";
 
 export async function GET() {
   return withApiErrors(async () => {
@@ -20,6 +20,8 @@ const createSchema = z.object({
   body: z.string().min(1).max(10000),
   audience: z.enum(["ALL_PARENTS", "YEAR_GROUP", "FORM_GROUP", "INDIVIDUAL"]),
   audienceRef: z.string().min(1).optional().nullable(),
+  /// Attendance/safeguarding-grade messages where email alone isn't reliable enough — also SMS every guardian with a phone number on file, not just email everyone.
+  urgent: z.boolean().optional(),
 });
 
 async function resolveGuardianIds(tenantId: string, audience: string, audienceRef: string | null | undefined): Promise<string[]> {
@@ -66,6 +68,7 @@ export async function POST(req: Request) {
         body: body.body,
         audience: body.audience,
         audienceRef: body.audience === "ALL_PARENTS" ? null : body.audienceRef,
+        urgentSms: body.urgent ?? false,
       },
     });
 
@@ -73,7 +76,7 @@ export async function POST(req: Request) {
       data: guardianIds.map((guardianId) => ({ tenantId: session.user.tenantId, messageId: message.id, guardianId })),
     });
 
-    const guardians = await prisma.user.findMany({ where: { id: { in: guardianIds } }, select: { email: true } });
+    const guardians = await prisma.user.findMany({ where: { id: { in: guardianIds } }, select: { email: true, phone: true } });
     const notifications = getNotificationProvider();
     await Promise.all(
       guardians.map((g) =>
@@ -85,6 +88,19 @@ export async function POST(req: Request) {
         }),
       ),
     );
+
+    if (body.urgent) {
+      const sms = getSmsProvider();
+      const numbers = guardians.map((g) => g.phone).filter((p): p is string => !!p).map(toE164UK).filter((p): p is string => !!p);
+      await Promise.all(
+        numbers.map((to) =>
+          sms.send({
+            to,
+            body: `School alert - ${body.subject}: ${body.body}`.slice(0, 320),
+          }),
+        ),
+      );
+    }
 
     return message;
   });

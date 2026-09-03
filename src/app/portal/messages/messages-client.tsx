@@ -18,6 +18,7 @@ type SentMessage = {
   body: string;
   audience: Audience;
   audienceRef: string | null;
+  urgentSms: boolean;
   sentAt: string;
   sender: { name: string | null; email: string | null };
   _count: { recipients: number };
@@ -35,6 +36,7 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
   const [body, setBody] = useState("");
   const [audience, setAudience] = useState<Audience>("ALL_PARENTS");
   const [audienceRef, setAudienceRef] = useState("");
+  const [urgent, setUrgent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,7 +55,7 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
       const res = await fetch("/api/parent-messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject, body, audience, audienceRef: audience === "ALL_PARENTS" ? undefined : audienceRef }),
+        body: JSON.stringify({ subject, body, audience, audienceRef: audience === "ALL_PARENTS" ? undefined : audienceRef, urgent }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -64,6 +66,7 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
       setBody("");
       setAudience("ALL_PARENTS");
       setAudienceRef("");
+      setUrgent(false);
       setShowForm(false);
       load();
     } finally {
@@ -129,6 +132,11 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
             )}
           </div>
 
+          <label className="flex items-center gap-2 text-sm text-slate-700">
+            <input type="checkbox" checked={urgent} onChange={(e) => setUrgent(e.target.checked)} />
+            Also send as an urgent SMS alert (attendance/safeguarding-grade only — goes to every guardian with a phone number on file)
+          </label>
+
           {error && <p className="text-sm text-red-600">{error}</p>}
           <Button type="submit" disabled={submitting}>
             {submitting ? "Sending…" : "Send message"}
@@ -151,7 +159,12 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
             {messages?.map((m) => (
               <tr key={m.id}>
                 <td className="p-4">
-                  <p className="font-medium text-slate-900">{m.subject}</p>
+                  <p className="font-medium text-slate-900">
+                    {m.subject}
+                    {m.urgentSms && (
+                      <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-xs font-medium text-rose-700">SMS sent</span>
+                    )}
+                  </p>
                   <p className="text-xs text-slate-700">{m.sender.name ?? m.sender.email}</p>
                 </td>
                 <td className="p-4 text-slate-600">{m.audience.replace("_", " ")}{m.audienceRef ? ` (${m.audienceRef})` : ""}</td>
