@@ -104,7 +104,13 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
             {pupil.formGroup ? ` · ${pupil.formGroup.name}` : ""}
           </p>
         </div>
-        <div className="flex flex-wrap justify-end gap-1.5">
+        <div className="flex flex-wrap items-start justify-end gap-1.5">
+          <Link
+            href={`/portal/pupils/${pupil.id}/report`}
+            className="rounded-md border border-slate-300 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+          >
+            Report
+          </Link>
           {pupil.sendStatus !== "NONE" && (
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${SEND_STYLES[pupil.sendStatus]}`}>
               {pupil.sendStatus === "SEND_SUPPORT" ? "SEND Support" : "EHCP"}

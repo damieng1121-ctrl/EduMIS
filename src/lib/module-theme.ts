@@ -24,6 +24,7 @@ import {
   Network,
   Puzzle,
   History,
+  UserPlus,
 } from "lucide-react";
 
 export type ModuleKey =
@@ -50,7 +51,8 @@ export type ModuleKey =
   | "scr"
   | "features"
   | "wonde"
-  | "audit-log";
+  | "audit-log"
+  | "admissions";
 
 /**
  * Literal (never interpolated) Tailwind classes — required for the JIT
@@ -101,4 +103,5 @@ export const MODULE_THEME: Record<ModuleKey, { icon: LucideIcon; badge: string }
   features: { icon: Puzzle, badge: BADGE.violet },
   wonde: { icon: Network, badge: BADGE.orange },
   "audit-log": { icon: History, badge: BADGE.slate },
+  admissions: { icon: UserPlus, badge: BADGE.sky },
 };

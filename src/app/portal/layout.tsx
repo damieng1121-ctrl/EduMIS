@@ -45,13 +45,15 @@ export default async function PortalLayout({ children }: LayoutProps<"/portal">)
         isTeacher={isActing ? true : session.user.isTeacher}
       />
       {isActing && (
-        <ActingBanner
-          tenantName={tenant?.name ?? "this school"}
-          actorLabel={session.user.role === "TRUST_ADMIN" ? "a Trust leader" : "an EduMIS platform admin"}
-          exitHref={session.user.role === "TRUST_ADMIN" ? "/portal/trust-admin" : "/portal/super-admin"}
-        />
+        <div className="print:hidden">
+          <ActingBanner
+            tenantName={tenant?.name ?? "this school"}
+            actorLabel={session.user.role === "TRUST_ADMIN" ? "a Trust leader" : "an EduMIS platform admin"}
+            exitHref={session.user.role === "TRUST_ADMIN" ? "/portal/trust-admin" : "/portal/super-admin"}
+          />
+        </div>
       )}
-      <main className="mx-auto w-full max-w-[1600px] flex-1 p-8">{children}</main>
+      <main className="mx-auto w-full max-w-[1600px] flex-1 p-8 print:max-w-none print:p-0">{children}</main>
     </div>
   );
 }

@@ -29,6 +29,7 @@ import {
   ShieldAlert,
   Network,
   History,
+  UserPlus,
   type LucideIcon,
 } from "lucide-react";
 import { canAccessMis } from "@/lib/roles";
@@ -69,6 +70,7 @@ const links: NavLink[] = [
   { href: "/portal/admin/users", label: "Users", icon: Users, roles: ["TENANT_ADMIN"] },
   { href: "/portal/admin/audit-log", label: "Audit log", icon: History, roles: ["TENANT_ADMIN"] },
   { href: "/portal/admin/wonde", label: "Wonde", icon: Network, roles: ["TENANT_ADMIN"], feature: "WONDE" },
+  { href: "/portal/admin/admissions", label: "Admissions", icon: UserPlus, roles: ["TENANT_ADMIN"], feature: "ADMISSIONS" },
   { href: "/portal/admin/settings", label: "Settings", icon: Settings, roles: ["TENANT_ADMIN"] },
   { href: "/portal/super-admin", label: "Schools", icon: School, roles: ["SUPER_ADMIN"] },
   { href: "/portal/trust-admin", label: "My Trust", icon: School, roles: ["TRUST_ADMIN"] },
@@ -125,7 +127,7 @@ export function PortalNav({
   const barStyle = sidebarColor ? { backgroundColor: sidebarColor } : DEFAULT_BAR_STYLE;
 
   return (
-    <header className="sticky top-0 z-20 shadow-md" style={barStyle}>
+    <header className="sticky top-0 z-20 shadow-md print:hidden" style={barStyle}>
       <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-6 py-3">
         <div className="flex min-w-0 items-center gap-3">
           {hasLogo ? (

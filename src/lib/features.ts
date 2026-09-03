@@ -4,9 +4,9 @@
  * Tenant.enabledFeatures (see schema.prisma) — this file is the single
  * source of truth for what those strings mean.
  */
-export type FeatureKey = "CTF_EXCHANGE" | "SCR" | "CENSUS_EXTENDED" | "WONDE";
+export type FeatureKey = "CTF_EXCHANGE" | "SCR" | "CENSUS_EXTENDED" | "WONDE" | "ADMISSIONS";
 
-export const FEATURE_KEYS: FeatureKey[] = ["CTF_EXCHANGE", "SCR", "CENSUS_EXTENDED", "WONDE"];
+export const FEATURE_KEYS: FeatureKey[] = ["CTF_EXCHANGE", "SCR", "CENSUS_EXTENDED", "WONDE", "ADMISSIONS"];
 
 export const FEATURE_INFO: Record<FeatureKey, { label: string; description: string }> = {
   CTF_EXCHANGE: {
@@ -24,6 +24,10 @@ export const FEATURE_INFO: Record<FeatureKey, { label: string; description: stri
   WONDE: {
     label: "Wonde integration",
     description: "Sync rosters/timetables to third-party apps via Wonde. Requires the school's own Wonde partner credentials.",
+  },
+  ADMISSIONS: {
+    label: "Admissions",
+    description: "Track prospective-pupil applications through offer/acceptance and manage a per-year-group waiting list.",
   },
 };
 

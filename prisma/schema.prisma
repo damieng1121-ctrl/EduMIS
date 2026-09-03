@@ -68,6 +68,8 @@ model Tenant {
   pupilGuardians           PupilGuardian[]
   attendanceRecords        AttendanceRecord[]
   behaviourIncidents       BehaviourIncident[]
+  behaviourPointsEntries   BehaviourPointsEntry[]
+  detentions               Detention[]
   accidentReports          AccidentReport[]
   exclusions               Exclusion[]
   sendPlans                SendPlan[]
@@ -86,6 +88,7 @@ model Tenant {
   parentMessageRecipients  ParentMessageRecipient[]
   ctfExchanges             CtfExchange[]
   wondeConnection          WondeConnection?
+  admissionApplications    AdmissionApplication[]
 }
 
 enum SchoolPhase {
@@ -165,6 +168,8 @@ model User {
   guardianOf                  PupilGuardian[]           @relation("GuardianLinks")
   attendanceRecordsRecorded   AttendanceRecord[]        @relation("AttendanceRecordedBy")
   behaviourIncidentsRecorded  BehaviourIncident[]       @relation("BehaviourRecordedBy")
+  behaviourPointsAwarded      BehaviourPointsEntry[]    @relation("PointsAwardedBy")
+  detentionsScheduled         Detention[]               @relation("DetentionScheduledBy")
   accidentReportsReported     AccidentReport[]          @relation("AccidentReportedBy")
   accidentReportsFirstAid     AccidentReport[]          @relation("AccidentFirstAidBy")
   exclusionsRecorded           Exclusion[]               @relation("ExclusionRecordedBy")
@@ -379,6 +384,8 @@ model Pupil {
   guardians          PupilGuardian[]
   attendanceRecords  AttendanceRecord[]
   behaviourIncidents BehaviourIncident[]
+  behaviourPoints    BehaviourPointsEntry[]
+  detentions         Detention[]
   accidentReports    AccidentReport[]
   exclusions         Exclusion[]
   sendPlans          SendPlan[]
@@ -492,6 +499,66 @@ model BehaviourIncident {
 
   recordedById String
   recordedBy   User   @relation("BehaviourRecordedBy", fields: [recordedById], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([tenantId, pupilId])
+  @@index([tenantId, date])
+}
+
+enum PointsCategory {
+  ACHIEVEMENT
+  EFFORT
+  KINDNESS
+  ATTENDANCE
+  CONDUCT
+  OTHER
+}
+
+/// Rewards/sanctions points ledger — separate from BehaviourIncident.points since
+/// not every point award (e.g. a merit for good work) has an incident behind it.
+/// Running totals are derived by summing this table, not stored on Pupil.
+model BehaviourPointsEntry {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  pupilId  String
+  pupil    Pupil  @relation(fields: [pupilId], references: [id], onDelete: Cascade)
+
+  date     DateTime       @default(now())
+  points   Int
+  category PointsCategory @default(OTHER)
+  reason   String         @db.Text
+
+  awardedById String
+  awardedBy   User   @relation("PointsAwardedBy", fields: [awardedById], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([tenantId, pupilId])
+  @@index([tenantId, date])
+}
+
+enum DetentionStatus {
+  SCHEDULED
+  ATTENDED
+  MISSED
+}
+
+model Detention {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  pupilId  String
+  pupil    Pupil  @relation(fields: [pupilId], references: [id], onDelete: Cascade)
+
+  date     DateTime
+  reason   String          @db.Text
+  location String?
+  status   DetentionStatus @default(SCHEDULED)
+
+  scheduledById String
+  scheduledBy   User   @relation("DetentionScheduledBy", fields: [scheduledById], references: [id])
 
   createdAt DateTime @default(now())
 
@@ -978,4 +1045,56 @@ model WondeConnection {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum AdmissionApplicationType {
+  NORMAL_ROUND
+  IN_YEAR
+}
+
+enum AdmissionStatus {
+  RECEIVED
+  OFFERED
+  WAITING_LIST
+  ACCEPTED
+  DECLINED
+  WITHDRAWN
+}
+
+/// A prospective pupil's application, from first contact through to a place offered/accepted or
+/// declined — not yet a Pupil record, so it deliberately doesn't reuse Pupil's guardian relation
+/// or address fields: an applicant may never enrol, and this module's correspondence needs are
+/// far simpler than a live pupil's. waitingListPosition is only meaningful while status is
+/// WAITING_LIST — see the [id] PATCH route for how it's assigned/cleared.
+model AdmissionApplication {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  firstName          String
+  lastName           String
+  dob                DateTime
+  gender             Gender
+  preferredYearGroup YearGroup
+  applicationType    AdmissionApplicationType
+  status             AdmissionStatus          @default(RECEIVED)
+  /// Position in this year group's waiting list — lower is earlier. Only set while status is WAITING_LIST.
+  waitingListPosition Int?
+
+  guardianName  String
+  guardianEmail String?
+  guardianPhone String?
+
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  postcode     String?
+
+  notes String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId, status])
+  @@index([tenantId, preferredYearGroup, waitingListPosition])
 }

@@ -236,6 +236,61 @@ an authenticated API route (`/api/tenant/logo`), never from `public/`.
 logging in dev otherwise, silently disabled in production without SMTP configured. It's
 platform-wide, not per-tenant (schools don't bring their own mail server).
 
+## Backups & data retention
+
+### Backups
+
+Today's deployment (`docker-compose.yml`) stores everything in a single named Postgres
+volume (`edumis-db-data`) — **there is currently no backup process of any kind**. A host
+disk failure, a bad migration, or a stray `docker compose down -v` loses the entire
+school's data with nothing to recover from.
+
+A concrete starting point that doesn't require new infrastructure: a daily cron job (or
+a small scheduled container) that dumps the database and ships the dump off the host
+immediately, e.g.
+
+```bash
+docker compose exec -T db pg_dump -U postgres edumis | gzip > backup-$(date +%Y%m%d).sql.gz
+```
+
+The resulting file should be pushed straight to off-site object storage (S3-compatible —
+AWS S3, Cloudflare R2, GCS, etc.) rather than left next to the database it's backing up.
+A reasonable starting retention *for the backup files themselves* — daily snapshots kept
+30 days, weekly snapshots kept a year — is a suggestion to adapt, not a mandate; match it
+to the school's own risk tolerance and whatever their IT support/DPO expects.
+
+None of this is wired up in this repo yet: no cron entry, no backup container, no restore
+drill. A backup that's never been restored isn't a tested backup — whatever mechanism
+gets set up should have at least one practice restore before it's trusted.
+
+### Data retention
+
+This system does **not** implement any automatic retention or deletion policy — every
+record persists indefinitely once created, until someone deletes it by hand. For a
+product intended to hold children's special category data, that's a real compliance gap
+a deploying school needs to close before go-live, not something this codebase can safely
+guess at.
+
+UK schools' statutory retention periods vary by record type — pupil files, SEN/EHCP
+records, safeguarding records, and staff vetting (SCR) records don't share one rule, and
+safeguarding-related records in particular carry longer/special retention requirements.
+This project deliberately does not hardcode any specific retention period: consult the
+current **IRMS (Information and Records Management Society) Records Management Toolkit
+for Schools**, or the school's own Data Protection Officer, for the correct period per
+record type, and build (or manually run) a deletion/review process around it.
+
+What already exists to help with that process:
+- **Pupil soft-delete / hard-delete** (`src/app/api/pupils/[id]/route.ts`) — setting
+  `isDeleted` hides a pupil from normal views but keeps the row (recoverable from the
+  trash bin); a separate admin-only `DELETE` permanently removes it. Both are manual,
+  one pupil at a time — nothing runs this automatically once a retention period elapses.
+- **Audit log** (`src/lib/audit.ts`, `/portal/admin/audit-log`) — every pupil view,
+  update, and delete (plus SEND/SCR access) is recorded with who and when, which is
+  itself useful evidence for a retention/disposal review.
+
+Turning "consult the IRMS Toolkit" into an actual scheduled deletion job, per record
+type, is a real next step for a production deployment — not something implemented here.
+
 ## What's not built yet
 
 - Per-tenant configurable notification triggers (e.g. attendance-threshold alerts to
