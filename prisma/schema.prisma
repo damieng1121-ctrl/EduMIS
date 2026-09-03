@@ -40,16 +40,16 @@ model Tenant {
   contactEmail    String?
   contactPhone    String?
   /// A Federation (2+ schools sharing leadership) or Multi-Academy Trust this school belongs to, if any. Null for a standalone school.
-  trustId    String?
-  trust      Trust?      @relation(fields: [trustId], references: [id])
+  trustId         String?
+  trust           Trust?   @relation(fields: [trustId], references: [id])
   /// Overrides the "EduMIS" wordmark in the portal nav header, for schools that want to fully rebrand.
-  appName    String?
+  appName         String?
   /// Portal nav sidebar background colour. Defaults to the app's standard white sidebar when unset.
-  sidebarColor String?
-  timezone   String      @default("Europe/London")
-  isActive   Boolean     @default(true)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  sidebarColor    String?
+  timezone        String   @default("Europe/London")
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   /// Staff nav modules this school has hidden (values match PortalNav's link hrefs), e.g. ["/portal/clubs"].
   disabledNavItems String[] @default([])
@@ -59,36 +59,38 @@ model Tenant {
   /// Empty by default — every school starts on the core feature set only.
   enabledFeatures String[] @default([])
 
-  users                 User[]
-  auditLogs             AuditLog[]
+  users     User[]
+  auditLogs AuditLog[]
 
-  academicYears            AcademicYear[]
-  formGroups               FormGroup[]
-  pupils                   Pupil[]
-  pupilGuardians           PupilGuardian[]
-  attendanceRecords        AttendanceRecord[]
-  behaviourIncidents       BehaviourIncident[]
-  behaviourPointsEntries   BehaviourPointsEntry[]
-  detentions               Detention[]
-  accidentReports          AccidentReport[]
-  exclusions               Exclusion[]
-  sendPlans                SendPlan[]
-  assessmentSubjects       AssessmentSubject[]
-  assessmentResults        AssessmentResult[]
-  pupilTargets             PupilTarget[]
-  mealRecords              MealRecord[]
-  clubs                    Club[]
-  clubMemberships          ClubMembership[]
-  staffProfiles            StaffProfile[]
-  interventions            Intervention[]
-  interventionNotes        InterventionNote[]
-  parentsEveningEvents     ParentsEveningEvent[]
-  appointmentSlots         AppointmentSlot[]
-  parentMessages           ParentMessage[]
-  parentMessageRecipients  ParentMessageRecipient[]
-  ctfExchanges             CtfExchange[]
-  wondeConnection          WondeConnection?
-  admissionApplications    AdmissionApplication[]
+  academicYears           AcademicYear[]
+  formGroups              FormGroup[]
+  pupils                  Pupil[]
+  pupilGuardians          PupilGuardian[]
+  attendanceRecords       AttendanceRecord[]
+  behaviourIncidents      BehaviourIncident[]
+  behaviourPointsEntries  BehaviourPointsEntry[]
+  detentions              Detention[]
+  accidentReports         AccidentReport[]
+  exclusions              Exclusion[]
+  sendPlans               SendPlan[]
+  assessmentSubjects      AssessmentSubject[]
+  assessmentResults       AssessmentResult[]
+  pupilTargets            PupilTarget[]
+  mealRecords             MealRecord[]
+  clubs                   Club[]
+  clubMemberships         ClubMembership[]
+  staffProfiles           StaffProfile[]
+  interventions           Intervention[]
+  interventionNotes       InterventionNote[]
+  parentsEveningEvents    ParentsEveningEvent[]
+  appointmentSlots        AppointmentSlot[]
+  parentMessages          ParentMessage[]
+  parentMessageRecipients ParentMessageRecipient[]
+  ctfExchanges            CtfExchange[]
+  wondeConnection         WondeConnection?
+  admissionApplications   AdmissionApplication[]
+  timetableSlots          TimetableSlot[]
+  coverAssignments        CoverAssignment[]
 }
 
 enum SchoolPhase {
@@ -162,31 +164,34 @@ model User {
   /// SMS-ready contact number; no SMS provider is wired up yet.
   phone              String?
 
-  auditLogs                     AuditLog[]
+  auditLogs AuditLog[]
 
-  formGroupsLed               FormGroup[]               @relation("FormGroupStaffLead")
-  guardianOf                  PupilGuardian[]           @relation("GuardianLinks")
-  attendanceRecordsRecorded   AttendanceRecord[]        @relation("AttendanceRecordedBy")
-  behaviourIncidentsRecorded  BehaviourIncident[]       @relation("BehaviourRecordedBy")
-  behaviourPointsAwarded      BehaviourPointsEntry[]    @relation("PointsAwardedBy")
-  detentionsScheduled         Detention[]               @relation("DetentionScheduledBy")
-  accidentReportsReported     AccidentReport[]          @relation("AccidentReportedBy")
-  accidentReportsFirstAid     AccidentReport[]          @relation("AccidentFirstAidBy")
-  exclusionsRecorded           Exclusion[]               @relation("ExclusionRecordedBy")
-  sendPlansCreated             SendPlan[]                @relation("SendPlanCreatedBy")
-  assessmentResultsRecorded   AssessmentResult[]        @relation("AssessmentTeacher")
-  pupilTargetsCreated          PupilTarget[]             @relation("PupilTargetCreatedBy")
-  mealRecordsRecorded          MealRecord[]              @relation("MealRecordedBy")
-  clubsLed                     Club[]                    @relation("ClubStaffLead")
-  staffProfile                  StaffProfile?
-  interventionsProvided        Intervention[]            @relation("InterventionProvider")
-  interventionNotesAuthored    InterventionNote[]        @relation("InterventionNoteAuthor")
-  parentsEveningEventsCreated  ParentsEveningEvent[]      @relation("ParentsEveningCreatedBy")
-  appointmentSlotsAsTeacher    AppointmentSlot[]          @relation("AppointmentTeacher")
-  appointmentSlotsAsGuardian   AppointmentSlot[]          @relation("AppointmentGuardian")
-  ctfExchangesPerformed        CtfExchange[]              @relation("CtfExchangePerformedBy")
-  parentMessagesSent           ParentMessage[]            @relation("ParentMessageSender")
-  parentMessageRecipientOf     ParentMessageRecipient[]   @relation("ParentMessageRecipientGuardian")
+  formGroupsLed               FormGroup[]              @relation("FormGroupStaffLead")
+  guardianOf                  PupilGuardian[]          @relation("GuardianLinks")
+  attendanceRecordsRecorded   AttendanceRecord[]       @relation("AttendanceRecordedBy")
+  behaviourIncidentsRecorded  BehaviourIncident[]      @relation("BehaviourRecordedBy")
+  behaviourPointsAwarded      BehaviourPointsEntry[]   @relation("PointsAwardedBy")
+  detentionsScheduled         Detention[]              @relation("DetentionScheduledBy")
+  accidentReportsReported     AccidentReport[]         @relation("AccidentReportedBy")
+  accidentReportsFirstAid     AccidentReport[]         @relation("AccidentFirstAidBy")
+  exclusionsRecorded          Exclusion[]              @relation("ExclusionRecordedBy")
+  sendPlansCreated            SendPlan[]               @relation("SendPlanCreatedBy")
+  assessmentResultsRecorded   AssessmentResult[]       @relation("AssessmentTeacher")
+  pupilTargetsCreated         PupilTarget[]            @relation("PupilTargetCreatedBy")
+  mealRecordsRecorded         MealRecord[]             @relation("MealRecordedBy")
+  clubsLed                    Club[]                   @relation("ClubStaffLead")
+  staffProfile                StaffProfile?
+  interventionsProvided       Intervention[]           @relation("InterventionProvider")
+  interventionNotesAuthored   InterventionNote[]       @relation("InterventionNoteAuthor")
+  parentsEveningEventsCreated ParentsEveningEvent[]    @relation("ParentsEveningCreatedBy")
+  appointmentSlotsAsTeacher   AppointmentSlot[]        @relation("AppointmentTeacher")
+  appointmentSlotsAsGuardian  AppointmentSlot[]        @relation("AppointmentGuardian")
+  ctfExchangesPerformed       CtfExchange[]            @relation("CtfExchangePerformedBy")
+  parentMessagesSent          ParentMessage[]          @relation("ParentMessageSender")
+  parentMessageRecipientOf    ParentMessageRecipient[] @relation("ParentMessageRecipientGuardian")
+  timetableSlotsTaught        TimetableSlot[]          @relation("TimetableSlotTeacher")
+  coverAssignmentsAbsent      CoverAssignment[]        @relation("CoverAssignmentAbsentTeacher")
+  coverAssignmentsCovering    CoverAssignment[]        @relation("CoverAssignmentCoveringTeacher")
 
   @@index([tenantId])
 }
@@ -329,7 +334,8 @@ model FormGroup {
   staffLeadId String?
   staffLead   User?   @relation("FormGroupStaffLead", fields: [staffLeadId], references: [id])
 
-  pupils Pupil[]
+  pupils         Pupil[]
+  timetableSlots TimetableSlot[]
 
   @@unique([tenantId, academicYearId, name])
 }
@@ -362,9 +368,9 @@ model Pupil {
   city         String?
   postcode     String?
 
-  sendStatus     SendStatus @default(NONE)
-  pupilPremium   Boolean    @default(false)
-  freeSchoolMeals Boolean   @default(false)
+  sendStatus      SendStatus @default(NONE)
+  pupilPremium    Boolean    @default(false)
+  freeSchoolMeals Boolean    @default(false)
 
   /// EYFS Profile early learning goal scores (Reception year only) — {goalKey: "emerging"|"expecting"|"exceeding"}.
   /// Kept as JSON rather than 17 individual columns since only Reception-year pupils ever populate it.
@@ -402,21 +408,21 @@ model Pupil {
 }
 
 model PupilGuardian {
-  id       String @id @default(cuid())
-  tenantId String
-  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  pupilId  String
-  pupil    Pupil  @relation(fields: [pupilId], references: [id], onDelete: Cascade)
+  id         String @id @default(cuid())
+  tenantId   String
+  tenant     Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  pupilId    String
+  pupil      Pupil  @relation(fields: [pupilId], references: [id], onDelete: Cascade)
   /// A User with role=PARENT
   guardianId String
   guardian   User   @relation("GuardianLinks", fields: [guardianId], references: [id], onDelete: Cascade)
 
-  relationship          PupilGuardianRelationship @default(OTHER)
-  parentalResponsibility Boolean                  @default(true)
-  isPrimaryContact       Boolean                  @default(false)
-  isEmergencyContact     Boolean                  @default(true)
-  canCollect             Boolean                  @default(true)
-  priorityOrder          Int                      @default(0)
+  relationship           PupilGuardianRelationship @default(OTHER)
+  parentalResponsibility Boolean                   @default(true)
+  isPrimaryContact       Boolean                   @default(false)
+  isEmergencyContact     Boolean                   @default(true)
+  canCollect             Boolean                   @default(true)
+  priorityOrder          Int                       @default(0)
 
   createdAt DateTime @default(now())
 
@@ -449,13 +455,13 @@ model AttendanceRecord {
   pupilId  String
   pupil    Pupil  @relation(fields: [pupilId], references: [id], onDelete: Cascade)
 
-  date    DateTime
-  session AttendanceSession
-  mark    AttendanceMark    @default(NOT_RECORDED)
+  date          DateTime
+  session       AttendanceSession
+  mark          AttendanceMark    @default(NOT_RECORDED)
   /// DfE attendance mark letter (see src/lib/attendance-codes.ts), e.g. "/", "L", "N"
   statutoryCode String
   minutesLate   Int?
-  notes         String? @db.Text
+  notes         String?           @db.Text
 
   recordedById String
   recordedBy   User   @relation("AttendanceRecordedBy", fields: [recordedById], references: [id])
@@ -582,9 +588,9 @@ model AccidentReport {
   date        DateTime
   time        String
   location    String
-  description String  @db.Text
+  description String           @db.Text
   injuryType  String?
-  actionTaken String  @db.Text
+  actionTaken String           @db.Text
   severity    AccidentSeverity @default(MINOR)
 
   parentNotified   Boolean   @default(false)
@@ -615,12 +621,12 @@ model Exclusion {
   pupilId  String
   pupil    Pupil  @relation(fields: [pupilId], references: [id], onDelete: Cascade)
 
-  type          ExclusionType
-  startDate     DateTime
+  type         ExclusionType
+  startDate    DateTime
   /// Null for a permanent exclusion
-  endDate       DateTime?
-  sessionsLost  Int?
-  reason        String @db.Text
+  endDate      DateTime?
+  sessionsLost Int?
+  reason       String        @db.Text
 
   recordedById String
   recordedBy   User   @relation("ExclusionRecordedBy", fields: [recordedById], references: [id])
@@ -638,13 +644,13 @@ model SendPlan {
   pupilId  String
   pupil    Pupil  @relation(fields: [pupilId], references: [id], onDelete: Cascade)
 
-  status      SendStatus
-  primaryNeed SendPrimaryNeed?
-  description String           @db.Text
+  status           SendStatus
+  primaryNeed      SendPrimaryNeed?
+  description      String           @db.Text
   /// Array of { target: string, progress: string, reviewDate: string }
-  targets     Json             @default("[]")
-  externalAgencies String?     @db.Text
-  reviewDate  DateTime?
+  targets          Json             @default("[]")
+  externalAgencies String?          @db.Text
+  reviewDate       DateTime?
 
   createdById String
   createdBy   User   @relation("SendPlanCreatedBy", fields: [createdById], references: [id])
@@ -666,8 +672,9 @@ model AssessmentSubject {
   name     String
   order    Int    @default(0)
 
-  results AssessmentResult[]
-  targets PupilTarget[]
+  results        AssessmentResult[]
+  targets        PupilTarget[]
+  timetableSlots TimetableSlot[]
 
   @@unique([tenantId, name])
 }
@@ -705,13 +712,13 @@ enum TargetStatus {
 }
 
 model PupilTarget {
-  id          String             @id @default(cuid())
-  tenantId    String
-  tenant      Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  pupilId     String
-  pupil       Pupil              @relation(fields: [pupilId], references: [id], onDelete: Cascade)
-  subjectId   String?
-  subject     AssessmentSubject? @relation(fields: [subjectId], references: [id])
+  id        String             @id @default(cuid())
+  tenantId  String
+  tenant    Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  pupilId   String
+  pupil     Pupil              @relation(fields: [pupilId], references: [id], onDelete: Cascade)
+  subjectId String?
+  subject   AssessmentSubject? @relation(fields: [subjectId], references: [id])
 
   title       String
   description String?      @db.Text
@@ -828,18 +835,18 @@ model StaffProfile {
   /// The remaining fields below are the KCSIE-required Single Central Record
   /// checks — each nullable, since "not yet done" is itself the compliance
   /// gap the SCR page is built to surface.
-  identityCheckDate        DateTime?
-  rightToWorkCheckDate     DateTime?
+  identityCheckDate         DateTime?
+  rightToWorkCheckDate      DateTime?
   /// e.g. "British passport", "Biometric residence permit", "Home Office share code"
-  rightToWorkEvidence      String?
+  rightToWorkEvidence       String?
   /// Children's Barred List check (separate from the DBS certificate date above)
-  barredListCheckDate      DateTime?
+  barredListCheckDate       DateTime?
   /// Prohibition from teaching / management check via the Teaching Regulation Agency — teaching staff only
-  prohibitionCheckDate     DateTime?
+  prohibitionCheckDate      DateTime?
   qualificationsCheckedDate DateTime?
-  referencesObtainedDate   DateTime?
+  referencesObtainedDate    DateTime?
   /// Only relevant for staff who have lived/worked outside the UK
-  overseasCheckDate        DateTime?
+  overseasCheckDate         DateTime?
 
   updatedAt DateTime @updatedAt
 }
@@ -860,11 +867,11 @@ model Intervention {
   title         String
   subjectArea   String?
   providerId    String
-  provider      User   @relation("InterventionProvider", fields: [providerId], references: [id])
+  provider      User               @relation("InterventionProvider", fields: [providerId], references: [id])
   groupSize     Int?
   startDate     DateTime
   endDate       DateTime?
-  targetOutcome String    @db.Text
+  targetOutcome String             @db.Text
   status        InterventionStatus @default(PLANNED)
 
   notes     InterventionNote[]
@@ -896,13 +903,13 @@ model ParentsEveningEvent {
   tenantId String
   tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  title       String
-  date        DateTime
-  startTime   String
-  endTime     String
-  slotMinutes Int      @default(10)
+  title        String
+  date         DateTime
+  startTime    String
+  endTime      String
+  slotMinutes  Int      @default(10)
   /// Array of FormGroup ids this event applies to
-  formGroupIds Json    @default("[]")
+  formGroupIds Json     @default("[]")
 
   bookingOpensAt  DateTime?
   bookingClosesAt DateTime?
@@ -924,9 +931,9 @@ enum AppointmentStatus {
 }
 
 model AppointmentSlot {
-  id       String @id @default(cuid())
+  id       String              @id @default(cuid())
   tenantId String
-  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant   Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   eventId  String
   event    ParentsEveningEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
@@ -967,13 +974,13 @@ model ParentMessage {
   senderId String
   sender   User   @relation("ParentMessageSender", fields: [senderId], references: [id])
 
-  subject  String
-  body     String           @db.Text
-  audience MessageAudience
+  subject     String
+  body        String          @db.Text
+  audience    MessageAudience
   /// Depending on `audience`: a YearGroup value, a FormGroup id, or a Pupil id. Null for ALL_PARENTS.
   audienceRef String?
   /// Sent as an SMS alert (attendance/safeguarding-grade) as well as email, to every guardian with a phone number on file.
-  urgentSms Boolean @default(false)
+  urgentSms   Boolean         @default(false)
 
   sentAt DateTime @default(now())
 
@@ -990,7 +997,7 @@ model ParentMessageRecipient {
   message   ParentMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
   guardianId String
-  guardian   User   @relation("ParentMessageRecipientGuardian", fields: [guardianId], references: [id])
+  guardian   User      @relation("ParentMessageRecipientGuardian", fields: [guardianId], references: [id])
   readAt     DateTime?
 
   @@unique([messageId, guardianId])
@@ -1010,10 +1017,10 @@ model CtfExchange {
   tenantId String
   tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  direction     CtfDirection
-  pupilName     String
-  upn           String?
-  fileName      String
+  direction CtfDirection
+  pupilName String
+  upn       String?
+  fileName  String
 
   performedById String
   performedBy   User   @relation("CtfExchangePerformedBy", fields: [performedById], references: [id])
@@ -1036,7 +1043,7 @@ model WondeConnection {
   tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   /// Wonde's own identifier for this school, once connected — null until then
-  wondeSchoolId String?
+  wondeSchoolId     String?
   /// Encrypted at rest the same way TOTP secrets are (see src/lib/crypto.ts's encrypt/decrypt) — never store a partner API token in plaintext
   apiTokenEncrypted String?
   syncEnabled       Boolean   @default(false)
@@ -1071,13 +1078,13 @@ model AdmissionApplication {
   tenantId String
   tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  firstName          String
-  lastName           String
-  dob                DateTime
-  gender             Gender
-  preferredYearGroup YearGroup
-  applicationType    AdmissionApplicationType
-  status             AdmissionStatus          @default(RECEIVED)
+  firstName           String
+  lastName            String
+  dob                 DateTime
+  gender              Gender
+  preferredYearGroup  YearGroup
+  applicationType     AdmissionApplicationType
+  status              AdmissionStatus          @default(RECEIVED)
   /// Position in this year group's waiting list — lower is earlier. Only set while status is WAITING_LIST.
   waitingListPosition Int?
 
@@ -1097,4 +1104,86 @@ model AdmissionApplication {
 
   @@index([tenantId, status])
   @@index([tenantId, preferredYearGroup, waitingListPosition])
+}
+
+// ---------------------------------------------------------------------------
+// Timetabling & cover
+//
+// Deliberately simple: a primary school runs one class teacher per form
+// group teaching most subjects, with specialist teachers covering specific
+// weekly slots and PPA (Planning, Preparation, Assessment) time when the
+// class teacher is out and a specialist/cover teacher takes the class. This
+// is a fixed weekly grid entered by hand — not a constraint-solving
+// timetable engine, and not a secondary-school-style complex timetable.
+// ---------------------------------------------------------------------------
+
+enum Weekday {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+}
+
+/// A recurring weekly lesson slot for a form group. periodNumber is a simple
+/// ordinal (1, 2, 3, ...) rather than real clock times, to keep this simple.
+model TimetableSlot {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  formGroupId String
+  formGroup   FormGroup @relation(fields: [formGroupId], references: [id], onDelete: Cascade)
+
+  dayOfWeek    Weekday
+  periodNumber Int
+
+  subjectId String
+  subject   AssessmentSubject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  teacherId String
+  teacher   User   @relation("TimetableSlotTeacher", fields: [teacherId], references: [id])
+
+  room String?
+
+  coverAssignments CoverAssignment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId, formGroupId])
+}
+
+enum CoverStatus {
+  NEEDS_COVER
+  ASSIGNED
+  COMPLETED
+}
+
+/// A one-off cover need for a specific TimetableSlot on a specific date,
+/// because the usual teacher is absent.
+model CoverAssignment {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  timetableSlotId String
+  timetableSlot   TimetableSlot @relation(fields: [timetableSlotId], references: [id], onDelete: Cascade)
+
+  date DateTime
+
+  absentTeacherId String
+  absentTeacher   User   @relation("CoverAssignmentAbsentTeacher", fields: [absentTeacherId], references: [id])
+
+  coveringTeacherId String?
+  coveringTeacher   User?   @relation("CoverAssignmentCoveringTeacher", fields: [coveringTeacherId], references: [id])
+
+  status CoverStatus @default(NEEDS_COVER)
+  notes  String?     @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([timetableSlotId, date])
+  @@index([tenantId, date])
 }

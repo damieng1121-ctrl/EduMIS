@@ -30,6 +30,8 @@ import {
   Network,
   History,
   UserPlus,
+  CalendarDays,
+  UserCog,
   type LucideIcon,
 } from "lucide-react";
 import { canAccessMis } from "@/lib/roles";
@@ -62,12 +64,14 @@ const links: NavLink[] = [
   { href: "/portal/meals", label: "Meals", icon: Utensils, roles: null, requiresMis: true },
   { href: "/portal/parents-evenings", label: "Parents' evenings", icon: CalendarClock, roles: null, requiresMis: true },
   { href: "/portal/messages", label: "Messages", icon: Send, roles: null, requiresMis: true },
+  { href: "/portal/timetable", label: "Timetable", icon: CalendarDays, roles: null, requiresMis: true },
   { href: "/portal/staff", label: "Staff records", icon: IdCard, roles: ["TENANT_ADMIN"] },
   { href: "/portal/scr", label: "Single Central Record", icon: ShieldAlert, roles: ["TENANT_ADMIN"], feature: "SCR" },
   { href: "/portal/ctf", label: "CTF exchange", icon: FileOutput, roles: ["TENANT_ADMIN"], feature: "CTF_EXCHANGE" },
   { href: "/portal/census", label: "Census readiness", icon: FileSpreadsheet, roles: ["TENANT_ADMIN"] },
   { href: "/portal/reports", label: "Reports", icon: BarChart3, roles: ["TENANT_ADMIN"] },
   { href: "/portal/admin/users", label: "Users", icon: Users, roles: ["TENANT_ADMIN"] },
+  { href: "/portal/admin/cover", label: "Cover", icon: UserCog, roles: ["TENANT_ADMIN"] },
   { href: "/portal/admin/audit-log", label: "Audit log", icon: History, roles: ["TENANT_ADMIN"] },
   { href: "/portal/admin/wonde", label: "Wonde", icon: Network, roles: ["TENANT_ADMIN"], feature: "WONDE" },
   { href: "/portal/admin/admissions", label: "Admissions", icon: UserPlus, roles: ["TENANT_ADMIN"], feature: "ADMISSIONS" },
