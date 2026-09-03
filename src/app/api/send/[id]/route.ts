@@ -2,6 +2,7 @@ import { z } from "zod";
 import { requireMisSession, AuthError } from "@/lib/session";
 import { withApiErrors } from "@/lib/api";
 import { prisma } from "@/lib/db";
+import { audit } from "@/lib/audit";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -42,6 +43,15 @@ export async function PATCH(req: Request, { params }: Params) {
     if (body.status && body.status !== plan.status) {
       await prisma.pupil.update({ where: { id: plan.pupilId }, data: { sendStatus: body.status } });
     }
+
+    await audit({
+      tenantId: session.user.tenantId,
+      userId: session.user.id,
+      action: "send.updated",
+      entityType: "SendPlan",
+      entityId: id,
+      metadata: { pupilId: plan.pupilId, fields: Object.keys(body) },
+    });
 
     return updated;
   });

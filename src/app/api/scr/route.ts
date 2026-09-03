@@ -3,6 +3,7 @@ import { requireFeatureSession, AuthError } from "@/lib/session";
 import { withApiErrors } from "@/lib/api";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/roles";
+import { audit } from "@/lib/audit";
 
 /** The Single Central Record — every current staff member plus their KCSIE vetting checks. */
 export async function GET() {
@@ -10,7 +11,7 @@ export async function GET() {
     const session = await requireFeatureSession("SCR");
     if (!isAdmin(session.user.role)) throw new AuthError("Admins only", 403);
 
-    return prisma.user.findMany({
+    const staff = await prisma.user.findMany({
       where: {
         tenantId: session.user.tenantId,
         OR: [{ role: { in: ["TENANT_ADMIN", "STAFF"] } }, { isTeacher: true }],
@@ -24,6 +25,19 @@ export async function GET() {
         staffProfile: true,
       },
     });
+
+    // One entry per open of the register, not per row — this is the KCSIE
+    // document itself, so "who opened the SCR and when" is what an
+    // inspector or safeguarding lead will actually ask to see.
+    await audit({
+      tenantId: session.user.tenantId,
+      userId: session.user.id,
+      action: "scr.viewed",
+      entityType: "SCR",
+      metadata: { count: staff.length },
+    });
+
+    return staff;
   });
 }
 
@@ -68,10 +82,21 @@ export async function POST(req: Request) {
     // A staff member's core StaffProfile row (staffType etc.) may not exist yet if an
     // admin heads straight to the SCR page before visiting Staff records — default to
     // "OTHER" rather than failing, since staffType isn't this page's concern.
-    return prisma.staffProfile.upsert({
+    const profile = await prisma.staffProfile.upsert({
       where: { userId },
       create: { tenantId: session.user.tenantId, userId, staffType: "OTHER", ...data },
       update: data,
     });
+
+    await audit({
+      tenantId: session.user.tenantId,
+      userId: session.user.id,
+      action: "scr.check_recorded",
+      entityType: "StaffProfile",
+      entityId: profile.id,
+      metadata: { subjectUserId: userId, fields: Object.keys(data).filter((k) => data[k as keyof typeof data] !== undefined) },
+    });
+
+    return profile;
   });
 }

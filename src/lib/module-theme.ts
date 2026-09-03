@@ -23,6 +23,7 @@ import {
   ShieldAlert,
   Network,
   Puzzle,
+  History,
 } from "lucide-react";
 
 export type ModuleKey =
@@ -48,7 +49,8 @@ export type ModuleKey =
   | "ctf"
   | "scr"
   | "features"
-  | "wonde";
+  | "wonde"
+  | "audit-log";
 
 /**
  * Literal (never interpolated) Tailwind classes — required for the JIT
@@ -98,4 +100,5 @@ export const MODULE_THEME: Record<ModuleKey, { icon: LucideIcon; badge: string }
   scr: { icon: ShieldAlert, badge: BADGE.rose },
   features: { icon: Puzzle, badge: BADGE.violet },
   wonde: { icon: Network, badge: BADGE.orange },
+  "audit-log": { icon: History, badge: BADGE.slate },
 };

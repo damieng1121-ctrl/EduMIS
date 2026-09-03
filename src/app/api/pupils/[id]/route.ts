@@ -3,6 +3,7 @@ import { requireMisSession, AuthError } from "@/lib/session";
 import { withApiErrors } from "@/lib/api";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/roles";
+import { audit } from "@/lib/audit";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -21,6 +22,14 @@ export async function GET(_req: Request, { params }: Params) {
       include: { formGroup: { select: { id: true, name: true, academicYearId: true } } },
     });
     if (!pupil || pupil.tenantId !== session.user.tenantId) throw new AuthError("Not found", 404);
+
+    await audit({
+      tenantId: session.user.tenantId,
+      userId: session.user.id,
+      action: "pupil.viewed",
+      entityType: "Pupil",
+      entityId: pupil.id,
+    });
 
     return pupil;
   });
@@ -66,11 +75,25 @@ export async function PATCH(req: Request, { params }: Params) {
       throw new AuthError("Only admins can delete or restore pupils", 403);
     }
 
-    return prisma.pupil.update({
+    const updated = await prisma.pupil.update({
       where: { id },
       data: body,
       include: { formGroup: { select: { id: true, name: true } } },
     });
+
+    // Field names only, never values — some of these (medicalNotes, address,
+    // sendStatus) are special category data, and the audit log itself
+    // shouldn't become a second copy of it.
+    await audit({
+      tenantId: session.user.tenantId,
+      userId: session.user.id,
+      action: "pupil.updated",
+      entityType: "Pupil",
+      entityId: id,
+      metadata: { fields: Object.keys(body) },
+    });
+
+    return updated;
   });
 }
 
@@ -86,6 +109,16 @@ export async function DELETE(_req: Request, { params }: Params) {
     if (!pupil.isDeleted) throw new AuthError("Move to trash before permanently deleting", 400);
 
     await prisma.pupil.delete({ where: { id } });
+
+    await audit({
+      tenantId: session.user.tenantId,
+      userId: session.user.id,
+      action: "pupil.deleted",
+      entityType: "Pupil",
+      entityId: id,
+      metadata: { name: `${pupil.firstName} ${pupil.lastName}`, upn: pupil.upn },
+    });
+
     return { ok: true };
   });
 }

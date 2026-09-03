@@ -28,6 +28,7 @@ import {
   FileOutput,
   ShieldAlert,
   Network,
+  History,
   type LucideIcon,
 } from "lucide-react";
 import { canAccessMis } from "@/lib/roles";
@@ -66,6 +67,7 @@ const links: NavLink[] = [
   { href: "/portal/census", label: "Census readiness", icon: FileSpreadsheet, roles: ["TENANT_ADMIN"] },
   { href: "/portal/reports", label: "Reports", icon: BarChart3, roles: ["TENANT_ADMIN"] },
   { href: "/portal/admin/users", label: "Users", icon: Users, roles: ["TENANT_ADMIN"] },
+  { href: "/portal/admin/audit-log", label: "Audit log", icon: History, roles: ["TENANT_ADMIN"] },
   { href: "/portal/admin/wonde", label: "Wonde", icon: Network, roles: ["TENANT_ADMIN"], feature: "WONDE" },
   { href: "/portal/admin/settings", label: "Settings", icon: Settings, roles: ["TENANT_ADMIN"] },
   { href: "/portal/super-admin", label: "Schools", icon: School, roles: ["SUPER_ADMIN"] },

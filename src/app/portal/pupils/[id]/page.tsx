@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/roles";
 import { canAccessMis } from "@/lib/roles";
 import { isAttendedSession, PERSISTENT_ABSENCE_THRESHOLD } from "@/lib/attendance-codes";
+import { audit } from "@/lib/audit";
 import type { YearGroup } from "@prisma/client";
 
 function yearGroupLabel(yg: YearGroup): string {
@@ -36,6 +37,17 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
     include: { formGroup: { select: { id: true, name: true, academicYearId: true } } },
   });
   if (!pupil || pupil.tenantId !== tenantId || pupil.isDeleted) notFound();
+
+  // This page — not the /api/pupils/[id] route — is how a pupil's record
+  // actually gets opened in practice, so the "who viewed this" trail has to
+  // live here rather than (or as well as) on the API route.
+  await audit({
+    tenantId,
+    userId: session.user.id,
+    action: "pupil.viewed",
+    entityType: "Pupil",
+    entityId: pupil.id,
+  });
 
   const currentYear = await prisma.academicYear.findFirst({
     where: { tenantId, isCurrent: true },

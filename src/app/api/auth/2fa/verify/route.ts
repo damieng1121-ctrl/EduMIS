@@ -6,8 +6,15 @@ import { withApiErrors } from "@/lib/api";
 import { prisma } from "@/lib/db";
 import { decrypt } from "@/lib/crypto";
 import { verifyTotpToken } from "@/lib/twofactor";
+import { rateLimit } from "@/lib/rate-limit";
 
 const bodySchema = z.object({ token: z.string().min(6) });
+
+// A 6-digit TOTP code only has a million combinations — 10 tries per 15
+// minutes keeps guessing infeasible without getting in the way of someone
+// who's fat-fingered their code a couple of times.
+const VERIFY_ATTEMPT_LIMIT = 10;
+const VERIFY_ATTEMPT_WINDOW_MS = 15 * 60 * 1000;
 
 /**
  * Step-up verification for an already-authenticated but not-yet-2FA-verified
@@ -20,6 +27,11 @@ export async function POST(req: Request) {
     if (!session?.user) throw new AuthError("Not authenticated", 401);
 
     const { token } = bodySchema.parse(await req.json());
+
+    if (!rateLimit(`2fa-verify:${session.user.id}`, VERIFY_ATTEMPT_LIMIT, VERIFY_ATTEMPT_WINDOW_MS)) {
+      return { ok: false, error: "Too many attempts — wait a few minutes and try again" };
+    }
+
     const user = await prisma.user.findUniqueOrThrow({ where: { id: session.user.id } });
 
     if (!user.twoFactorEnabled || !user.twoFactorSecret) {

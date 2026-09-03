@@ -8,6 +8,14 @@ import bcrypt from "bcryptjs";
 import { authConfig } from "./auth.config";
 import { prisma } from "./db";
 import { getEmailDomain } from "./tenancy";
+import { rateLimit } from "./rate-limit";
+
+// 8 password attempts per email per 15 minutes — enough headroom for a
+// genuine typo or two, tight enough to make a scripted brute-force
+// impractical. Keyed by the submitted email, not the caller's IP, since
+// the account being targeted is what actually needs protecting.
+const LOGIN_ATTEMPT_LIMIT = 8;
+const LOGIN_ATTEMPT_WINDOW_MS = 15 * 60 * 1000;
 
 const isDevLoginEnabled = process.env.NODE_ENV !== "production";
 
@@ -102,6 +110,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         const email = typeof credentials?.email === "string" ? credentials.email.toLowerCase() : undefined;
         const password = typeof credentials?.password === "string" ? credentials.password : undefined;
         if (!email || !password) return null;
+        if (!rateLimit(`parent-login:${email}`, LOGIN_ATTEMPT_LIMIT, LOGIN_ATTEMPT_WINDOW_MS)) return null;
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user || user.role !== "PARENT" || !user.passwordHash || !user.isActive) return null;
         const valid = await bcrypt.compare(password, user.passwordHash);
@@ -125,6 +134,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         const email = typeof credentials?.email === "string" ? credentials.email.toLowerCase() : undefined;
         const password = typeof credentials?.password === "string" ? credentials.password : undefined;
         if (!email || !password) return null;
+        if (!rateLimit(`staff-login:${email}`, LOGIN_ATTEMPT_LIMIT, LOGIN_ATTEMPT_WINDOW_MS)) return null;
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user || user.role === "PARENT" || !user.passwordHash || !user.isActive) return null;
         const valid = await bcrypt.compare(password, user.passwordHash);

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { requireMisSession, AuthError } from "@/lib/session";
 import { withApiErrors } from "@/lib/api";
 import { prisma } from "@/lib/db";
+import { audit } from "@/lib/audit";
 import type { Prisma } from "@prisma/client";
 
 const targetSchema = z.object({
@@ -20,7 +21,7 @@ export async function GET(req: Request) {
       ...(pupilId ? { pupilId } : {}),
     };
 
-    return prisma.sendPlan.findMany({
+    const plans = await prisma.sendPlan.findMany({
       where,
       orderBy: { createdAt: "desc" },
       include: {
@@ -28,6 +29,18 @@ export async function GET(req: Request) {
         createdBy: { select: { name: true, email: true } },
       },
     });
+
+    // A pupilId-scoped fetch is one person's SEND plan(s) being read (from
+    // their pupil profile) — worth its own entry. A whole-register fetch
+    // (the SEND admin list) is logged once with a count, not once per plan,
+    // so browsing the register doesn't flood the log with near-duplicates.
+    await audit(
+      pupilId
+        ? { tenantId: session.user.tenantId, userId: session.user.id, action: "send.viewed", entityType: "Pupil", entityId: pupilId }
+        : { tenantId: session.user.tenantId, userId: session.user.id, action: "send.register_viewed", entityType: "SendPlan", metadata: { count: plans.length } },
+    );
+
+    return plans;
   });
 }
 
@@ -67,6 +80,15 @@ export async function POST(req: Request) {
     if (body.status !== "NONE") {
       await prisma.pupil.update({ where: { id: body.pupilId }, data: { sendStatus: body.status } });
     }
+
+    await audit({
+      tenantId: session.user.tenantId,
+      userId: session.user.id,
+      action: "send.created",
+      entityType: "SendPlan",
+      entityId: plan.id,
+      metadata: { pupilId: body.pupilId, status: body.status },
+    });
 
     return plan;
   });
