@@ -375,6 +375,49 @@ export default function SuperAdminPage() {
     loadUsers();
   }
 
+  async function deleteUser(u: PlatformUser) {
+    if (!window.confirm(`Delete ${u.name ?? u.email}? This can't be undone.`)) return;
+    setUsersError(null);
+    const res = await fetch(`/api/super-admin/users/${u.id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      setUsersError(data ? describeApiError(data) : "Couldn't delete that user.");
+      return;
+    }
+    loadUsers();
+  }
+
+  async function deleteTenant(t: Tenant) {
+    const typed = window.prompt(
+      `This permanently deletes ${t.name} and every pupil, staff record, and other data it owns. Type the school's exact name to confirm:`,
+    );
+    if (typed === null) return;
+    setError(null);
+    const res = await fetch(`/api/super-admin/tenants/${t.id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ confirmName: typed }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      setError(data ? describeApiError(data) : "Couldn't delete that school.");
+      return;
+    }
+    loadTenants();
+  }
+
+  async function deleteTrust(tr: Trust) {
+    if (!window.confirm(`Delete ${tr.name}? This only works while no schools or Trust admins are assigned to it.`)) return;
+    setTrustError(null);
+    const res = await fetch(`/api/super-admin/trusts/${tr.id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      setTrustError(data ? describeApiError(data) : "Couldn't delete that Trust.");
+      return;
+    }
+    loadTrusts();
+  }
+
   return (
     <div>
       <PageHeader
@@ -642,6 +685,9 @@ export default function SuperAdminPage() {
                         >
                           {managingId === t.id ? "Opening…" : "Manage"}
                         </Button>
+                        <Button variant="secondary" size="sm" onClick={() => deleteTenant(t)}>
+                          Delete
+                        </Button>
                       </td>
                     </tr>
                     {editingId === t.id && (
@@ -850,6 +896,7 @@ export default function SuperAdminPage() {
                   <th className="p-4">Trust</th>
                   <th className="p-4">Schools</th>
                   <th className="p-4">Trust admins</th>
+                  <th className="p-4"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -863,11 +910,16 @@ export default function SuperAdminPage() {
                       {tr.tenants.length === 0 ? "—" : tr.tenants.map((t) => t.name).join(", ")}
                     </td>
                     <td className="p-4 text-slate-600">{tr._count.users}</td>
+                    <td className="p-4 text-right">
+                      <Button variant="secondary" size="sm" onClick={() => deleteTrust(tr)}>
+                        Delete
+                      </Button>
+                    </td>
                   </tr>
                 ))}
                 {trusts?.length === 0 && (
                   <tr>
-                    <td colSpan={3} className="p-6 text-center text-sm text-slate-700">
+                    <td colSpan={4} className="p-6 text-center text-sm text-slate-700">
                       No Trusts yet — add one above.
                     </td>
                   </tr>
@@ -963,6 +1015,7 @@ export default function SuperAdminPage() {
                   <th className="p-4">Role</th>
                   <th className="p-4">2FA</th>
                   <th className="p-4">Status</th>
+                  <th className="p-4"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -1047,11 +1100,16 @@ export default function SuperAdminPage() {
                         {u.isActive ? "Active" : "Disabled"}
                       </button>
                     </td>
+                    <td className="p-4 text-right">
+                      <Button variant="secondary" size="sm" onClick={() => deleteUser(u)}>
+                        Delete
+                      </Button>
+                    </td>
                   </tr>
                 ))}
                 {users?.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="p-6 text-center text-sm text-slate-700">
+                    <td colSpan={6} className="p-6 text-center text-sm text-slate-700">
                       No users yet.
                     </td>
                   </tr>

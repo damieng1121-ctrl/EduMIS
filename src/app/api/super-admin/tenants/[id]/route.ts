@@ -33,3 +33,39 @@ export async function PATCH(req: Request, { params }: Params) {
     return prisma.tenant.update({ where: { id }, data: body });
   });
 }
+
+const deleteSchema = z.object({
+  /// The caller must echo the school's exact name back — this permanently
+  /// deletes every pupil, staff record, attendance entry etc. it owns (all
+  /// cascade off Tenant), so a stray click can't do this by accident.
+  confirmName: z.string(),
+});
+
+export async function DELETE(req: Request, { params }: Params) {
+  return withApiErrors(async () => {
+    const session = await requireRole(["SUPER_ADMIN"]);
+    const { id } = await params;
+    const tenant = await prisma.tenant.findUnique({ where: { id } });
+    if (!tenant) throw new AuthError("School not found", 404);
+
+    const { confirmName } = deleteSchema.parse(await req.json());
+    if (confirmName.trim() !== tenant.name) {
+      throw new AuthError("Type the school's exact name to confirm deletion", 400);
+    }
+
+    await prisma.tenant.delete({ where: { id } });
+
+    await prisma.auditLog.create({
+      data: {
+        tenantId: null,
+        userId: session.user.id,
+        action: "tenant.deleted",
+        entityType: "Tenant",
+        entityId: id,
+        metadata: { name: tenant.name, slug: tenant.slug },
+      },
+    });
+
+    return { ok: true };
+  });
+}

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { requireTenantSession, AuthError } from "@/lib/session";
-import { withApiErrors } from "@/lib/api";
+import { withApiErrors, isForeignKeyConstraintError } from "@/lib/api";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/roles";
 
@@ -36,5 +36,47 @@ export async function PATCH(req: Request, { params }: Params) {
     });
 
     return user;
+  });
+}
+
+/**
+ * Only succeeds for a user with no historical activity — anyone who's
+ * actually recorded attendance, behaviour, etc. must be deactivated instead,
+ * since those records need to survive the person who created them.
+ */
+export async function DELETE(_req: Request, { params }: Params) {
+  return withApiErrors(async () => {
+    const session = await requireTenantSession();
+    if (!isAdmin(session.user.role)) throw new AuthError("Only admins can manage users", 403);
+    const { id } = await params;
+
+    const target = await prisma.user.findUnique({ where: { id } });
+    if (!target || target.tenantId !== session.user.tenantId) throw new AuthError("User not found", 404);
+    if (target.id === session.user.id) throw new AuthError("You can't delete your own account", 400);
+
+    try {
+      await prisma.user.delete({ where: { id } });
+    } catch (err) {
+      if (isForeignKeyConstraintError(err)) {
+        throw new AuthError(
+          "This user has activity on record (attendance, behaviour, etc.) and can't be deleted — deactivate them instead.",
+          409,
+        );
+      }
+      throw err;
+    }
+
+    await prisma.auditLog.create({
+      data: {
+        tenantId: session.user.tenantId,
+        userId: session.user.id,
+        action: "user.deleted",
+        entityType: "User",
+        entityId: id,
+        metadata: { email: target.email, role: target.role },
+      },
+    });
+
+    return { ok: true };
   });
 }

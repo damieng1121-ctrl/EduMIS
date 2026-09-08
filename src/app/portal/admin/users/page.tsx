@@ -23,6 +23,7 @@ export default function UsersAdminPage() {
   const [role, setRole] = useState<"STAFF" | "TENANT_ADMIN">("STAFF");
   const [inviting, setInviting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tableError, setTableError] = useState<string | null>(null);
 
   function load() {
     fetch("/api/admin/users")
@@ -37,6 +38,18 @@ export default function UsersAdminPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     });
+    load();
+  }
+
+  async function deleteUser(u: User) {
+    if (!window.confirm(`Delete ${u.name ?? u.email}? This can't be undone.`)) return;
+    setTableError(null);
+    const res = await fetch(`/api/admin/users/${u.id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      setTableError(data?.error ?? "Couldn't delete that user.");
+      return;
+    }
     load();
   }
 
@@ -115,6 +128,8 @@ export default function UsersAdminPage() {
         </form>
       )}
 
+      {tableError && <p className="mt-4 text-sm text-red-600">{tableError}</p>}
+
       <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
@@ -123,10 +138,11 @@ export default function UsersAdminPage() {
               <th className="p-4">Role</th>
               <th className="p-4">2FA</th>
               <th className="p-4">Status</th>
+              <th className="p-4"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {users === null && <TableSkeleton rows={5} cols={4} />}
+            {users === null && <TableSkeleton rows={5} cols={5} />}
             {users?.map((u) => (
               <tr key={u.id}>
                 <td className="p-4">
@@ -162,6 +178,11 @@ export default function UsersAdminPage() {
                   >
                     {u.isActive ? "Active" : "Disabled"}
                   </button>
+                </td>
+                <td className="p-4 text-right">
+                  <Button variant="secondary" size="sm" onClick={() => deleteUser(u)}>
+                    Delete
+                  </Button>
                 </td>
               </tr>
             ))}
