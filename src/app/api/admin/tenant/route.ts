@@ -14,10 +14,16 @@ export async function GET() {
 const bodySchema = z.object({
   name: z.string().min(2).max(150).optional(),
   brandColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
-  appName: z.string().max(60).optional().or(z.literal("")),
-  sidebarColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional().or(z.literal("")),
+  // These three are nullable in the DB, and the settings page round-trips
+  // whatever GET returned (including `null` for a school that's never set
+  // them) straight back in the PATCH body — so the schema has to accept
+  // null, not just "" (a checkbox being unchecked) or undefined (the field
+  // omitted entirely). Without .nullish() here, every save on a school
+  // with any of these unset 400s.
+  appName: z.string().max(60).nullish(),
+  sidebarColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).nullish().or(z.literal("")),
   disabledNavItems: z.array(z.string()).optional(),
-  urn: z.string().max(20).optional(),
+  urn: z.string().max(20).nullish(),
 });
 
 export async function PATCH(req: Request) {
@@ -31,6 +37,7 @@ export async function PATCH(req: Request) {
         ...body,
         appName: body.appName === "" ? null : body.appName,
         sidebarColor: body.sidebarColor === "" ? null : body.sidebarColor,
+        urn: body.urn === "" ? null : body.urn,
       },
     });
   });

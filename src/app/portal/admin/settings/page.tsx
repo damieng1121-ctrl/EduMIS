@@ -18,6 +18,8 @@ type Tenant = {
 export default function AdminSettingsPage() {
   const [tenant, setTenant] = useState<Tenant | null>(null);
   const [savingTenant, setSavingTenant] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<number | null>(null);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [logoNonce, setLogoNonce] = useState(0);
 
@@ -58,19 +60,27 @@ export default function AdminSettingsPage() {
   async function saveTenant() {
     if (!tenant) return;
     setSavingTenant(true);
+    setSaveError(null);
+    setSavedAt(null);
     try {
-      await fetch("/api/admin/tenant", {
+      const res = await fetch("/api/admin/tenant", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(tenant),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        setSaveError(data?.error ?? "Couldn't save your changes — please try again.");
+        return;
+      }
+      setSavedAt(Date.now());
     } finally {
       setSavingTenant(false);
     }
   }
 
   return (
-    <div className="max-w-2xl space-y-8">
+    <div className="mx-auto max-w-2xl space-y-8">
       <PageHeader module="settings" title="Settings" />
 
       <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
@@ -178,9 +188,13 @@ export default function AdminSettingsPage() {
                 ))}
               </div>
             </div>
-            <Button onClick={saveTenant} disabled={savingTenant}>
-              {savingTenant ? "Saving…" : "Save"}
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button onClick={saveTenant} disabled={savingTenant}>
+                {savingTenant ? "Saving…" : "Save"}
+              </Button>
+              {saveError && <p className="text-sm text-red-600 dark:text-red-400">{saveError}</p>}
+              {!saveError && savedAt && <p className="text-sm text-green-700 dark:text-green-300">Saved.</p>}
+            </div>
           </div>
         )}
       </section>
