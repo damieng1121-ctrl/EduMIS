@@ -72,7 +72,7 @@ export default function MealsPage() {
     return (
       <div>
         <PageHeader module="meals" title="Meal register" />
-        <p className="mt-4 text-sm text-slate-700">Set up an academic year first.</p>
+        <p className="mt-4 text-sm text-slate-700 dark:text-slate-200">Set up an academic year first.</p>
       </div>
     );
   }
@@ -96,7 +96,7 @@ export default function MealsPage() {
             setFormGroupId(e.target.value);
             setSaved(false);
           }}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
         >
           {formGroups?.map((g) => (
             <option key={g.id} value={g.id}>
@@ -111,31 +111,31 @@ export default function MealsPage() {
             setDate(e.target.value);
             setSaved(false);
           }}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
         />
-        {saved && <span className="text-xs font-medium text-green-700">Saved.</span>}
+        {saved && <span className="text-xs font-medium text-green-700 dark:text-green-300">Saved.</span>}
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Pupil</th>
               <th className="p-4">Meal</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {rows === null && <TableSkeleton rows={5} cols={2} />}
             {rows?.map((r) => (
               <tr key={r.pupilId}>
-                <td className="p-4 font-medium text-slate-900">
+                <td className="p-4 font-medium text-slate-900 dark:text-white">
                   {r.firstName} {r.lastName}
                 </td>
                 <td className="p-4">
                   <select
                     value={r.mealType ?? ""}
                     onChange={(e) => setMealType(r.pupilId, e.target.value as MealType)}
-                    className="rounded-md border border-slate-300 px-3 py-1.5 text-sm"
+                    className="rounded-md border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-600"
                   >
                     <option value="">—</option>
                     {(Object.keys(MEAL_LABELS) as MealType[]).map((m) => (

@@ -25,8 +25,8 @@ export function PageHeader({
           <Icon size={20} />
         </span>
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">{title}</h1>
-          {subtitle && <p className="mt-0.5 text-sm text-slate-600">{subtitle}</p>}
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">{title}</h1>
+          {subtitle && <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-400">{subtitle}</p>}
         </div>
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}

@@ -22,7 +22,7 @@ const BEHAVIOUR_COLORS: Record<string, string> = {
 
 export function AttendanceTrendChart({ trend }: { trend: { week: string; attendancePct: number }[] }) {
   if (trend.length === 0) {
-    return <p className="flex h-56 items-center justify-center text-sm text-slate-600">No attendance recorded yet.</p>;
+    return <p className="flex h-56 items-center justify-center text-sm text-slate-600 dark:text-slate-400">No attendance recorded yet.</p>;
   }
   return (
     <ResponsiveContainer width="100%" height={224}>
@@ -66,7 +66,7 @@ export function BehaviourPointsChart({ points }: { points: { category: string; p
 
 export function AssessmentDistributionChart({ data }: { data: { attainment: string; count: number }[] }) {
   if (data.length === 0) {
-    return <p className="flex h-56 items-center justify-center text-sm text-slate-600">No assessment results yet.</p>;
+    return <p className="flex h-56 items-center justify-center text-sm text-slate-600 dark:text-slate-400">No assessment results yet.</p>;
   }
   return (
     <ResponsiveContainer width="100%" height={224}>

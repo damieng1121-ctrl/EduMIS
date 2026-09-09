@@ -48,7 +48,7 @@ export default function TrustAdminPage() {
   }
 
   if (denied) {
-    return <p className="mt-6 text-sm text-slate-700">Your account isn&apos;t assigned to a Trust yet — ask a platform admin to set this up.</p>;
+    return <p className="mt-6 text-sm text-slate-700 dark:text-slate-200">Your account isn&apos;t assigned to a Trust yet — ask a platform admin to set this up.</p>;
   }
 
   return (
@@ -59,9 +59,9 @@ export default function TrustAdminPage() {
         subtitle="Every school in your Trust. Open a school to see and manage its full dashboard."
       />
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">School</th>
               <th className="p-4">Domain</th>
@@ -71,17 +71,17 @@ export default function TrustAdminPage() {
               <th className="p-4"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {tenants === null && <TableSkeleton rows={5} cols={6} />}
             {tenants?.map((t) => (
               <tr key={t.id}>
                 <td className="p-4">
-                  <p className="font-medium text-slate-900">{t.name}</p>
-                  <p className="text-xs text-slate-700">/{t.slug} · {t.phase.replace(/_/g, " ")}</p>
+                  <p className="font-medium text-slate-900 dark:text-white">{t.name}</p>
+                  <p className="text-xs text-slate-700 dark:text-slate-200">/{t.slug} · {t.phase.replace(/_/g, " ")}</p>
                 </td>
-                <td className="p-4 text-slate-600">{t.domain}</td>
-                <td className="p-4 text-slate-600">{t._count.users}</td>
-                <td className="p-4 text-slate-600">{t._count.pupils}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{t.domain}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{t._count.users}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{t._count.pupils}</td>
                 <td className="p-4">
                   <span
                     className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${

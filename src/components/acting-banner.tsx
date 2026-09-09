@@ -30,7 +30,7 @@ export function ActingBanner({
   }
 
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-amber-200 bg-amber-50 px-6 py-2 text-sm text-amber-900">
+    <div className="flex items-center justify-between gap-3 border-b border-amber-200 bg-amber-50 px-6 py-2 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200">
       <span className="flex items-center gap-2">
         <Eye size={15} className="shrink-0" />
         You&apos;re managing <strong>{tenantName}</strong> as {actorLabel}.
@@ -38,7 +38,7 @@ export function ActingBanner({
       <button
         onClick={exit}
         disabled={exiting}
-        className="shrink-0 rounded-full border border-amber-300 bg-white px-3 py-1 text-xs font-medium text-amber-900 transition-colors hover:bg-amber-100 disabled:opacity-50"
+        className="shrink-0 rounded-full border border-amber-300 bg-white px-3 py-1 text-xs font-medium text-amber-900 transition-colors hover:bg-amber-100 disabled:opacity-50 dark:border-amber-800 dark:bg-amber-900 dark:text-amber-100 dark:hover:bg-amber-800"
       >
         {exiting ? "Exiting…" : "Exit"}
       </button>

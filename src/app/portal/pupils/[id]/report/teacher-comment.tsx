@@ -16,7 +16,7 @@ export function TeacherComment() {
       onChange={(e) => setComment(e.target.value)}
       placeholder="Type a comment before printing…"
       rows={5}
-      className="mt-3 w-full resize-none rounded-lg border border-slate-300 p-3 text-sm print:border-slate-400 print:placeholder:text-transparent"
+      className="mt-3 w-full resize-none rounded-lg border border-slate-300 p-3 text-sm print:border-slate-400 print:placeholder:text-transparent dark:border-slate-600"
     />
   );
 }

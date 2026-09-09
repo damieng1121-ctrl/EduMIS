@@ -107,22 +107,22 @@ export default function AttendancePage() {
     <div>
       <PageHeader module="attendance" title="Attendance register" />
 
-      <div className="mt-4 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4">
-        <label className="text-xs text-slate-600">
+      <div className="mt-4 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+        <label className="text-xs text-slate-600 dark:text-slate-400">
           Form group
-          <select value={formGroupId} onChange={(e) => setFormGroupId(e.target.value)} className="mt-1 block rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select value={formGroupId} onChange={(e) => setFormGroupId(e.target.value)} className="mt-1 block rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             {formGroups?.map((fg) => (
               <option key={fg.id} value={fg.id}>{fg.name}</option>
             ))}
           </select>
         </label>
-        <label className="text-xs text-slate-600">
+        <label className="text-xs text-slate-600 dark:text-slate-400">
           Date
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 block rounded-md border border-slate-300 px-3 py-2 text-sm" />
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 block rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
         </label>
-        <label className="text-xs text-slate-600">
+        <label className="text-xs text-slate-600 dark:text-slate-400">
           Session
-          <select value={attSession} onChange={(e) => setAttSession(e.target.value as "AM" | "PM")} className="mt-1 block rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select value={attSession} onChange={(e) => setAttSession(e.target.value as "AM" | "PM")} className="mt-1 block rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="AM">AM</option>
             <option value="PM">PM</option>
           </select>
@@ -132,33 +132,33 @@ export default function AttendancePage() {
         </Button>
       </div>
 
-      <div className="mt-3 flex gap-4 text-sm text-slate-700">
-        <span><span className="font-semibold text-green-700">{summary.present}</span> present</span>
-        <span><span className="font-semibold text-red-700">{summary.absent}</span> absent</span>
-        <span><span className="font-semibold text-slate-500">{summary.notRecorded}</span> not yet recorded</span>
-        {savedMsg && <span className="text-indigo-600">{savedMsg}</span>}
+      <div className="mt-3 flex gap-4 text-sm text-slate-700 dark:text-slate-200">
+        <span><span className="font-semibold text-green-700 dark:text-green-300">{summary.present}</span> present</span>
+        <span><span className="font-semibold text-red-700 dark:text-red-400">{summary.absent}</span> absent</span>
+        <span><span className="font-semibold text-slate-500 dark:text-slate-400">{summary.notRecorded}</span> not yet recorded</span>
+        {savedMsg && <span className="text-indigo-600 dark:text-indigo-400">{savedMsg}</span>}
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Pupil</th>
               <th className="p-4">Code</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {entries === null && <TableSkeleton rows={5} cols={2} />}
             {entries?.map((e) => (
               <tr key={e.pupil.id}>
-                <td className="p-4 font-medium text-slate-900">
+                <td className="p-4 font-medium text-slate-900 dark:text-white">
                   {e.pupil.lastName}, {e.pupil.preferredName || e.pupil.firstName}
                 </td>
                 <td className="p-4">
                   <select
                     value={codes[e.pupil.id] ?? ""}
                     onChange={(ev) => setCodes((prev) => ({ ...prev, [e.pupil.id]: ev.target.value }))}
-                    className="rounded-md border border-slate-300 px-3 py-1.5 text-sm"
+                    className="rounded-md border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-600"
                   >
                     <option value="">Not recorded</option>
                     {ATTENDANCE_CODES.map((c) => (

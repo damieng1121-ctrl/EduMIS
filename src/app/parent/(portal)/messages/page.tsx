@@ -29,28 +29,28 @@ export default function ParentMessagesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900">Messages</h1>
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">Messages</h1>
 
       <div className="mt-4 space-y-2">
         {recipients?.map((r) => (
-          <div key={r.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <div key={r.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <button onClick={() => open(r)} className="flex w-full items-center justify-between p-4 text-left">
               <div>
                 <p className={`text-sm ${r.readAt ? "font-medium text-slate-700" : "font-semibold text-slate-900"}`}>
                   {!r.readAt && <span className="mr-2 inline-block h-2 w-2 rounded-full bg-indigo-600" />}
                   {r.message.subject}
                 </p>
-                <p className="mt-1 text-xs text-slate-600">
+                <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
                   From {r.message.sender.name ?? r.message.sender.email} · {new Date(r.message.sentAt).toLocaleString("en-GB")}
                 </p>
               </div>
             </button>
             {expandedId === r.id && (
-              <div className="border-t border-slate-100 p-4 text-sm whitespace-pre-wrap text-slate-700">{r.message.body}</div>
+              <div className="border-t border-slate-100 p-4 text-sm whitespace-pre-wrap text-slate-700 dark:border-slate-800 dark:text-slate-200">{r.message.body}</div>
             )}
           </div>
         ))}
-        {recipients?.length === 0 && <p className="text-sm text-slate-600">No messages yet.</p>}
+        {recipients?.length === 0 && <p className="text-sm text-slate-600 dark:text-slate-400">No messages yet.</p>}
       </div>
     </div>
   );

@@ -27,17 +27,17 @@ function StatCard({
     red: "bg-red-400",
   }[color];
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-slate-700 dark:bg-slate-900">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-slate-600">{label}</p>
-          <p className="mt-1 text-3xl font-semibold text-slate-900">{value}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400">{label}</p>
+          <p className="mt-1 text-3xl font-semibold text-slate-900 dark:text-white">{value}</p>
         </div>
         <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${badgeStyles} text-white`}>
           <Icon size={18} />
         </span>
       </div>
-      <p className="mt-3 text-xs text-slate-600">{caption}</p>
+      <p className="mt-3 text-xs text-slate-600 dark:text-slate-400">{caption}</p>
     </div>
   );
 }
@@ -51,16 +51,16 @@ export default async function DashboardPage() {
     return (
       <div>
         <PageHeader module="school" title="Platform admin" />
-        <p className="mt-4 text-slate-600">
+        <p className="mt-4 text-slate-600 dark:text-slate-400">
           You&apos;re signed in as an EduMIS platform administrator. School portal features (pupils,
           attendance, behaviour) are scoped per-tenant, so there&apos;s nothing school-specific to show
           here — manage schools from{" "}
-          <Link href="/portal/super-admin" className="text-indigo-600 hover:underline">
+          <Link href="/portal/super-admin" className="text-indigo-600 hover:underline dark:text-indigo-400">
             Schools
           </Link>
           .
         </p>
-        <p className="mt-4 text-sm text-slate-700">{tenantCount} school{tenantCount === 1 ? "" : "s"} onboarded.</p>
+        <p className="mt-4 text-sm text-slate-700 dark:text-slate-200">{tenantCount} school{tenantCount === 1 ? "" : "s"} onboarded.</p>
       </div>
     );
   }
@@ -69,7 +69,7 @@ export default async function DashboardPage() {
     return (
       <div>
         <PageHeader module="dashboard" title="Dashboard" />
-        <p className="mt-4 text-slate-600">
+        <p className="mt-4 text-slate-600 dark:text-slate-400">
           Welcome, {session!.user.name ?? session!.user.email}. This account doesn&apos;t have MIS
           classroom access — contact your school admin if you believe this is wrong.
         </p>
@@ -142,22 +142,22 @@ export default async function DashboardPage() {
 
       <div className="mt-8">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">Recent behaviour incidents</h2>
-          <Link href="/portal/behaviour" className="text-sm text-indigo-600 hover:underline">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Recent behaviour incidents</h2>
+          <Link href="/portal/behaviour" className="text-sm text-indigo-600 hover:underline dark:text-indigo-400">
             View all
           </Link>
         </div>
-        <div className="mt-3 divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white">
+        <div className="mt-3 divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white dark:divide-slate-700 dark:border-slate-700 dark:bg-slate-900">
           {recentIncidents.length === 0 && (
             <EmptyState icon={HeartHandshake} title="No incidents logged yet" description="Nothing to review — behaviour incidents you log will show up here." />
           )}
           {recentIncidents.map((i) => (
-            <div key={i.id} className="p-4 transition-colors hover:bg-slate-50">
-              <p className="font-medium text-slate-900">
+            <div key={i.id} className="p-4 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
+              <p className="font-medium text-slate-900 dark:text-white">
                 {i.pupil.firstName} {i.pupil.lastName} — {i.category.charAt(0) + i.category.slice(1).toLowerCase()}
               </p>
-              <p className="mt-0.5 text-sm text-slate-600">{i.description}</p>
-              <p className="mt-1 text-xs text-slate-500">{i.date.toLocaleDateString("en-GB")}</p>
+              <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-400">{i.description}</p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{i.date.toLocaleDateString("en-GB")}</p>
             </div>
           ))}
         </div>

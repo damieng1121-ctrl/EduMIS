@@ -87,9 +87,9 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
       />
 
       {showForm && (
-        <form onSubmit={send} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5">
-          <input required value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Subject" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <textarea required value={body} onChange={(e) => setBody(e.target.value)} placeholder="Message" rows={5} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+        <form onSubmit={send} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <input required value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Subject" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <textarea required value={body} onChange={(e) => setBody(e.target.value)} placeholder="Message" rows={5} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <select
@@ -98,7 +98,7 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
                 setAudience(e.target.value as Audience);
                 setAudienceRef("");
               }}
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             >
               <option value="ALL_PARENTS">All parents</option>
               <option value="YEAR_GROUP">A year group</option>
@@ -107,7 +107,7 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
             </select>
 
             {audience === "YEAR_GROUP" && (
-              <select required value={audienceRef} onChange={(e) => setAudienceRef(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+              <select required value={audienceRef} onChange={(e) => setAudienceRef(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
                 <option value="" disabled>Choose a year group…</option>
                 {YEAR_GROUPS.map((yg) => (
                   <option key={yg} value={yg}>{yg.replace("_", " ")}</option>
@@ -115,7 +115,7 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
               </select>
             )}
             {audience === "FORM_GROUP" && (
-              <select required value={audienceRef} onChange={(e) => setAudienceRef(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+              <select required value={audienceRef} onChange={(e) => setAudienceRef(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
                 <option value="" disabled>Choose a form group…</option>
                 {formGroups.map((fg) => (
                   <option key={fg.id} value={fg.id}>{fg.name}</option>
@@ -123,7 +123,7 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
               </select>
             )}
             {audience === "INDIVIDUAL" && (
-              <select required value={audienceRef} onChange={(e) => setAudienceRef(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+              <select required value={audienceRef} onChange={(e) => setAudienceRef(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
                 <option value="" disabled>Choose a pupil…</option>
                 {pupils.map((p) => (
                   <option key={p.id} value={p.id}>{p.firstName} {p.lastName}</option>
@@ -132,21 +132,21 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
             )}
           </div>
 
-          <label className="flex items-center gap-2 text-sm text-slate-700">
+          <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
             <input type="checkbox" checked={urgent} onChange={(e) => setUrgent(e.target.checked)} />
             Also send as an urgent SMS alert (attendance/safeguarding-grade only — goes to every guardian with a phone number on file)
           </label>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
           <Button type="submit" disabled={submitting}>
             {submitting ? "Sending…" : "Send message"}
           </Button>
         </form>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Subject</th>
               <th className="p-4">Audience</th>
@@ -154,22 +154,22 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
               <th className="p-4">Sent</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {messages === null && <TableSkeleton rows={5} cols={4} />}
             {messages?.map((m) => (
               <tr key={m.id}>
                 <td className="p-4">
-                  <p className="font-medium text-slate-900">
+                  <p className="font-medium text-slate-900 dark:text-white">
                     {m.subject}
                     {m.urgentSms && (
-                      <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-xs font-medium text-rose-700">SMS sent</span>
+                      <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-xs font-medium text-rose-700 dark:bg-rose-900 dark:text-rose-300">SMS sent</span>
                     )}
                   </p>
-                  <p className="text-xs text-slate-700">{m.sender.name ?? m.sender.email}</p>
+                  <p className="text-xs text-slate-700 dark:text-slate-200">{m.sender.name ?? m.sender.email}</p>
                 </td>
-                <td className="p-4 text-slate-600">{m.audience.replace("_", " ")}{m.audienceRef ? ` (${m.audienceRef})` : ""}</td>
-                <td className="p-4 text-slate-600">{m._count.recipients}</td>
-                <td className="p-4 text-slate-600">{new Date(m.sentAt).toLocaleString("en-GB")}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{m.audience.replace("_", " ")}{m.audienceRef ? ` (${m.audienceRef})` : ""}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{m._count.recipients}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{new Date(m.sentAt).toLocaleString("en-GB")}</td>
               </tr>
             ))}
             {messages?.length === 0 && (

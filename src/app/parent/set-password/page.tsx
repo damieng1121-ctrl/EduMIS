@@ -43,38 +43,38 @@ function SetPasswordForm() {
   }
 
   if (!token) {
-    return <p className="mt-4 text-sm text-red-700">This link is missing its token — please use the link from your email.</p>;
+    return <p className="mt-4 text-sm text-red-700 dark:text-red-400">This link is missing its token — please use the link from your email.</p>;
   }
 
   if (done) {
-    return <p className="mt-4 text-sm text-green-700">Password set! Taking you to sign in&hellip;</p>;
+    return <p className="mt-4 text-sm text-green-700 dark:text-green-300">Password set! Taking you to sign in&hellip;</p>;
   }
 
   return (
     <form onSubmit={onSubmit} className="mt-6 space-y-4 text-left">
       <div>
-        <label className="block text-sm font-medium text-slate-700">New password</label>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">New password</label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
           minLength={8}
           required
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700">Confirm password</label>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Confirm password</label>
         <input
           type="password"
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
           minLength={8}
           required
         />
       </div>
-      {error && <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      {error && <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-400">{error}</p>}
       <button
         type="submit"
         disabled={loading}
@@ -89,12 +89,12 @@ function SetPasswordForm() {
 export default function ParentSetPasswordPage() {
   return (
     <div className="flex flex-1 items-center justify-center bg-gradient-to-br from-indigo-50 via-violet-50 to-white px-6 py-16">
-      <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 text-center shadow-lg">
+      <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 text-center shadow-lg dark:border-slate-700 dark:bg-slate-900">
         <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500 font-semibold text-white shadow-sm">
           E
         </div>
-        <h1 className="text-xl font-semibold text-slate-900">Set your parent portal password</h1>
-        <p className="mt-2 text-sm text-slate-600">Choose a password to access your child&apos;s attendance, behaviour, and messages.</p>
+        <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Set your parent portal password</h1>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Choose a password to access your child&apos;s attendance, behaviour, and messages.</p>
         <Suspense fallback={null}>
           <SetPasswordForm />
         </Suspense>

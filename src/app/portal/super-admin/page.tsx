@@ -425,7 +425,7 @@ export default function SuperAdminPage() {
         title="Platform administration"
         subtitle="Manage every school, Trust, and user across EduMIS."
         actions={
-          <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1">
+          <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1 dark:border-slate-700 dark:bg-slate-900">
             {(["schools", "trusts", "users", "features"] as const).map((t) => (
               <button
                 key={t}
@@ -441,48 +441,48 @@ export default function SuperAdminPage() {
 
       {tab === "schools" && (
         <>
-          <p className="mt-4 text-sm text-slate-600">
+          <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
             Onboard a new school by registering its Google Workspace domain — the first person who
             signs in from that domain is auto-provisioned as staff.
           </p>
 
-          <form onSubmit={createTenant} className="mt-6 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-6 sm:grid-cols-2">
+          <form onSubmit={createTenant} className="mt-6 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-6 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
             <div>
-              <label className="block text-sm font-medium text-slate-700">School name</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">School name</label>
               <input
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Willowbrook Primary School"
-                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">URL slug</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">URL slug</label>
               <input
                 required
                 value={slug}
                 onChange={(e) => setSlug(e.target.value.toLowerCase())}
                 placeholder="willowbrook"
-                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">Google Workspace domain</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Google Workspace domain</label>
               <input
                 required
                 value={domain}
                 onChange={(e) => setDomain(e.target.value.toLowerCase())}
                 placeholder="willowbrook-primary.sch.uk"
-                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">Phase</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Phase</label>
               <select
                 value={phase}
                 onChange={(e) => setPhase(e.target.value)}
-                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               >
                 {PHASES.map((p) => (
                   <option key={p} value={p}>
@@ -492,18 +492,18 @@ export default function SuperAdminPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">DfE URN (optional)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">DfE URN (optional)</label>
               <input
                 value={urn}
                 onChange={(e) => setUrn(e.target.value)}
-                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               />
             </div>
             <div className="sm:col-span-2">
               <button
                 type="button"
                 onClick={() => setShowMoreDetails((v) => !v)}
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
               >
                 {showMoreDetails ? "− Hide more details" : "+ Add more details (trust, address, contact, modules)"}
               </button>
@@ -512,11 +512,11 @@ export default function SuperAdminPage() {
             {showMoreDetails && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">Trust (optional)</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Trust (optional)</label>
                   <select
                     value={newTrustId}
                     onChange={(e) => setNewTrustId(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                   >
                     <option value="">Standalone</option>
                     {trusts?.map((tr) => (
@@ -527,76 +527,76 @@ export default function SuperAdminPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">Brand colour</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Brand colour</label>
                   <input
                     type="color"
                     value={newBrandColor}
                     onChange={(e) => setNewBrandColor(e.target.value)}
-                    className="mt-1 h-9 w-full rounded-md border border-slate-300 px-1 py-1"
+                    className="mt-1 h-9 w-full rounded-md border border-slate-300 px-1 py-1 dark:border-slate-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">Address line 1</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Address line 1</label>
                   <input
                     value={newAddressLine1}
                     onChange={(e) => setNewAddressLine1(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">Address line 2</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Address line 2</label>
                   <input
                     value={newAddressLine2}
                     onChange={(e) => setNewAddressLine2(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">City / town</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">City / town</label>
                   <input
                     value={newCity}
                     onChange={(e) => setNewCity(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">Postcode</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Postcode</label>
                   <input
                     value={newPostcode}
                     onChange={(e) => setNewPostcode(e.target.value.toUpperCase())}
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">Headteacher name</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Headteacher name</label>
                   <input
                     value={newHeadteacherName}
                     onChange={(e) => setNewHeadteacherName(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">Contact email</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Contact email</label>
                   <input
                     type="email"
                     value={newContactEmail}
                     onChange={(e) => setNewContactEmail(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">Contact phone</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Contact phone</label>
                   <input
                     value={newContactPhone}
                     onChange={(e) => setNewContactPhone(e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-slate-700">Modules to enable now (optional)</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Modules to enable now (optional)</label>
                   <div className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {FEATURE_KEYS.map((key) => (
-                      <label key={key} className="flex items-center gap-2 text-sm text-slate-700">
+                      <label key={key} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
                         <input
                           type="checkbox"
                           checked={newFeatures.has(key)}
@@ -622,12 +622,12 @@ export default function SuperAdminPage() {
                 {submitting ? "Creating…" : "Add school"}
               </Button>
             </div>
-            {error && <p className="sm:col-span-2 text-sm text-red-600">{error}</p>}
+            {error && <p className="sm:col-span-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
           </form>
 
-          <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
                 <tr>
                   <th className="p-4">School</th>
                   <th className="p-4">Domain</th>
@@ -638,20 +638,20 @@ export default function SuperAdminPage() {
                   <th className="p-4"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {tenants?.map((t) => (
                   <Fragment key={t.id}>
                     <tr>
                       <td className="p-4">
-                        <p className="font-medium text-slate-900">{t.name}</p>
-                        <p className="text-xs text-slate-700">/{t.slug} · {t.phase.replace(/_/g, " ")}</p>
+                        <p className="font-medium text-slate-900 dark:text-white">{t.name}</p>
+                        <p className="text-xs text-slate-700 dark:text-slate-200">/{t.slug} · {t.phase.replace(/_/g, " ")}</p>
                       </td>
-                      <td className="p-4 text-slate-600">{t.domain}</td>
+                      <td className="p-4 text-slate-600 dark:text-slate-400">{t.domain}</td>
                       <td className="p-4">
                         <select
                           value={t.trustId ?? ""}
                           onChange={(e) => setTenantTrust(t.id, e.target.value)}
-                          className="rounded-md border border-slate-300 px-2 py-1 text-sm"
+                          className="rounded-md border border-slate-300 px-2 py-1 text-sm dark:border-slate-600"
                         >
                           <option value="">Standalone</option>
                           {trusts?.map((tr) => (
@@ -661,8 +661,8 @@ export default function SuperAdminPage() {
                           ))}
                         </select>
                       </td>
-                      <td className="p-4 text-slate-600">{t._count.users}</td>
-                      <td className="p-4 text-slate-600">{t._count.pupils}</td>
+                      <td className="p-4 text-slate-600 dark:text-slate-400">{t._count.users}</td>
+                      <td className="p-4 text-slate-600 dark:text-slate-400">{t._count.pupils}</td>
                       <td className="p-4">
                         <button
                           onClick={() => toggleActive(t.id, t.isActive)}
@@ -692,80 +692,80 @@ export default function SuperAdminPage() {
                     </tr>
                     {editingId === t.id && (
                       <tr>
-                        <td colSpan={7} className="bg-slate-50 p-4">
+                        <td colSpan={7} className="bg-slate-50 p-4 dark:bg-slate-950">
                           <form onSubmit={(e) => saveEdit(t.id, e)} className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <div>
-                              <label className="block text-sm font-medium text-slate-700">DfE URN</label>
+                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">DfE URN</label>
                               <input
                                 value={editUrn}
                                 onChange={(e) => setEditUrn(e.target.value)}
-                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-700">Brand colour</label>
+                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Brand colour</label>
                               <input
                                 type="color"
                                 value={editBrandColor}
                                 onChange={(e) => setEditBrandColor(e.target.value)}
-                                className="mt-1 h-9 w-full rounded-md border border-slate-300 px-1 py-1"
+                                className="mt-1 h-9 w-full rounded-md border border-slate-300 px-1 py-1 dark:border-slate-600"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-700">Headteacher name</label>
+                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Headteacher name</label>
                               <input
                                 value={editHeadteacherName}
                                 onChange={(e) => setEditHeadteacherName(e.target.value)}
-                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-700">Address line 1</label>
+                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Address line 1</label>
                               <input
                                 value={editAddressLine1}
                                 onChange={(e) => setEditAddressLine1(e.target.value)}
-                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-700">Address line 2</label>
+                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Address line 2</label>
                               <input
                                 value={editAddressLine2}
                                 onChange={(e) => setEditAddressLine2(e.target.value)}
-                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-700">City / town</label>
+                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">City / town</label>
                               <input
                                 value={editCity}
                                 onChange={(e) => setEditCity(e.target.value)}
-                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-700">Postcode</label>
+                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Postcode</label>
                               <input
                                 value={editPostcode}
                                 onChange={(e) => setEditPostcode(e.target.value.toUpperCase())}
-                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-700">Contact email</label>
+                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Contact email</label>
                               <input
                                 type="email"
                                 value={editContactEmail}
                                 onChange={(e) => setEditContactEmail(e.target.value)}
-                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-slate-700">Contact phone</label>
+                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Contact phone</label>
                               <input
                                 value={editContactPhone}
                                 onChange={(e) => setEditContactPhone(e.target.value)}
-                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                               />
                             </div>
                             <div className="flex items-end gap-2">
@@ -776,7 +776,7 @@ export default function SuperAdminPage() {
                                 Cancel
                               </Button>
                             </div>
-                            {editError && <p className="sm:col-span-3 text-sm text-red-600">{editError}</p>}
+                            {editError && <p className="sm:col-span-3 text-sm text-red-600 dark:text-red-400">{editError}</p>}
                           </form>
                         </td>
                       </tr>
@@ -785,7 +785,7 @@ export default function SuperAdminPage() {
                 ))}
                 {tenants?.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="p-6 text-center text-sm text-slate-700">
+                    <td colSpan={7} className="p-6 text-center text-sm text-slate-700 dark:text-slate-200">
                       No schools yet — add one above.
                     </td>
                   </tr>
@@ -798,14 +798,14 @@ export default function SuperAdminPage() {
 
       {tab === "features" && (
         <>
-          <p className="mt-4 text-sm text-slate-600">
+          <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
             Switch optional modules on per school. Nothing here is on by default — a school only sees a
             module once you&apos;ve enabled it for them.
           </p>
 
-          <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200 bg-white">
+          <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
                 <tr>
                   <th className="p-4">School</th>
                   {FEATURE_KEYS.map((key) => (
@@ -815,16 +815,16 @@ export default function SuperAdminPage() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {tenants?.map((t) => (
                   <tr key={t.id}>
                     <td className="p-4">
-                      <p className="font-medium text-slate-900">{t.name}</p>
-                      <p className="text-xs text-slate-700">/{t.slug}</p>
+                      <p className="font-medium text-slate-900 dark:text-white">{t.name}</p>
+                      <p className="text-xs text-slate-700 dark:text-slate-200">/{t.slug}</p>
                     </td>
                     {FEATURE_KEYS.map((key) => (
                       <td key={key} className="p-4">
-                        <label className="flex items-center gap-2 text-slate-700">
+                        <label className="flex items-center gap-2 text-slate-700 dark:text-slate-200">
                           <input
                             type="checkbox"
                             checked={t.enabledFeatures.includes(key)}
@@ -838,7 +838,7 @@ export default function SuperAdminPage() {
                 ))}
                 {tenants?.length === 0 && (
                   <tr>
-                    <td colSpan={FEATURE_KEYS.length + 1} className="p-6 text-center text-sm text-slate-700">
+                    <td colSpan={FEATURE_KEYS.length + 1} className="p-6 text-center text-sm text-slate-700 dark:text-slate-200">
                       No schools yet — add one from the Schools tab.
                     </td>
                   </tr>
@@ -851,34 +851,34 @@ export default function SuperAdminPage() {
 
       {tab === "trusts" && (
         <>
-          <p className="mt-4 text-sm text-slate-600">
+          <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
             A Trust groups schools under shared leadership — a small Federation (2-3 schools) and a
             large Multi-Academy Trust both work the same way. Assign schools to a Trust from the{" "}
-            <button onClick={() => setTab("schools")} className="text-indigo-600 hover:underline">
+            <button onClick={() => setTab("schools")} className="text-indigo-600 hover:underline dark:text-indigo-400">
               Schools
             </button>{" "}
             tab, and add a Trust admin from the Users tab once the Trust exists.
           </p>
 
-          <form onSubmit={createTrust} className="mt-6 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-6 sm:grid-cols-3">
+          <form onSubmit={createTrust} className="mt-6 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-6 sm:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
             <div>
-              <label className="block text-sm font-medium text-slate-700">Trust name</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Trust name</label>
               <input
                 required
                 value={trustName}
                 onChange={(e) => setTrustName(e.target.value)}
                 placeholder="Oak Learning Trust"
-                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">URL slug</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">URL slug</label>
               <input
                 required
                 value={trustSlug}
                 onChange={(e) => setTrustSlug(e.target.value.toLowerCase())}
                 placeholder="oak-learning-trust"
-                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               />
             </div>
             <div className="flex items-end">
@@ -886,12 +886,12 @@ export default function SuperAdminPage() {
                 {trustSubmitting ? "Creating…" : "Add Trust"}
               </Button>
             </div>
-            {trustError && <p className="sm:col-span-3 text-sm text-red-600">{trustError}</p>}
+            {trustError && <p className="sm:col-span-3 text-sm text-red-600 dark:text-red-400">{trustError}</p>}
           </form>
 
-          <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
                 <tr>
                   <th className="p-4">Trust</th>
                   <th className="p-4">Schools</th>
@@ -899,17 +899,17 @@ export default function SuperAdminPage() {
                   <th className="p-4"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {trusts?.map((tr) => (
                   <tr key={tr.id}>
                     <td className="p-4">
-                      <p className="font-medium text-slate-900">{tr.name}</p>
-                      <p className="text-xs text-slate-700">/{tr.slug}</p>
+                      <p className="font-medium text-slate-900 dark:text-white">{tr.name}</p>
+                      <p className="text-xs text-slate-700 dark:text-slate-200">/{tr.slug}</p>
                     </td>
-                    <td className="p-4 text-slate-600">
+                    <td className="p-4 text-slate-600 dark:text-slate-400">
                       {tr.tenants.length === 0 ? "—" : tr.tenants.map((t) => t.name).join(", ")}
                     </td>
-                    <td className="p-4 text-slate-600">{tr._count.users}</td>
+                    <td className="p-4 text-slate-600 dark:text-slate-400">{tr._count.users}</td>
                     <td className="p-4 text-right">
                       <Button variant="secondary" size="sm" onClick={() => deleteTrust(tr)}>
                         Delete
@@ -919,7 +919,7 @@ export default function SuperAdminPage() {
                 ))}
                 {trusts?.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="p-6 text-center text-sm text-slate-700">
+                    <td colSpan={4} className="p-6 text-center text-sm text-slate-700 dark:text-slate-200">
                       No Trusts yet — add one above.
                     </td>
                   </tr>
@@ -933,7 +933,7 @@ export default function SuperAdminPage() {
       {tab === "users" && (
         <>
           <div className="mt-4 flex items-center justify-between">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Every user across every school and Trust, plus platform staff. Add someone directly, or move an
               existing user to a different school.
             </p>
@@ -943,25 +943,25 @@ export default function SuperAdminPage() {
           </div>
 
           {showInvite && (
-            <form onSubmit={inviteUser} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-4">
+            <form onSubmit={inviteUser} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-4 dark:border-slate-700 dark:bg-slate-900">
               <input
                 required
                 type="email"
                 value={uEmail}
                 onChange={(e) => setUEmail(e.target.value)}
                 placeholder="Email address"
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               />
               <input
                 value={uName}
                 onChange={(e) => setUName(e.target.value)}
                 placeholder="Name (optional)"
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               />
               <select
                 value={uRole}
                 onChange={(e) => setURole(e.target.value as typeof uRole)}
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               >
                 {ROLES.map((r) => (
                   <option key={r} value={r}>
@@ -973,7 +973,7 @@ export default function SuperAdminPage() {
                 <select
                   value={uTrustId}
                   onChange={(e) => setUTrustId(e.target.value)}
-                  className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                 >
                   <option value="">Select a Trust…</option>
                   {trusts?.map((tr) => (
@@ -987,7 +987,7 @@ export default function SuperAdminPage() {
                   value={uTenantId}
                   disabled={uRole === "SUPER_ADMIN"}
                   onChange={(e) => setUTenantId(e.target.value)}
-                  className="rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-50 disabled:text-slate-600"
+                  className="rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-50 disabled:text-slate-600 dark:border-slate-600"
                 >
                   <option value="">Select a school…</option>
                   {tenants?.map((t) => (
@@ -997,18 +997,18 @@ export default function SuperAdminPage() {
                   ))}
                 </select>
               )}
-              {uError && <p className="text-sm text-red-600 sm:col-span-4">{uError}</p>}
+              {uError && <p className="text-sm text-red-600 sm:col-span-4 dark:text-red-400">{uError}</p>}
               <Button type="submit" disabled={inviting} className="sm:col-span-4">
                 {inviting ? "Adding…" : "Add user"}
               </Button>
             </form>
           )}
 
-          {usersError && <p className="mt-4 text-sm text-red-600">{usersError}</p>}
+          {usersError && <p className="mt-4 text-sm text-red-600 dark:text-red-400">{usersError}</p>}
 
-          <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+          <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
                 <tr>
                   <th className="p-4">Name</th>
                   <th className="p-4">School / Trust</th>
@@ -1018,28 +1018,28 @@ export default function SuperAdminPage() {
                   <th className="p-4"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {users?.map((u) => (
                   <tr key={u.id}>
                     <td className="p-4">
-                      <p className="font-medium text-slate-900">
+                      <p className="font-medium text-slate-900 dark:text-white">
                         {u.name ?? "—"}
                         {u._count.accounts === 0 && (
-                          <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                          <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900 dark:text-amber-300">
                             Pending sign-in
                           </span>
                         )}
                       </p>
-                      <p className="text-xs text-slate-700">{u.email}</p>
+                      <p className="text-xs text-slate-700 dark:text-slate-200">{u.email}</p>
                     </td>
                     <td className="p-4">
                       {u.role === "SUPER_ADMIN" ? (
-                        <span className="text-xs text-slate-600">Platform (no school)</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-400">Platform (no school)</span>
                       ) : u.role === "TRUST_ADMIN" ? (
                         <select
                           value={u.trustId ?? ""}
                           onChange={(e) => reassignUser(u.id, { trustId: e.target.value || null })}
-                          className="rounded-md border border-slate-300 px-2 py-1 text-sm"
+                          className="rounded-md border border-slate-300 px-2 py-1 text-sm dark:border-slate-600"
                         >
                           <option value="" disabled>
                             Select a Trust…
@@ -1054,7 +1054,7 @@ export default function SuperAdminPage() {
                         <select
                           value={u.tenantId ?? ""}
                           onChange={(e) => reassignUser(u.id, { tenantId: e.target.value || null })}
-                          className="rounded-md border border-slate-300 px-2 py-1 text-sm"
+                          className="rounded-md border border-slate-300 px-2 py-1 text-sm dark:border-slate-600"
                         >
                           <option value="" disabled>
                             Select a school…
@@ -1080,7 +1080,7 @@ export default function SuperAdminPage() {
                             reassignUser(u.id, { role: newRole, tenantId: u.tenantId, trustId: null });
                           }
                         }}
-                        className="rounded-md border border-slate-300 px-2 py-1 text-sm"
+                        className="rounded-md border border-slate-300 px-2 py-1 text-sm dark:border-slate-600"
                       >
                         {ROLES.map((r) => (
                           <option key={r} value={r}>
@@ -1089,7 +1089,7 @@ export default function SuperAdminPage() {
                         ))}
                       </select>
                     </td>
-                    <td className="p-4 text-slate-700">{u.twoFactorEnabled ? "Enabled" : "Not set up"}</td>
+                    <td className="p-4 text-slate-700 dark:text-slate-200">{u.twoFactorEnabled ? "Enabled" : "Not set up"}</td>
                     <td className="p-4">
                       <button
                         onClick={() => reassignUser(u.id, { isActive: !u.isActive })}
@@ -1109,7 +1109,7 @@ export default function SuperAdminPage() {
                 ))}
                 {users?.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="p-6 text-center text-sm text-slate-700">
+                    <td colSpan={6} className="p-6 text-center text-sm text-slate-700 dark:text-slate-200">
                       No users yet.
                     </td>
                   </tr>

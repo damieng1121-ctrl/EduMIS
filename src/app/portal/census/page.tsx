@@ -37,10 +37,10 @@ export default function CensusPage() {
       .then(setReadiness);
   }, [session]);
 
-  if (status === "loading") return <p className="text-sm text-slate-700">Loading…</p>;
+  if (status === "loading") return <p className="text-sm text-slate-700 dark:text-slate-200">Loading…</p>;
 
   if (!session?.user || !isAdmin(session.user.role)) {
-    return <p className="text-sm text-slate-700">This area is only available to school admins.</p>;
+    return <p className="text-sm text-slate-700 dark:text-slate-200">This area is only available to school admins.</p>;
   }
 
   return (
@@ -58,14 +58,14 @@ export default function CensusPage() {
         }
       />
 
-      <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+      <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
         This is a data-readiness and export tool, not an official DfE school census submission. It helps you find
         missing or malformed pupil data and gives you a CSV starting point — your school still completes and
         submits its actual census return through DfE&apos;s COLLECT system.
       </div>
 
       {!readiness ? (
-        <p className="mt-6 text-sm text-slate-700">Loading…</p>
+        <p className="mt-6 text-sm text-slate-700 dark:text-slate-200">Loading…</p>
       ) : (
         <>
           <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -77,26 +77,26 @@ export default function CensusPage() {
             />
           </div>
 
-          <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5">
-            <h2 className="font-semibold text-slate-900">Issues by field</h2>
+          <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+            <h2 className="font-semibold text-slate-900 dark:text-white">Issues by field</h2>
             <ul className="mt-4 space-y-2 text-sm">
               {Object.entries(readiness.issuesByField).map(([field, count]) => (
-                <li key={field} className="flex items-center justify-between border-b border-slate-100 pb-2">
-                  <span className="text-slate-600">{FIELD_LABELS[field] ?? field}</span>
+                <li key={field} className="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400">{FIELD_LABELS[field] ?? field}</span>
                   <span className={count > 0 ? "font-medium text-red-600" : "text-slate-700"}>{count}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5">
-            <h2 className="font-semibold text-slate-900">Pupils with missing data</h2>
+          <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+            <h2 className="font-semibold text-slate-900 dark:text-white">Pupils with missing data</h2>
             {readiness.pupils.length === 0 ? (
-              <p className="mt-4 text-sm text-slate-600">No issues found — every active pupil has these fields set.</p>
+              <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">No issues found — every active pupil has these fields set.</p>
             ) : (
               <table className="mt-4 w-full text-sm">
                 <thead>
-                  <tr className="text-left text-slate-600">
+                  <tr className="text-left text-slate-600 dark:text-slate-400">
                     <th className="pb-2 font-medium">Pupil</th>
                     <th className="pb-2 font-medium">Year group</th>
                     <th className="pb-2 font-medium">Missing fields</th>
@@ -104,14 +104,14 @@ export default function CensusPage() {
                 </thead>
                 <tbody>
                   {readiness.pupils.map((p) => (
-                    <tr key={p.id} className="border-t border-slate-100">
+                    <tr key={p.id} className="border-t border-slate-100 dark:border-slate-800">
                       <td className="py-2">
-                        <Link href={`/portal/pupils/${p.id}`} className="text-indigo-700 hover:underline">
+                        <Link href={`/portal/pupils/${p.id}`} className="text-indigo-700 hover:underline dark:text-indigo-300">
                           {p.name}
                         </Link>
                       </td>
-                      <td className="py-2 text-slate-700">{p.yearGroup.replace("YEAR_", "Year ").replace("_", " ")}</td>
-                      <td className="py-2 text-slate-700">
+                      <td className="py-2 text-slate-700 dark:text-slate-200">{p.yearGroup.replace("YEAR_", "Year ").replace("_", " ")}</td>
+                      <td className="py-2 text-slate-700 dark:text-slate-200">
                         {p.missingFields.map((f) => FIELD_LABELS[f] ?? f).join(", ")}
                       </td>
                     </tr>
@@ -131,8 +131,8 @@ export default function CensusPage() {
 
 function Stat({ label, value, highlight }: { label: string; value: string | number; highlight?: boolean }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5">
-      <p className="text-sm text-slate-700">{label}</p>
+    <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+      <p className="text-sm text-slate-700 dark:text-slate-200">{label}</p>
       <p className={`mt-1 text-3xl font-semibold ${highlight ? "text-red-600" : "text-slate-900"}`}>{value}</p>
     </div>
   );
@@ -241,11 +241,11 @@ function ExclusionsSection() {
   const thisYear = exclusions?.filter((x) => new Date(x.startDate) >= start) ?? [];
 
   return (
-    <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5">
+    <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="font-semibold text-slate-900">Exclusions</h2>
-          <p className="text-sm text-slate-600">Suspensions and permanent exclusions for the {label} academic year.</p>
+          <h2 className="font-semibold text-slate-900 dark:text-white">Exclusions</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-400">Suspensions and permanent exclusions for the {label} academic year.</p>
         </div>
         {!disabled && (
           <Button size="sm" onClick={() => setShowForm(!showForm)}>
@@ -255,19 +255,19 @@ function ExclusionsSection() {
       </div>
 
       {disabled ? (
-        <p className="mt-4 text-sm text-slate-600">Extended census isn&apos;t switched on for your school.</p>
+        <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">Extended census isn&apos;t switched on for your school.</p>
       ) : (
         <>
           {showForm && (
             <form
               onSubmit={createExclusion}
-              className="mt-4 grid grid-cols-1 gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2"
+              className="mt-4 grid grid-cols-1 gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-950"
             >
               <select
                 required
                 value={pupilId}
                 onChange={(e) => setPupilId(e.target.value)}
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               >
                 <option value="">Select pupil…</option>
                 {pupils.map((p) => (
@@ -279,40 +279,40 @@ function ExclusionsSection() {
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as ExclusionType)}
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               >
                 <option value="FIXED_TERM">Fixed-term</option>
                 <option value="PERMANENT">Permanent</option>
               </select>
-              <label className="flex flex-col gap-1 text-xs text-slate-600">
+              <label className="flex flex-col gap-1 text-xs text-slate-600 dark:text-slate-400">
                 Start date
                 <input
                   required
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                 />
               </label>
               {type === "FIXED_TERM" && (
-                <label className="flex flex-col gap-1 text-xs text-slate-600">
+                <label className="flex flex-col gap-1 text-xs text-slate-600 dark:text-slate-400">
                   End date
                   <input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                    className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                   />
                 </label>
               )}
-              <label className="flex flex-col gap-1 text-xs text-slate-600">
+              <label className="flex flex-col gap-1 text-xs text-slate-600 dark:text-slate-400">
                 Sessions lost
                 <input
                   type="number"
                   min={0}
                   value={sessionsLost}
                   onChange={(e) => setSessionsLost(e.target.value)}
-                  className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                  className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
                 />
               </label>
               <textarea
@@ -321,7 +321,7 @@ function ExclusionsSection() {
                 onChange={(e) => setReason(e.target.value)}
                 placeholder="Reason"
                 rows={2}
-                className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               />
               <Button type="submit" size="sm" disabled={submitting} className="sm:col-span-2">
                 {submitting ? "Saving…" : "Save exclusion"}
@@ -331,7 +331,7 @@ function ExclusionsSection() {
 
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
                 <tr>
                   <th className="p-2">Pupil</th>
                   <th className="p-2">Type</th>
@@ -340,7 +340,7 @@ function ExclusionsSection() {
                   <th className="p-2">Sessions lost</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {exclusions === null && <TableSkeleton rows={3} cols={5} />}
                 {exclusions !== null && thisYear.length === 0 && (
                   <tr>
@@ -355,18 +355,18 @@ function ExclusionsSection() {
                 )}
                 {thisYear.map((x) => (
                   <tr key={x.id}>
-                    <td className="p-2 font-medium text-slate-900">
+                    <td className="p-2 font-medium text-slate-900 dark:text-white">
                       {x.pupil.firstName} {x.pupil.lastName}
-                      <span className="ml-1 text-xs font-normal text-slate-500">{formatYearGroup(x.pupil.yearGroup)}</span>
+                      <span className="ml-1 text-xs font-normal text-slate-500 dark:text-slate-400">{formatYearGroup(x.pupil.yearGroup)}</span>
                     </td>
                     <td className="p-2">
                       <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${EXCLUSION_TYPE_STYLES[x.type]}`}>
                         {EXCLUSION_TYPE_LABELS[x.type]}
                       </span>
                     </td>
-                    <td className="p-2 text-slate-700">{fmtDate(x.startDate)}</td>
-                    <td className="p-2 text-slate-700">{fmtDate(x.endDate)}</td>
-                    <td className="p-2 text-slate-700">{x.sessionsLost ?? "—"}</td>
+                    <td className="p-2 text-slate-700 dark:text-slate-200">{fmtDate(x.startDate)}</td>
+                    <td className="p-2 text-slate-700 dark:text-slate-200">{fmtDate(x.endDate)}</td>
+                    <td className="p-2 text-slate-700 dark:text-slate-200">{x.sessionsLost ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -443,14 +443,14 @@ function EyfsEditor({ pupil, onSaved }: { pupil: EyfsPupil; onSaved: () => void 
   }
 
   return (
-    <div className="mt-3 grid grid-cols-1 gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
+    <div className="mt-3 grid grid-cols-1 gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-950">
       {ELG_FIELDS.map(([key, label]) => (
-        <label key={key} className="flex flex-col gap-1 text-xs text-slate-600">
+        <label key={key} className="flex flex-col gap-1 text-xs text-slate-600 dark:text-slate-400">
           {label}
           <select
             value={scores[key]}
             onChange={(e) => setScores((s) => ({ ...s, [key]: e.target.value as ElgScore | "" }))}
-            className="rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+            className="rounded-md border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-600"
           >
             <option value="">Not yet assessed</option>
             <option value="emerging">Emerging</option>
@@ -482,30 +482,30 @@ function EyfsProfileSection() {
   useEffect(load, []);
 
   return (
-    <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5">
-      <h2 className="font-semibold text-slate-900">EYFS Profile</h2>
-      <p className="text-sm text-slate-600">Reception-year early learning goal (ELG) outcomes.</p>
+    <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+      <h2 className="font-semibold text-slate-900 dark:text-white">EYFS Profile</h2>
+      <p className="text-sm text-slate-600 dark:text-slate-400">Reception-year early learning goal (ELG) outcomes.</p>
 
       {disabled ? (
-        <p className="mt-4 text-sm text-slate-600">Extended census isn&apos;t switched on for your school.</p>
+        <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">Extended census isn&apos;t switched on for your school.</p>
       ) : pupils === null ? (
         <table className="mt-4 w-full text-left text-sm">
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             <TableSkeleton rows={3} cols={2} />
           </tbody>
         </table>
       ) : pupils.length === 0 ? (
         <EmptyState icon={Sprout} title="No Reception pupils" description="Pupils in Reception year will appear here once added." />
       ) : (
-        <ul className="mt-4 divide-y divide-slate-100">
+        <ul className="mt-4 divide-y divide-slate-100 dark:divide-slate-800">
           {pupils.map((p) => (
             <li key={p.id} className="py-3">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="font-medium text-slate-900">
+                  <p className="font-medium text-slate-900 dark:text-white">
                     {p.firstName} {p.lastName}
                   </p>
-                  <p className="text-xs text-slate-600">{elgCompletionLabel(p.eyfsProfileData)}</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">{elgCompletionLabel(p.eyfsProfileData)}</p>
                 </div>
                 <Button size="sm" variant="secondary" onClick={() => setEditingId(editingId === p.id ? null : p.id)}>
                   {editingId === p.id ? "Close" : "Edit"}

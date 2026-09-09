@@ -10,7 +10,7 @@ export default async function ParentPortalLayout({ children }: { children: React
   return (
     <div className="flex min-h-screen flex-1">
       <ParentNav userName={session.user.name ?? session.user.email ?? "Account"} />
-      <main className="flex-1 bg-slate-50 p-8">{children}</main>
+      <main className="flex-1 bg-slate-50 p-8 dark:bg-slate-950">{children}</main>
     </div>
   );
 }

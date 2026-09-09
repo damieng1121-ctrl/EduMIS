@@ -96,10 +96,10 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
     <div>
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
             {pupil.preferredName || pupil.firstName} {pupil.lastName}
           </h1>
-          <p className="mt-1 text-sm text-slate-700">
+          <p className="mt-1 text-sm text-slate-700 dark:text-slate-200">
             DOB {formatDate(pupil.dob)} &middot; {yearGroupLabel(pupil.yearGroup)}
             {pupil.formGroup ? ` · ${pupil.formGroup.name}` : ""}
           </p>
@@ -107,7 +107,7 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
         <div className="flex flex-wrap items-start justify-end gap-1.5">
           <Link
             href={`/portal/pupils/${pupil.id}/report`}
-            className="rounded-md border border-slate-300 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+            className="rounded-md border border-slate-300 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800"
           >
             Report
           </Link>
@@ -116,88 +116,88 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
               {pupil.sendStatus === "SEND_SUPPORT" ? "SEND Support" : "EHCP"}
             </span>
           )}
-          {pupil.pupilPremium && <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Pupil Premium</span>}
-          {pupil.freeSchoolMeals && <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700">FSM</span>}
-          {!pupil.isActive && <span className="rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-700">Inactive</span>}
+          {pupil.pupilPremium && <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900 dark:text-green-300">Pupil Premium</span>}
+          {pupil.freeSchoolMeals && <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">FSM</span>}
+          {!pupil.isActive && <span className="rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-200">Inactive</span>}
         </div>
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <p className="text-sm text-slate-600">Attendance {yearForStats ? `(${yearForStats.name})` : ""}</p>
-          <p className="mt-1 text-3xl font-semibold text-slate-900">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm text-slate-600 dark:text-slate-400">Attendance {yearForStats ? `(${yearForStats.name})` : ""}</p>
+          <p className="mt-1 text-3xl font-semibold text-slate-900 dark:text-white">
             {attendancePct === null ? "—" : `${(attendancePct * 100).toFixed(1)}%`}
           </p>
-          <p className="mt-1 text-xs text-slate-600">{recordedSessions.length} sessions recorded</p>
+          <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">{recordedSessions.length} sessions recorded</p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <p className="text-sm text-slate-600">UPN</p>
-          <p className="mt-1 text-lg font-semibold text-slate-900">{pupil.upn ?? "Not allocated"}</p>
-          <p className="mt-1 text-xs text-slate-600">Admission no. {pupil.admissionNumber ?? "—"}</p>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm text-slate-600 dark:text-slate-400">UPN</p>
+          <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">{pupil.upn ?? "Not allocated"}</p>
+          <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">Admission no. {pupil.admissionNumber ?? "—"}</p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <p className="text-sm text-slate-600">Guardians</p>
-          <Link href={`/portal/pupils/${pupil.id}/guardians`} className="mt-1 inline-block text-sm text-indigo-600 hover:underline">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm text-slate-600 dark:text-slate-400">Guardians</p>
+          <Link href={`/portal/pupils/${pupil.id}/guardians`} className="mt-1 inline-block text-sm text-indigo-600 hover:underline dark:text-indigo-400">
             View / manage guardians &rarr;
           </Link>
         </div>
       </div>
 
       {isPersistentAbsence && (
-        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
           <strong>Persistent absence:</strong> attendance is below the {(PERSISTENT_ABSENCE_THRESHOLD * 100).toFixed(0)}% DfE threshold.
         </div>
       )}
 
       {pupil.sendStatus !== "NONE" && (
-        <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="font-semibold text-slate-900">SEND plan</h2>
+        <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="font-semibold text-slate-900 dark:text-white">SEND plan</h2>
           {sendPlan ? (
-            <div className="mt-2 text-sm text-slate-700">
+            <div className="mt-2 text-sm text-slate-700 dark:text-slate-200">
               <p><span className="font-medium">Primary need:</span> {sendPlan.primaryNeed ?? "Not specified"}</p>
               <p className="mt-2 whitespace-pre-wrap">{sendPlan.description}</p>
-              {sendPlan.reviewDate && <p className="mt-2 text-xs text-slate-600">Next review: {formatDate(sendPlan.reviewDate)}</p>}
+              {sendPlan.reviewDate && <p className="mt-2 text-xs text-slate-600 dark:text-slate-400">Next review: {formatDate(sendPlan.reviewDate)}</p>}
             </div>
           ) : (
-            <p className="mt-2 text-sm text-slate-700">No SEND plan on file yet.</p>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">No SEND plan on file yet.</p>
           )}
         </div>
       )}
 
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="font-semibold text-slate-900">Recent behaviour incidents</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="font-semibold text-slate-900 dark:text-white">Recent behaviour incidents</h2>
           {behaviourIncidents.length === 0 ? (
-            <p className="mt-2 text-sm text-slate-700">No incidents recorded.</p>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">No incidents recorded.</p>
           ) : (
-            <ul className="mt-3 divide-y divide-slate-100">
+            <ul className="mt-3 divide-y divide-slate-100 dark:divide-slate-800">
               {behaviourIncidents.map((b) => (
                 <li key={b.id} className="py-2 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-slate-900">{b.category.replaceAll("_", " ")}</span>
-                    <span className="text-xs text-slate-600">{formatDate(b.date)}</span>
+                    <span className="font-medium text-slate-900 dark:text-white">{b.category.replaceAll("_", " ")}</span>
+                    <span className="text-xs text-slate-600 dark:text-slate-400">{formatDate(b.date)}</span>
                   </div>
-                  <p className="mt-0.5 text-slate-700">{b.description}</p>
-                  {b.points !== 0 && <p className="mt-0.5 text-xs text-slate-600">{b.points > 0 ? "+" : ""}{b.points} points</p>}
+                  <p className="mt-0.5 text-slate-700 dark:text-slate-200">{b.description}</p>
+                  {b.points !== 0 && <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">{b.points > 0 ? "+" : ""}{b.points} points</p>}
                 </li>
               ))}
             </ul>
           )}
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="font-semibold text-slate-900">Recent assessment results</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="font-semibold text-slate-900 dark:text-white">Recent assessment results</h2>
           {assessmentResults.length === 0 ? (
-            <p className="mt-2 text-sm text-slate-700">No assessment results yet.</p>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">No assessment results yet.</p>
           ) : (
-            <ul className="mt-3 divide-y divide-slate-100">
+            <ul className="mt-3 divide-y divide-slate-100 dark:divide-slate-800">
               {assessmentResults.map((a) => (
                 <li key={a.id} className="py-2 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-slate-900">{a.subject.name}</span>
-                    <span className="text-xs text-slate-600">{a.term}</span>
+                    <span className="font-medium text-slate-900 dark:text-white">{a.subject.name}</span>
+                    <span className="text-xs text-slate-600 dark:text-slate-400">{a.term}</span>
                   </div>
-                  <p className="mt-0.5 text-slate-700">{a.attainment}{a.effort ? ` · Effort: ${a.effort}` : ""}</p>
+                  <p className="mt-0.5 text-slate-700 dark:text-slate-200">{a.attainment}{a.effort ? ` · Effort: ${a.effort}` : ""}</p>
                 </li>
               ))}
             </ul>
@@ -205,19 +205,19 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
         </div>
       </div>
 
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
-        <h2 className="font-semibold text-slate-900">Active interventions</h2>
+      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="font-semibold text-slate-900 dark:text-white">Active interventions</h2>
         {interventions.length === 0 ? (
-          <p className="mt-2 text-sm text-slate-700">No active interventions.</p>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">No active interventions.</p>
         ) : (
-          <ul className="mt-3 divide-y divide-slate-100">
+          <ul className="mt-3 divide-y divide-slate-100 dark:divide-slate-800">
             {interventions.map((i) => (
               <li key={i.id} className="py-2 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="font-medium text-slate-900">{i.title}</span>
-                  <span className="text-xs text-slate-600">{i.status}</span>
+                  <span className="font-medium text-slate-900 dark:text-white">{i.title}</span>
+                  <span className="text-xs text-slate-600 dark:text-slate-400">{i.status}</span>
                 </div>
-                <p className="mt-0.5 text-xs text-slate-600">
+                <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">
                   Led by {i.provider.name ?? i.provider.email} &middot; started {formatDate(i.startDate)}
                 </p>
               </li>

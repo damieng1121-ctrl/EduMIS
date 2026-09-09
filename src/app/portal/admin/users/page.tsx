@@ -98,41 +98,41 @@ export default function UsersAdminPage() {
       />
 
       {showInvite && (
-        <form onSubmit={inviteUser} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3">
+        <form onSubmit={inviteUser} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
           <input
             required
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email address"
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm sm:col-span-1"
+            className="rounded-md border border-slate-300 px-3 py-2 text-sm sm:col-span-1 dark:border-slate-600"
           />
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name (optional)"
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm sm:col-span-1"
+            className="rounded-md border border-slate-300 px-3 py-2 text-sm sm:col-span-1 dark:border-slate-600"
           />
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as typeof role)}
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm sm:col-span-1"
+            className="rounded-md border border-slate-300 px-3 py-2 text-sm sm:col-span-1 dark:border-slate-600"
           >
             <option value="STAFF">Staff</option>
             <option value="TENANT_ADMIN">Admin</option>
           </select>
-          {error && <p className="text-sm text-red-600 sm:col-span-3">{error}</p>}
+          {error && <p className="text-sm text-red-600 sm:col-span-3 dark:text-red-400">{error}</p>}
           <Button type="submit" disabled={inviting} className="sm:col-span-3">
             {inviting ? "Inviting…" : "Send invite"}
           </Button>
         </form>
       )}
 
-      {tableError && <p className="mt-4 text-sm text-red-600">{tableError}</p>}
+      {tableError && <p className="mt-4 text-sm text-red-600 dark:text-red-400">{tableError}</p>}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Name</th>
               <th className="p-4">Role</th>
@@ -141,34 +141,34 @@ export default function UsersAdminPage() {
               <th className="p-4"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {users === null && <TableSkeleton rows={5} cols={5} />}
             {users?.map((u) => (
               <tr key={u.id}>
                 <td className="p-4">
-                  <p className="font-medium text-slate-900">
+                  <p className="font-medium text-slate-900 dark:text-white">
                     {u.name ?? "—"}
                     {u._count.accounts === 0 && (
-                      <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                      <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900 dark:text-amber-300">
                         Pending sign-in
                       </span>
                     )}
                   </p>
-                  <p className="text-xs text-slate-700">{u.email}</p>
+                  <p className="text-xs text-slate-700 dark:text-slate-200">{u.email}</p>
                 </td>
                 <td className="p-4">
                   <select
                     value={u.role}
                     disabled={u.role === "SUPER_ADMIN"}
                     onChange={(e) => updateUser(u.id, { role: e.target.value as User["role"] })}
-                    className="rounded-md border border-slate-300 px-2 py-1 text-sm"
+                    className="rounded-md border border-slate-300 px-2 py-1 text-sm dark:border-slate-600"
                   >
                     <option value="STAFF">Staff</option>
                     <option value="TENANT_ADMIN">Admin</option>
                     {u.role === "SUPER_ADMIN" && <option value="SUPER_ADMIN">Super admin</option>}
                   </select>
                 </td>
-                <td className="p-4 text-slate-700">{u.twoFactorEnabled ? "Enabled" : "Not set up"}</td>
+                <td className="p-4 text-slate-700 dark:text-slate-200">{u.twoFactorEnabled ? "Enabled" : "Not set up"}</td>
                 <td className="p-4">
                   <button
                     onClick={() => updateUser(u.id, { isActive: !u.isActive })}

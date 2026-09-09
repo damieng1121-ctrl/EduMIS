@@ -10,7 +10,7 @@ function LoginError() {
   const error = params.get("error");
   if (!error) return null;
   return (
-    <p className="mt-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">
+    <p className="mt-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-400">
       Incorrect email or password. Please try again.
     </p>
   );
@@ -34,23 +34,23 @@ function LoginForm() {
   return (
     <form onSubmit={onSubmit} className="mt-6 space-y-4 text-left">
       <div>
-        <label className="block text-sm font-medium text-slate-700">Email</label>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Email</label>
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700">Password</label>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Password</label>
         <input
           type="password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
         />
       </div>
       <button
@@ -67,19 +67,19 @@ function LoginForm() {
 export default function ParentLoginPage() {
   return (
     <div className="flex flex-1 items-center justify-center bg-gradient-to-br from-indigo-50 via-violet-50 to-white px-6 py-16">
-      <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 text-center shadow-lg">
+      <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 text-center shadow-lg dark:border-slate-700 dark:bg-slate-900">
         <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500 font-semibold text-white shadow-sm">
           E
         </div>
-        <h1 className="text-xl font-semibold text-slate-900">Parent portal sign in</h1>
-        <p className="mt-2 text-sm text-slate-600">
+        <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Parent portal sign in</h1>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
           Sign in with the email and password your school set up for you.
         </p>
         <Suspense fallback={null}>
           <LoginError />
         </Suspense>
         <LoginForm />
-        <p className="mt-6 text-xs text-slate-600">
+        <p className="mt-6 text-xs text-slate-600 dark:text-slate-400">
           Forgotten your password? Contact your school office to resend your invite.
         </p>
       </div>

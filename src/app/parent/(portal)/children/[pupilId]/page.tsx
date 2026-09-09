@@ -35,69 +35,69 @@ export default function ParentChildPage() {
       .catch((err) => setError(err.message));
   }, [params.pupilId]);
 
-  if (error) return <p className="text-sm text-red-600">{error}</p>;
-  if (!data) return <p className="text-sm text-slate-600">Loading…</p>;
+  if (error) return <p className="text-sm text-red-600 dark:text-red-400">{error}</p>;
+  if (!data) return <p className="text-sm text-slate-600 dark:text-slate-400">Loading…</p>;
 
   const { pupil, attendance, behaviourIncidents, send } = data;
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900">{pupil.preferredName || pupil.firstName} {pupil.lastName}</h1>
-      <p className="mt-1 text-sm text-slate-600">
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">{pupil.preferredName || pupil.firstName} {pupil.lastName}</h1>
+      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
         {pupil.yearGroup.replace("_", " ")}
         {pupil.formGroup ? ` · ${pupil.formGroup.name}` : ""}
       </p>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-600">Attendance</p>
-          <p className="mt-2 text-3xl font-semibold text-slate-900">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">Attendance</p>
+          <p className="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">
             {attendance.percent !== null ? `${(attendance.percent * 100).toFixed(1)}%` : "—"}
           </p>
-          <p className="mt-1 text-xs text-slate-600">{attendance.sessionsRecorded} sessions recorded</p>
+          <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">{attendance.sessionsRecorded} sessions recorded</p>
           {attendance.isPersistentAbsence && (
-            <p className="mt-2 text-xs font-medium text-amber-700">Below the 90% attendance threshold</p>
+            <p className="mt-2 text-xs font-medium text-amber-700 dark:text-amber-300">Below the 90% attendance threshold</p>
           )}
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 sm:col-span-2">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-600">SEND</p>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 sm:col-span-2 dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">SEND</p>
           {send ? (
             <div className="mt-2">
-              <p className="text-sm font-medium text-slate-900">{send.status.replace("_", " ")}</p>
-              {send.primaryNeed && <p className="mt-1 text-sm text-slate-600">Primary need: {send.primaryNeed.replace("_", " ")}</p>}
+              <p className="text-sm font-medium text-slate-900 dark:text-white">{send.status.replace("_", " ")}</p>
+              {send.primaryNeed && <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Primary need: {send.primaryNeed.replace("_", " ")}</p>}
             </div>
           ) : (
-            <p className="mt-2 text-sm text-slate-600">No SEND record.</p>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">No SEND record.</p>
           )}
         </div>
       </div>
 
-      <h2 className="mt-8 text-lg font-semibold text-slate-900">Behaviour</h2>
-      <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <h2 className="mt-8 text-lg font-semibold text-slate-900 dark:text-white">Behaviour</h2>
+      <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Date</th>
               <th className="p-4">Category</th>
               <th className="p-4">Description</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {behaviourIncidents.map((b) => (
               <tr key={b.id}>
-                <td className="p-4 text-slate-600">{new Date(b.date).toLocaleDateString("en-GB")}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{new Date(b.date).toLocaleDateString("en-GB")}</td>
                 <td className="p-4">
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${CATEGORY_STYLES[b.category] ?? "bg-slate-100 text-slate-600"}`}>
                     {b.category}
                   </span>
                 </td>
-                <td className="p-4 text-slate-700">{b.description}</td>
+                <td className="p-4 text-slate-700 dark:text-slate-200">{b.description}</td>
               </tr>
             ))}
             {behaviourIncidents.length === 0 && (
               <tr>
-                <td colSpan={3} className="p-6 text-center text-sm text-slate-700">No behaviour records.</td>
+                <td colSpan={3} className="p-6 text-center text-sm text-slate-700 dark:text-slate-200">No behaviour records.</td>
               </tr>
             )}
           </tbody>

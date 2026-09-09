@@ -51,16 +51,16 @@ function fmt(iso: string | null | undefined): string {
 }
 
 function CheckCell({ date, applicable = true }: { date: string | null | undefined; applicable?: boolean }) {
-  if (!applicable) return <span className="text-slate-400">—</span>;
+  if (!applicable) return <span className="text-slate-400 dark:text-slate-500">—</span>;
   if (date) {
     return (
-      <span className="inline-flex items-center gap-1 text-emerald-700">
+      <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-300">
         <Check size={14} /> {fmt(date)}
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 text-amber-600">
+    <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400">
       <AlertTriangle size={14} /> Missing
     </span>
   );
@@ -148,7 +148,7 @@ export default function ScrPage() {
     return (
       <div>
         <PageHeader module="scr" title="Single Central Record" />
-        <p className="mt-4 text-sm text-slate-600">
+        <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
           This module isn&apos;t switched on for your school — ask your EduMIS platform admin to enable it
           from Super Admin.
         </p>
@@ -164,15 +164,15 @@ export default function ScrPage() {
         subtitle={staff ? `${completeCount} of ${staff.length} staff fully checked` : undefined}
       />
 
-      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">
+      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
         The record KCSIE expects for staff vetting — identity, right to work, DBS, barred list,
         references, and (for teaching staff) the prohibition check. A gap here is exactly what an
         inspector will ask about, so it&apos;s flagged rather than hidden.
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Staff</th>
               <th className="p-4">Identity</th>
@@ -185,20 +185,20 @@ export default function ScrPage() {
               <th className="p-4"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {staff === null && <TableSkeleton rows={5} cols={9} />}
             {staff?.map((s) => {
               const p = s.staffProfile;
               const editing = editingId === s.id;
               return (
                 <Fragment key={s.id}>
-                  <tr className="transition-colors hover:bg-slate-50">
+                  <tr className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
                     <td className="p-4">
-                      <p className="font-medium text-slate-900">{s.name ?? s.email}</p>
+                      <p className="font-medium text-slate-900 dark:text-white">{s.name ?? s.email}</p>
                       {isComplete(s) ? (
-                        <span className="text-xs text-emerald-700">All checks complete</span>
+                        <span className="text-xs text-emerald-700 dark:text-emerald-300">All checks complete</span>
                       ) : (
-                        <span className="text-xs text-amber-600">Gaps to resolve</span>
+                        <span className="text-xs text-amber-600 dark:text-amber-400">Gaps to resolve</span>
                       )}
                     </td>
                     <td className="p-4"><CheckCell date={p?.identityCheckDate} /></td>
@@ -216,44 +216,44 @@ export default function ScrPage() {
                   </tr>
                   {editing && draft && (
                     <tr>
-                      <td colSpan={9} className="bg-slate-50 p-5">
+                      <td colSpan={9} className="bg-slate-50 p-5 dark:bg-slate-950">
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-                          <label className="text-xs font-medium text-slate-600">
+                          <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                             Identity check
-                            <input type="date" value={draft.identityCheckDate} onChange={(e) => setDraft({ ...draft, identityCheckDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+                            <input type="date" value={draft.identityCheckDate} onChange={(e) => setDraft({ ...draft, identityCheckDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
                           </label>
-                          <label className="text-xs font-medium text-slate-600">
+                          <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                             Right to work check
-                            <input type="date" value={draft.rightToWorkCheckDate} onChange={(e) => setDraft({ ...draft, rightToWorkCheckDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+                            <input type="date" value={draft.rightToWorkCheckDate} onChange={(e) => setDraft({ ...draft, rightToWorkCheckDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
                           </label>
-                          <label className="text-xs font-medium text-slate-600 sm:col-span-2">
+                          <label className="text-xs font-medium text-slate-600 sm:col-span-2 dark:text-slate-400">
                             Right to work evidence
-                            <input value={draft.rightToWorkEvidence} onChange={(e) => setDraft({ ...draft, rightToWorkEvidence: e.target.value })} placeholder="e.g. British passport" className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+                            <input value={draft.rightToWorkEvidence} onChange={(e) => setDraft({ ...draft, rightToWorkEvidence: e.target.value })} placeholder="e.g. British passport" className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
                           </label>
-                          <label className="text-xs font-medium text-slate-600">
+                          <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                             Barred list check
-                            <input type="date" value={draft.barredListCheckDate} onChange={(e) => setDraft({ ...draft, barredListCheckDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+                            <input type="date" value={draft.barredListCheckDate} onChange={(e) => setDraft({ ...draft, barredListCheckDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
                           </label>
                           {s.isTeacher && (
-                            <label className="text-xs font-medium text-slate-600">
+                            <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                               Prohibition check
-                              <input type="date" value={draft.prohibitionCheckDate} onChange={(e) => setDraft({ ...draft, prohibitionCheckDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+                              <input type="date" value={draft.prohibitionCheckDate} onChange={(e) => setDraft({ ...draft, prohibitionCheckDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
                             </label>
                           )}
-                          <label className="text-xs font-medium text-slate-600">
+                          <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                             Qualifications checked
-                            <input type="date" value={draft.qualificationsCheckedDate} onChange={(e) => setDraft({ ...draft, qualificationsCheckedDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+                            <input type="date" value={draft.qualificationsCheckedDate} onChange={(e) => setDraft({ ...draft, qualificationsCheckedDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
                           </label>
-                          <label className="text-xs font-medium text-slate-600">
+                          <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                             References obtained
-                            <input type="date" value={draft.referencesObtainedDate} onChange={(e) => setDraft({ ...draft, referencesObtainedDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+                            <input type="date" value={draft.referencesObtainedDate} onChange={(e) => setDraft({ ...draft, referencesObtainedDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
                           </label>
-                          <label className="text-xs font-medium text-slate-600">
+                          <label className="text-xs font-medium text-slate-600 dark:text-slate-400">
                             Overseas check (if applicable)
-                            <input type="date" value={draft.overseasCheckDate} onChange={(e) => setDraft({ ...draft, overseasCheckDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+                            <input type="date" value={draft.overseasCheckDate} onChange={(e) => setDraft({ ...draft, overseasCheckDate: e.target.value })} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
                           </label>
                         </div>
-                        <p className="mt-2 text-xs text-slate-600">DBS check date/number are set on the Staff records page.</p>
+                        <p className="mt-2 text-xs text-slate-600 dark:text-slate-400">DBS check date/number are set on the Staff records page.</p>
                         <div className="mt-4">
                           <Button size="sm" onClick={() => save(s.id)} disabled={saving}>
                             {saving ? "Saving…" : "Save"}

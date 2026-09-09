@@ -70,9 +70,9 @@ export default function SendPage() {
         subtitle={plans ? `${sendPupils.length} pupils with SEND status` : undefined}
       />
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Pupil</th>
               <th className="p-4">Status</th>
@@ -80,7 +80,7 @@ export default function SendPage() {
               <th className="p-4"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {plans === null && <TableSkeleton rows={5} cols={4} />}
             {sendPupils.map((p) => {
               const pupilPlans = plansByPupil.get(p.id) ?? [];
@@ -88,11 +88,11 @@ export default function SendPage() {
               return (
                 <Fragment key={p.id}>
                   <tr>
-                    <td className="p-4 font-medium text-slate-900">{pupilName(p)}</td>
+                    <td className="p-4 font-medium text-slate-900 dark:text-white">{pupilName(p)}</td>
                     <td className="p-4">
                       <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[p.sendStatus]}`}>{p.sendStatus.replace("_", " ")}</span>
                     </td>
-                    <td className="p-4 text-slate-600">{pupilPlans.length}</td>
+                    <td className="p-4 text-slate-600 dark:text-slate-400">{pupilPlans.length}</td>
                     <td className="p-4">
                       <Button variant="ghost" onClick={() => setExpandedPupilId(expanded ? null : p.id)} className="text-xs">
                         {expanded ? "Collapse" : "View / edit"}
@@ -101,7 +101,7 @@ export default function SendPage() {
                   </tr>
                   {expanded && (
                     <tr>
-                      <td colSpan={4} className="bg-slate-50 p-4">
+                      <td colSpan={4} className="bg-slate-50 p-4 dark:bg-slate-950">
                         <PupilSendDetail
                           pupilId={p.id}
                           plans={pupilPlans}
@@ -141,9 +141,9 @@ function NewSendPlanPupilPicker({ pupils, onCreated }: { pupils: Pupil[]; onCrea
     return <NewPlanForm pupilId={pupilId} onCancel={() => setPupilId("")} onCreated={() => { setPupilId(""); onCreated(); }} />;
   }
   return (
-    <div className="mt-4 rounded-xl border border-slate-200 bg-white p-5">
-      <p className="text-sm font-medium text-slate-900">Start a new SEND plan</p>
-      <select value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="mt-2 rounded-md border border-slate-300 px-3 py-2 text-sm">
+    <div className="mt-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+      <p className="text-sm font-medium text-slate-900 dark:text-white">Start a new SEND plan</p>
+      <select value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="mt-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
         <option value="">Select pupil…</option>
         {pupils.map((p) => (
           <option key={p.id} value={p.id}>
@@ -167,12 +167,12 @@ function TargetsEditor({ targets, onChange }: { targets: Target[]; onChange: (t:
   return (
     <div className="space-y-2">
       {targets.map((t, i) => (
-        <div key={i} className="grid grid-cols-1 gap-2 rounded-md border border-slate-200 p-2 sm:grid-cols-4">
-          <input value={t.target} onChange={(e) => update(i, "target", e.target.value)} placeholder="Target" className="rounded-md border border-slate-300 px-2 py-1 text-sm sm:col-span-2" />
-          <input value={t.progress} onChange={(e) => update(i, "progress", e.target.value)} placeholder="Progress" className="rounded-md border border-slate-300 px-2 py-1 text-sm" />
+        <div key={i} className="grid grid-cols-1 gap-2 rounded-md border border-slate-200 p-2 sm:grid-cols-4 dark:border-slate-700">
+          <input value={t.target} onChange={(e) => update(i, "target", e.target.value)} placeholder="Target" className="rounded-md border border-slate-300 px-2 py-1 text-sm sm:col-span-2 dark:border-slate-600" />
+          <input value={t.progress} onChange={(e) => update(i, "progress", e.target.value)} placeholder="Progress" className="rounded-md border border-slate-300 px-2 py-1 text-sm dark:border-slate-600" />
           <div className="flex gap-1">
-            <input type="date" value={t.reviewDate} onChange={(e) => update(i, "reviewDate", e.target.value)} className="w-full rounded-md border border-slate-300 px-2 py-1 text-sm" />
-            <button type="button" onClick={() => remove(i)} className="text-xs text-red-600">
+            <input type="date" value={t.reviewDate} onChange={(e) => update(i, "reviewDate", e.target.value)} className="w-full rounded-md border border-slate-300 px-2 py-1 text-sm dark:border-slate-600" />
+            <button type="button" onClick={() => remove(i)} className="text-xs text-red-600 dark:text-red-400">
               ✕
             </button>
           </div>
@@ -218,25 +218,25 @@ function NewPlanForm({ pupilId, onCancel, onCreated }: { pupilId: string; onCanc
   }
 
   return (
-    <form onSubmit={submit} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
-      <select value={status} onChange={(e) => setStatus(e.target.value as SendStatus)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+    <form onSubmit={submit} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+      <select value={status} onChange={(e) => setStatus(e.target.value as SendStatus)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
         <option value="SEND_SUPPORT">SEND support</option>
         <option value="EHCP">EHCP</option>
       </select>
-      <select value={primaryNeed} onChange={(e) => setPrimaryNeed(e.target.value as PrimaryNeed | "")} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+      <select value={primaryNeed} onChange={(e) => setPrimaryNeed(e.target.value as PrimaryNeed | "")} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
         <option value="">Primary need…</option>
         <option value="COMMUNICATION">Communication</option>
         <option value="COGNITION">Cognition</option>
         <option value="SEMH">SEMH</option>
         <option value="SENSORY_PHYSICAL">Sensory / physical</option>
       </select>
-      <textarea required value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm" rows={3} />
+      <textarea required value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" rows={3} />
       <div className="sm:col-span-2">
-        <p className="mb-1 text-xs font-medium text-slate-600">Targets</p>
+        <p className="mb-1 text-xs font-medium text-slate-600 dark:text-slate-400">Targets</p>
         <TargetsEditor targets={targets} onChange={setTargets} />
       </div>
-      <input value={externalAgencies} onChange={(e) => setExternalAgencies(e.target.value)} placeholder="External agencies" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-      <input type="date" value={reviewDate} onChange={(e) => setReviewDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+      <input value={externalAgencies} onChange={(e) => setExternalAgencies(e.target.value)} placeholder="External agencies" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+      <input type="date" value={reviewDate} onChange={(e) => setReviewDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
       <div className="sm:col-span-2 flex gap-2">
         <Button type="submit" disabled={submitting}>
           {submitting ? "Saving…" : "Save plan"}
@@ -312,19 +312,19 @@ function PlanCard({ plan, onChanged }: { plan: SendPlan; onChanged: () => void }
 
   if (!editing) {
     return (
-      <div className="rounded-lg border border-slate-200 bg-white p-4">
+      <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
         <div className="flex items-center justify-between">
           <div>
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[plan.status]}`}>{plan.status.replace("_", " ")}</span>
-            {plan.primaryNeed && <span className="ml-2 text-xs text-slate-600">{plan.primaryNeed.replace("_", " ")}</span>}
+            {plan.primaryNeed && <span className="ml-2 text-xs text-slate-600 dark:text-slate-400">{plan.primaryNeed.replace("_", " ")}</span>}
           </div>
           <Button variant="ghost" onClick={() => setEditing(true)} className="text-xs">
             Edit
           </Button>
         </div>
-        <p className="mt-2 text-sm text-slate-700">{plan.description}</p>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">{plan.description}</p>
         {plan.targets?.length > 0 && (
-          <ul className="mt-2 space-y-1 text-xs text-slate-600">
+          <ul className="mt-2 space-y-1 text-xs text-slate-600 dark:text-slate-400">
             {plan.targets.map((t, i) => (
               <li key={i}>
                 {t.target} — {t.progress || "no progress noted"} (review {t.reviewDate || "TBC"})
@@ -332,34 +332,34 @@ function PlanCard({ plan, onChanged }: { plan: SendPlan; onChanged: () => void }
             ))}
           </ul>
         )}
-        {plan.externalAgencies && <p className="mt-2 text-xs text-slate-500">Agencies: {plan.externalAgencies}</p>}
-        {plan.reviewDate && <p className="mt-1 text-xs text-slate-500">Review due: {new Date(plan.reviewDate).toLocaleDateString("en-GB")}</p>}
-        <p className="mt-1 text-xs text-slate-400">Created by {plan.createdBy.name ?? plan.createdBy.email}</p>
+        {plan.externalAgencies && <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Agencies: {plan.externalAgencies}</p>}
+        {plan.reviewDate && <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Review due: {new Date(plan.reviewDate).toLocaleDateString("en-GB")}</p>}
+        <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">Created by {plan.createdBy.name ?? plan.createdBy.email}</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 gap-3 rounded-lg border border-slate-200 bg-white p-4 sm:grid-cols-2">
-      <select value={status} onChange={(e) => setStatus(e.target.value as SendStatus)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+    <div className="grid grid-cols-1 gap-3 rounded-lg border border-slate-200 bg-white p-4 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+      <select value={status} onChange={(e) => setStatus(e.target.value as SendStatus)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
         <option value="NONE">None</option>
         <option value="SEND_SUPPORT">SEND support</option>
         <option value="EHCP">EHCP</option>
       </select>
-      <select value={primaryNeed} onChange={(e) => setPrimaryNeed(e.target.value as PrimaryNeed | "")} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+      <select value={primaryNeed} onChange={(e) => setPrimaryNeed(e.target.value as PrimaryNeed | "")} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
         <option value="">Primary need…</option>
         <option value="COMMUNICATION">Communication</option>
         <option value="COGNITION">Cognition</option>
         <option value="SEMH">SEMH</option>
         <option value="SENSORY_PHYSICAL">Sensory / physical</option>
       </select>
-      <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm" rows={3} />
+      <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" rows={3} />
       <div className="sm:col-span-2">
-        <p className="mb-1 text-xs font-medium text-slate-600">Targets</p>
+        <p className="mb-1 text-xs font-medium text-slate-600 dark:text-slate-400">Targets</p>
         <TargetsEditor targets={targets} onChange={setTargets} />
       </div>
-      <input value={externalAgencies} onChange={(e) => setExternalAgencies(e.target.value)} placeholder="External agencies" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-      <input type="date" value={reviewDate} onChange={(e) => setReviewDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+      <input value={externalAgencies} onChange={(e) => setExternalAgencies(e.target.value)} placeholder="External agencies" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+      <input type="date" value={reviewDate} onChange={(e) => setReviewDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
       <div className="sm:col-span-2 flex gap-2">
         <Button onClick={save} disabled={submitting}>
           {submitting ? "Saving…" : "Save changes"}

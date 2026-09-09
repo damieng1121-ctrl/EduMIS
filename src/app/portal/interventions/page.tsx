@@ -125,8 +125,8 @@ export default function InterventionsPage() {
       />
 
       {showForm && (
-        <form onSubmit={createIntervention} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
-          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <form onSubmit={createIntervention} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Select pupil…</option>
             {pupils.map((p) => (
               <option key={p.id} value={p.id}>
@@ -134,23 +134,23 @@ export default function InterventionsPage() {
               </option>
             ))}
           </select>
-          <input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input value={subjectArea} onChange={(e) => setSubjectArea(e.target.value)} placeholder="Subject area (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input type="number" min="1" value={groupSize} onChange={(e) => setGroupSize(e.target.value)} placeholder="Group size (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+          <input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input value={subjectArea} onChange={(e) => setSubjectArea(e.target.value)} placeholder="Subject area (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input type="number" min="1" value={groupSize} onChange={(e) => setGroupSize(e.target.value)} placeholder="Group size (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           <div className="flex gap-2">
-            <input required type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-1/2 rounded-md border border-slate-300 px-3 py-2 text-sm" />
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} placeholder="End date" className="w-1/2 rounded-md border border-slate-300 px-3 py-2 text-sm" />
+            <input required type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-1/2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} placeholder="End date" className="w-1/2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           </div>
-          <textarea required value={targetOutcome} onChange={(e) => setTargetOutcome(e.target.value)} placeholder="Target outcome" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm" rows={2} />
+          <textarea required value={targetOutcome} onChange={(e) => setTargetOutcome(e.target.value)} placeholder="Target outcome" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" rows={2} />
           <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Saving…" : "Save intervention"}
           </Button>
         </form>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Pupil</th>
               <th className="p-4">Title</th>
@@ -159,19 +159,19 @@ export default function InterventionsPage() {
               <th className="p-4"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {interventions === null && <TableSkeleton rows={5} cols={5} />}
             {interventions?.map((i) => {
               const expanded = expandedId === i.id;
               return (
                 <Fragment key={i.id}>
                   <tr>
-                    <td className="p-4 font-medium text-slate-900">{pupilName(i.pupil)}</td>
-                    <td className="p-4 text-slate-600">
+                    <td className="p-4 font-medium text-slate-900 dark:text-white">{pupilName(i.pupil)}</td>
+                    <td className="p-4 text-slate-600 dark:text-slate-400">
                       <p>{i.title}</p>
-                      {i.subjectArea && <p className="text-xs text-slate-500">{i.subjectArea}</p>}
+                      {i.subjectArea && <p className="text-xs text-slate-500 dark:text-slate-400">{i.subjectArea}</p>}
                     </td>
-                    <td className="p-4 text-slate-600">
+                    <td className="p-4 text-slate-600 dark:text-slate-400">
                       {fmtDate(i.startDate)}
                       {i.endDate ? ` – ${fmtDate(i.endDate)}` : ""}
                     </td>
@@ -194,7 +194,7 @@ export default function InterventionsPage() {
                   </tr>
                   {expanded && (
                     <tr>
-                      <td colSpan={5} className="bg-slate-50 p-4">
+                      <td colSpan={5} className="bg-slate-50 p-4 dark:bg-slate-950">
                         <InterventionDetail intervention={i} onChanged={load} />
                       </td>
                     </tr>
@@ -239,25 +239,25 @@ function InterventionDetail({ intervention, onChanged }: { intervention: Interve
 
   return (
     <div>
-      <p className="text-sm text-slate-700">
-        <span className="font-medium text-slate-900">Target outcome: </span>
+      <p className="text-sm text-slate-700 dark:text-slate-200">
+        <span className="font-medium text-slate-900 dark:text-white">Target outcome: </span>
         {intervention.targetOutcome}
       </p>
-      <p className="mt-1 text-xs text-slate-500">
+      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
         Provider: {intervention.provider.name ?? intervention.provider.email}
         {intervention.groupSize ? ` · Group size ${intervention.groupSize}` : ""}
       </p>
 
       <div className="mt-3 space-y-2">
         {intervention.notes.map((n) => (
-          <div key={n.id} className="rounded-md border border-slate-200 bg-white p-3 text-sm">
-            <p className="text-slate-700">{n.note}</p>
-            <p className="mt-1 text-xs text-slate-400">
+          <div key={n.id} className="rounded-md border border-slate-200 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-900">
+            <p className="text-slate-700 dark:text-slate-200">{n.note}</p>
+            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
               {n.author.name ?? n.author.email} · {new Date(n.createdAt).toLocaleString("en-GB")}
             </p>
           </div>
         ))}
-        {intervention.notes.length === 0 && <p className="text-xs text-slate-500">No notes yet.</p>}
+        {intervention.notes.length === 0 && <p className="text-xs text-slate-500 dark:text-slate-400">No notes yet.</p>}
       </div>
 
       <form onSubmit={addNote} className="mt-3 flex gap-2">
@@ -265,7 +265,7 @@ function InterventionDetail({ intervention, onChanged }: { intervention: Interve
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="Add a note…"
-          className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
         />
         <Button type="submit" disabled={submitting}>
           Add

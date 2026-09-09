@@ -125,7 +125,7 @@ export default function AssessmentPage() {
     return (
       <div>
         <PageHeader module="assessment" title="Assessment" />
-        <p className="mt-4 text-sm text-slate-700">Set up an academic year first.</p>
+        <p className="mt-4 text-sm text-slate-700 dark:text-slate-200">Set up an academic year first.</p>
       </div>
     );
   }
@@ -143,16 +143,16 @@ export default function AssessmentPage() {
       />
 
       {isAdmin && (
-        <div className="mt-4 rounded-xl border border-slate-200 bg-white p-5">
+        <div className="mt-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900">Subjects</h2>
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Subjects</h2>
             <Button variant="ghost" onClick={() => setShowSubjectForm(!showSubjectForm)} className="text-xs font-medium">
               {showSubjectForm ? "Cancel" : "+ Add subject"}
             </Button>
           </div>
           <div className="mt-2 flex flex-wrap gap-2">
             {subjects?.map((s) => (
-              <span key={s.id} className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+              <span key={s.id} className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                 {s.name}
               </span>
             ))}
@@ -164,7 +164,7 @@ export default function AssessmentPage() {
                 value={newSubjectName}
                 onChange={(e) => setNewSubjectName(e.target.value)}
                 placeholder="Subject name"
-                className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
               />
               <Button type="submit">
                 Add
@@ -175,8 +175,8 @@ export default function AssessmentPage() {
       )}
 
       {showResultForm && (
-        <form onSubmit={createResult} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3">
-          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <form onSubmit={createResult} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
+          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Pupil…</option>
             {pupils?.map((p) => (
               <option key={p.id} value={p.id}>
@@ -184,7 +184,7 @@ export default function AssessmentPage() {
               </option>
             ))}
           </select>
-          <select required value={subjectId} onChange={(e) => setSubjectId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select required value={subjectId} onChange={(e) => setSubjectId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Subject…</option>
             {subjects?.map((s) => (
               <option key={s.id} value={s.id}>
@@ -192,7 +192,7 @@ export default function AssessmentPage() {
               </option>
             ))}
           </select>
-          <select required value={academicYearId} onChange={(e) => setAcademicYearId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select required value={academicYearId} onChange={(e) => setAcademicYearId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Academic year…</option>
             {academicYears?.map((y) => (
               <option key={y.id} value={y.id}>
@@ -200,14 +200,14 @@ export default function AssessmentPage() {
               </option>
             ))}
           </select>
-          <input required value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Term (e.g. Autumn 1)" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input required value={attainment} onChange={(e) => setAttainment(e.target.value)} placeholder="Attainment (e.g. Expected)" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input value={effort} onChange={(e) => setEffort(e.target.value)} placeholder="Effort (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+          <input required value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Term (e.g. Autumn 1)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input required value={attainment} onChange={(e) => setAttainment(e.target.value)} placeholder="Attainment (e.g. Expected)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input value={effort} onChange={(e) => setEffort(e.target.value)} placeholder="Effort (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Notes (optional)"
-            className="sm:col-span-3 rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="sm:col-span-3 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             rows={2}
           />
           <Button type="submit" disabled={submitting} className="sm:col-span-3">
@@ -217,7 +217,7 @@ export default function AssessmentPage() {
       )}
 
       <div className="mt-4 flex flex-wrap gap-2">
-        <select value={filterPupilId} onChange={(e) => setFilterPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <select value={filterPupilId} onChange={(e) => setFilterPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
           <option value="">All pupils</option>
           {pupils?.map((p) => (
             <option key={p.id} value={p.id}>
@@ -225,7 +225,7 @@ export default function AssessmentPage() {
             </option>
           ))}
         </select>
-        <select value={filterSubjectId} onChange={(e) => setFilterSubjectId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <select value={filterSubjectId} onChange={(e) => setFilterSubjectId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
           <option value="">All subjects</option>
           {subjects?.map((s) => (
             <option key={s.id} value={s.id}>
@@ -233,7 +233,7 @@ export default function AssessmentPage() {
             </option>
           ))}
         </select>
-        <select value={filterYearId} onChange={(e) => setFilterYearId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <select value={filterYearId} onChange={(e) => setFilterYearId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
           <option value="">All years</option>
           {academicYears?.map((y) => (
             <option key={y.id} value={y.id}>
@@ -243,9 +243,9 @@ export default function AssessmentPage() {
         </select>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Pupil</th>
               <th className="p-4">Subject</th>
@@ -256,21 +256,21 @@ export default function AssessmentPage() {
               <th className="p-4"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {results === null && <TableSkeleton rows={5} cols={7} />}
             {results?.map((r) => (
               <tr key={r.id}>
-                <td className="p-4 font-medium text-slate-900">
+                <td className="p-4 font-medium text-slate-900 dark:text-white">
                   {r.pupil.firstName} {r.pupil.lastName}
                 </td>
-                <td className="p-4 text-slate-600">{r.subject.name}</td>
-                <td className="p-4 text-slate-600">{r.term}</td>
-                <td className="p-4 text-slate-600">{r.attainment}</td>
-                <td className="p-4 text-slate-600">{r.effort ?? "—"}</td>
-                <td className="p-4 text-slate-600">{r.teacher.name ?? r.teacher.email}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{r.subject.name}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{r.term}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{r.attainment}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{r.effort ?? "—"}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{r.teacher.name ?? r.teacher.email}</td>
                 <td className="p-4">
                   {(isAdmin || session?.user.id === r.teacherId) && (
-                    <button onClick={() => removeResult(r.id)} className="text-xs text-red-600 hover:underline">
+                    <button onClick={() => removeResult(r.id)} className="text-xs text-red-600 hover:underline dark:text-red-400">
                       Delete
                     </button>
                   )}

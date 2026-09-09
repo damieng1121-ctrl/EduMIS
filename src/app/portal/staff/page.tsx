@@ -116,9 +116,9 @@ export default function StaffPage() {
         subtitle="DBS and safeguarding details are visible to admins only."
       />
 
-      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full min-w-[900px] text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Staff member</th>
               <th className="p-4">Staff type</th>
@@ -131,7 +131,7 @@ export default function StaffPage() {
               <th className="p-4"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {staff === null && <TableSkeleton rows={5} cols={9} />}
             {staff?.map((m) => {
               const d = drafts[m.id];
@@ -139,11 +139,11 @@ export default function StaffPage() {
               return (
                 <tr key={m.id}>
                   <td className="p-4">
-                    <p className="font-medium text-slate-900">{m.name ?? m.email}</p>
-                    <p className="text-xs text-slate-600">{m.jobTitle ?? m.role}</p>
+                    <p className="font-medium text-slate-900 dark:text-white">{m.name ?? m.email}</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">{m.jobTitle ?? m.role}</p>
                   </td>
                   <td className="p-4">
-                    <select value={d.staffType} onChange={(e) => updateDraft(m.id, { staffType: e.target.value as StaffType })} className="rounded-md border border-slate-300 px-2 py-1.5 text-sm">
+                    <select value={d.staffType} onChange={(e) => updateDraft(m.id, { staffType: e.target.value as StaffType })} className="rounded-md border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-600">
                       {STAFF_TYPES.map((t) => (
                         <option key={t} value={t}>
                           {t}
@@ -152,26 +152,26 @@ export default function StaffPage() {
                     </select>
                   </td>
                   <td className="p-4">
-                    <input type="date" value={d.dbsCheckDate} onChange={(e) => updateDraft(m.id, { dbsCheckDate: e.target.value })} className="rounded-md border border-slate-300 px-2 py-1.5 text-sm" />
+                    <input type="date" value={d.dbsCheckDate} onChange={(e) => updateDraft(m.id, { dbsCheckDate: e.target.value })} className="rounded-md border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-600" />
                   </td>
                   <td className="p-4">
-                    <input value={d.dbsNumber} onChange={(e) => updateDraft(m.id, { dbsNumber: e.target.value })} className="w-32 rounded-md border border-slate-300 px-2 py-1.5 text-sm" />
+                    <input value={d.dbsNumber} onChange={(e) => updateDraft(m.id, { dbsNumber: e.target.value })} className="w-32 rounded-md border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-600" />
                   </td>
                   <td className="p-4">
-                    <input value={d.contractType} onChange={(e) => updateDraft(m.id, { contractType: e.target.value })} className="w-32 rounded-md border border-slate-300 px-2 py-1.5 text-sm" />
+                    <input value={d.contractType} onChange={(e) => updateDraft(m.id, { contractType: e.target.value })} className="w-32 rounded-md border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-600" />
                   </td>
                   <td className="p-4">
-                    <input type="date" value={d.startDate} onChange={(e) => updateDraft(m.id, { startDate: e.target.value })} className="rounded-md border border-slate-300 px-2 py-1.5 text-sm" />
+                    <input type="date" value={d.startDate} onChange={(e) => updateDraft(m.id, { startDate: e.target.value })} className="rounded-md border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-600" />
                   </td>
                   <td className="p-4">
-                    <input type="date" value={d.endDate} onChange={(e) => updateDraft(m.id, { endDate: e.target.value })} className="rounded-md border border-slate-300 px-2 py-1.5 text-sm" />
+                    <input type="date" value={d.endDate} onChange={(e) => updateDraft(m.id, { endDate: e.target.value })} className="rounded-md border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-600" />
                   </td>
                   <td className="p-4">
                     <input
                       type="date"
                       value={d.safeguardingTrainingDate}
                       onChange={(e) => updateDraft(m.id, { safeguardingTrainingDate: e.target.value })}
-                      className="rounded-md border border-slate-300 px-2 py-1.5 text-sm"
+                      className="rounded-md border border-slate-300 px-2 py-1.5 text-sm dark:border-slate-600"
                     />
                   </td>
                   <td className="p-4">

@@ -29,7 +29,7 @@ export default async function PortalLayout({ children }: LayoutProps<"/portal">)
   const platformLabel = trust ? `${trust.name} — Trust admin` : "EduMIS platform admin";
 
   return (
-    <div className="flex min-h-screen flex-1 flex-col bg-slate-50">
+    <div className="flex min-h-screen flex-1 flex-col bg-slate-50 dark:bg-slate-950">
       <PortalNav
         // A super admin or trust admin managing a school gets that school's
         // full nav (as a tenant admin would see it), not just their own

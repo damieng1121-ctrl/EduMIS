@@ -155,7 +155,7 @@ export default function TimetablePage() {
         <select
           value={formGroupId}
           onChange={(e) => setFormGroupId(e.target.value)}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
         >
           <option value="">All form groups</option>
           {formGroups.map((fg) => (
@@ -167,8 +167,8 @@ export default function TimetablePage() {
       </div>
 
       {showForm && isAdmin && (
-        <form onSubmit={createSlot} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3">
-          <select required value={newFormGroupId} onChange={(e) => setNewFormGroupId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <form onSubmit={createSlot} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
+          <select required value={newFormGroupId} onChange={(e) => setNewFormGroupId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Form group…</option>
             {formGroups.map((fg) => (
               <option key={fg.id} value={fg.id}>
@@ -176,7 +176,7 @@ export default function TimetablePage() {
               </option>
             ))}
           </select>
-          <select value={newDay} onChange={(e) => setNewDay(e.target.value as Weekday)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select value={newDay} onChange={(e) => setNewDay(e.target.value as Weekday)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             {WEEKDAYS.map((d) => (
               <option key={d} value={d}>
                 {WEEKDAY_LABELS[d]}
@@ -191,9 +191,9 @@ export default function TimetablePage() {
             value={newPeriod}
             onChange={(e) => setNewPeriod(e.target.value)}
             placeholder="Period"
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
           />
-          <select required value={newSubjectId} onChange={(e) => setNewSubjectId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select required value={newSubjectId} onChange={(e) => setNewSubjectId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Subject…</option>
             {subjects.map((s) => (
               <option key={s.id} value={s.id}>
@@ -201,7 +201,7 @@ export default function TimetablePage() {
               </option>
             ))}
           </select>
-          <select required value={newTeacherId} onChange={(e) => setNewTeacherId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select required value={newTeacherId} onChange={(e) => setNewTeacherId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Teacher…</option>
             {teachers.map((t) => (
               <option key={t.id} value={t.id}>
@@ -209,17 +209,17 @@ export default function TimetablePage() {
               </option>
             ))}
           </select>
-          <input value={newRoom} onChange={(e) => setNewRoom(e.target.value)} placeholder="Room (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          {error && <p className="sm:col-span-3 text-sm text-amber-700">{error}</p>}
+          <input value={newRoom} onChange={(e) => setNewRoom(e.target.value)} placeholder="Room (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          {error && <p className="sm:col-span-3 text-sm text-amber-700 dark:text-amber-300">{error}</p>}
           <Button type="submit" disabled={submitting} className="sm:col-span-3">
             {submitting ? "Saving…" : "Save slot"}
           </Button>
         </form>
       )}
 
-      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         {slots === null ? (
-          <p className="p-6 text-sm text-slate-600">Loading…</p>
+          <p className="p-6 text-sm text-slate-600 dark:text-slate-400">Loading…</p>
         ) : slots.length === 0 ? (
           <EmptyState
             icon={CalendarDays}
@@ -228,7 +228,7 @@ export default function TimetablePage() {
           />
         ) : (
           <table className="w-full min-w-[720px] table-fixed text-left text-sm">
-            <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+            <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
               <tr>
                 <th className="w-20 p-3">Period</th>
                 {WEEKDAYS.map((d) => (
@@ -238,31 +238,31 @@ export default function TimetablePage() {
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {periods.map((period) => (
                 <tr key={period}>
-                  <td className="p-3 align-top font-medium text-slate-700">{period}</td>
+                  <td className="p-3 align-top font-medium text-slate-700 dark:text-slate-200">{period}</td>
                   {WEEKDAYS.map((day) => {
                     const slot = slotAt(day, period);
                     return (
                       <td key={day} className="p-2 align-top">
                         {slot ? (
-                          <div className="group relative rounded-lg border border-slate-200 bg-slate-50 p-2">
-                            <p className="font-medium text-slate-900">{slot.subject.name}</p>
-                            <p className="text-xs text-slate-600">{teacherName(slot.teacher)}</p>
-                            {!formGroupId && <p className="text-xs text-slate-500">{slot.formGroup.name}</p>}
-                            {slot.room && <p className="text-xs text-slate-500">Room {slot.room}</p>}
+                          <div className="group relative rounded-lg border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-950">
+                            <p className="font-medium text-slate-900 dark:text-white">{slot.subject.name}</p>
+                            <p className="text-xs text-slate-600 dark:text-slate-400">{teacherName(slot.teacher)}</p>
+                            {!formGroupId && <p className="text-xs text-slate-500 dark:text-slate-400">{slot.formGroup.name}</p>}
+                            {slot.room && <p className="text-xs text-slate-500 dark:text-slate-400">Room {slot.room}</p>}
                             {isAdmin && (
                               <button
                                 onClick={() => deleteSlot(slot.id)}
-                                className="absolute right-1 top-1 hidden text-xs text-red-600 hover:underline group-hover:block"
+                                className="absolute right-1 top-1 hidden text-xs text-red-600 hover:underline group-hover:block dark:text-red-400"
                               >
                                 Remove
                               </button>
                             )}
                           </div>
                         ) : (
-                          <div className="h-full min-h-[3rem] rounded-lg border border-dashed border-slate-200" />
+                          <div className="h-full min-h-[3rem] rounded-lg border border-dashed border-slate-200 dark:border-slate-700" />
                         )}
                       </td>
                     );

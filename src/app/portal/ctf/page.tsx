@@ -137,21 +137,21 @@ export default function CtfPage() {
         subtitle="Export or import a pupil record in the DfE Common Transfer File format."
       />
 
-      <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+      <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
         This targets the well-documented core CTF structure (UPN, name, DOB, sex, address, ethnicity,
         SEN, FSM, school history) rather than a byte-verified copy of the current DfE XSD. Check a
         sample export against the receiving school&apos;s system before relying on it for a real transfer.
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <section className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="font-semibold text-slate-900">Export a pupil</h2>
-          <p className="mt-1 text-sm text-slate-600">Download a CTF file to send with a pupil moving to another school.</p>
+        <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="font-semibold text-slate-900 dark:text-white">Export a pupil</h2>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Download a CTF file to send with a pupil moving to another school.</p>
           <div className="mt-4 flex flex-col gap-3 sm:flex-row">
             <select
               value={exportPupilId}
               onChange={(e) => setExportPupilId(e.target.value)}
-              className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             >
               <option value="">Choose a pupil…</option>
               {pupils?.map((p) => (
@@ -171,47 +171,47 @@ export default function CtfPage() {
           </div>
         </section>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="font-semibold text-slate-900">Import a pupil</h2>
-          <p className="mt-1 text-sm text-slate-600">Upload a CTF file received from another school — you&apos;ll review it before it&apos;s saved.</p>
+        <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="font-semibold text-slate-900 dark:text-white">Import a pupil</h2>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Upload a CTF file received from another school — you&apos;ll review it before it&apos;s saved.</p>
           <form onSubmit={handleImportUpload} className="mt-4 flex flex-col gap-3 sm:flex-row">
             <input
               type="file"
               accept=".xml,text/xml,application/xml"
               onChange={(e) => setImportFile(e.target.files?.[0] ?? null)}
-              className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             />
             <Button type="submit" disabled={!importFile || importing}>
               {importing ? "Reading…" : "Read file"}
             </Button>
           </form>
-          {importError && <p className="mt-3 text-sm text-red-600">{importError}</p>}
+          {importError && <p className="mt-3 text-sm text-red-600 dark:text-red-400">{importError}</p>}
         </section>
       </div>
 
       {parsed && (
-        <section className="mt-6 rounded-xl border border-indigo-200 bg-indigo-50 p-5">
-          <h2 className="font-semibold text-indigo-900">Review before saving</h2>
-          <p className="mt-1 text-sm text-indigo-800">
+        <section className="mt-6 rounded-xl border border-indigo-200 bg-indigo-50 p-5 dark:border-indigo-800 dark:bg-indigo-500/10">
+          <h2 className="font-semibold text-indigo-900 dark:text-indigo-200">Review before saving</h2>
+          <p className="mt-1 text-sm text-indigo-800 dark:text-indigo-300">
             This is what was read from the file. A CTF doesn&apos;t carry a year group or form group, so pick those below.
           </p>
-          <div className="mt-4 grid grid-cols-1 gap-3 rounded-lg bg-white p-4 text-sm sm:grid-cols-2">
-            <p><span className="text-slate-600">Name:</span> {parsed.firstName} {parsed.middleNames} {parsed.lastName}</p>
-            <p><span className="text-slate-600">UPN:</span> {parsed.upn ?? "—"}</p>
-            <p><span className="text-slate-600">DOB:</span> {parsed.dob ?? "—"}</p>
-            <p><span className="text-slate-600">Gender:</span> {parsed.gender ?? "—"}</p>
-            <p><span className="text-slate-600">Ethnicity:</span> {parsed.ethnicity ?? "—"}</p>
-            <p><span className="text-slate-600">First language:</span> {parsed.homeLanguage ?? "—"}</p>
-            <p><span className="text-slate-600">Address:</span> {[parsed.addressLine1, parsed.city, parsed.postcode].filter(Boolean).join(", ") || "—"}</p>
-            <p><span className="text-slate-600">FSM eligible:</span> {parsed.freeSchoolMeals ? "Yes" : "No"}</p>
+          <div className="mt-4 grid grid-cols-1 gap-3 rounded-lg bg-white p-4 text-sm sm:grid-cols-2 dark:bg-slate-900">
+            <p><span className="text-slate-600 dark:text-slate-400">Name:</span> {parsed.firstName} {parsed.middleNames} {parsed.lastName}</p>
+            <p><span className="text-slate-600 dark:text-slate-400">UPN:</span> {parsed.upn ?? "—"}</p>
+            <p><span className="text-slate-600 dark:text-slate-400">DOB:</span> {parsed.dob ?? "—"}</p>
+            <p><span className="text-slate-600 dark:text-slate-400">Gender:</span> {parsed.gender ?? "—"}</p>
+            <p><span className="text-slate-600 dark:text-slate-400">Ethnicity:</span> {parsed.ethnicity ?? "—"}</p>
+            <p><span className="text-slate-600 dark:text-slate-400">First language:</span> {parsed.homeLanguage ?? "—"}</p>
+            <p><span className="text-slate-600 dark:text-slate-400">Address:</span> {[parsed.addressLine1, parsed.city, parsed.postcode].filter(Boolean).join(", ") || "—"}</p>
+            <p><span className="text-slate-600 dark:text-slate-400">FSM eligible:</span> {parsed.freeSchoolMeals ? "Yes" : "No"}</p>
           </div>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <select value={reviewYearGroup} onChange={(e) => setReviewYearGroup(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+            <select value={reviewYearGroup} onChange={(e) => setReviewYearGroup(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
               {YEAR_GROUPS.map((yg) => (
                 <option key={yg} value={yg}>{yg.replace(/_/g, " ")}</option>
               ))}
             </select>
-            <select value={reviewFormGroupId} onChange={(e) => setReviewFormGroupId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+            <select value={reviewFormGroupId} onChange={(e) => setReviewFormGroupId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
               <option value="">No form group yet</option>
               {formGroups?.map((fg) => (
                 <option key={fg.id} value={fg.id}>{fg.name}</option>
@@ -224,15 +224,15 @@ export default function CtfPage() {
               <Button variant="secondary" onClick={() => setParsed(null)}>Discard</Button>
             </div>
           </div>
-          {confirmError && <p className="mt-3 text-sm text-red-600">{confirmError}</p>}
+          {confirmError && <p className="mt-3 text-sm text-red-600 dark:text-red-400">{confirmError}</p>}
         </section>
       )}
 
       <section className="mt-6">
-        <h2 className="text-lg font-semibold text-slate-900">Recent exchanges</h2>
-        <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Recent exchanges</h2>
+        <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+            <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
               <tr>
                 <th className="p-4">Direction</th>
                 <th className="p-4">Pupil</th>
@@ -241,7 +241,7 @@ export default function CtfPage() {
                 <th className="p-4">When</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {exchanges?.map((ex) => (
                 <tr key={ex.id}>
                   <td className="p-4">
@@ -249,10 +249,10 @@ export default function CtfPage() {
                       {ex.direction === "EXPORT" ? "Exported" : "Imported"}
                     </span>
                   </td>
-                  <td className="p-4 text-slate-900">{ex.pupilName}</td>
-                  <td className="p-4 text-slate-600">{ex.upn ?? "—"}</td>
-                  <td className="p-4 text-slate-600">{ex.performedBy.name ?? ex.performedBy.email}</td>
-                  <td className="p-4 text-slate-600">{new Date(ex.createdAt).toLocaleString("en-GB")}</td>
+                  <td className="p-4 text-slate-900 dark:text-white">{ex.pupilName}</td>
+                  <td className="p-4 text-slate-600 dark:text-slate-400">{ex.upn ?? "—"}</td>
+                  <td className="p-4 text-slate-600 dark:text-slate-400">{ex.performedBy.name ?? ex.performedBy.email}</td>
+                  <td className="p-4 text-slate-600 dark:text-slate-400">{new Date(ex.createdAt).toLocaleString("en-GB")}</td>
                 </tr>
               ))}
               {exchanges?.length === 0 && (

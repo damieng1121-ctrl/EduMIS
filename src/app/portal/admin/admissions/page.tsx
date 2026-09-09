@@ -149,7 +149,7 @@ export default function AdmissionsPage() {
     return (
       <div>
         <PageHeader module="admissions" title="Admissions" />
-        <p className="mt-4 text-sm text-slate-600">
+        <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
           This module isn&apos;t switched on for your school — ask your EduMIS platform admin to enable it
           from Super Admin.
         </p>
@@ -173,53 +173,53 @@ export default function AdmissionsPage() {
       {showForm && (
         <form
           onSubmit={createApplication}
-          className="mt-4 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-4 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-3 dark:border-slate-700 dark:bg-slate-900"
         >
           <div>
-            <label className="block text-sm font-medium text-slate-700">First name</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">First name</label>
             <input
               required
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700">Last name</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Last name</label>
             <input
               required
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700">Date of birth</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Date of birth</label>
             <input
               required
               type="date"
               value={dob}
               onChange={(e) => setDob(e.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700">Gender</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Gender</label>
             <select
               value={gender}
               onChange={(e) => setGender(e.target.value as "MALE" | "FEMALE")}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             >
               <option value="MALE">Male</option>
               <option value="FEMALE">Female</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700">Preferred year group</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Preferred year group</label>
             <select
               value={preferredYearGroup}
               onChange={(e) => setPreferredYearGroup(e.target.value as YearGroup)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             >
               {YEAR_GROUPS.map((yg) => (
                 <option key={yg} value={yg}>
@@ -229,49 +229,49 @@ export default function AdmissionsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700">Application type</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Application type</label>
             <select
               value={applicationType}
               onChange={(e) => setApplicationType(e.target.value as ApplicationType)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             >
               <option value="NORMAL_ROUND">Normal round</option>
               <option value="IN_YEAR">In-year</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700">Guardian name</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Guardian name</label>
             <input
               required
               value={guardianName}
               onChange={(e) => setGuardianName(e.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700">Guardian email</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Guardian email</label>
             <input
               type="email"
               value={guardianEmail}
               onChange={(e) => setGuardianEmail(e.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700">Guardian phone</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Guardian phone</label>
             <input
               value={guardianPhone}
               onChange={(e) => setGuardianPhone(e.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             />
           </div>
           <div className="sm:col-span-2 lg:col-span-3">
-            <label className="block text-sm font-medium text-slate-700">Notes</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Notes</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             />
           </div>
           <div className="sm:col-span-2 lg:col-span-3">
@@ -286,7 +286,7 @@ export default function AdmissionsPage() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as Status | "")}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
         >
           <option value="">All statuses</option>
           {STATUSES.map((s) => (
@@ -298,7 +298,7 @@ export default function AdmissionsPage() {
         <select
           value={yearGroupFilter}
           onChange={(e) => setYearGroupFilter(e.target.value as YearGroup | "")}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
         >
           <option value="">All year groups</option>
           {YEAR_GROUPS.map((yg) => (
@@ -309,9 +309,9 @@ export default function AdmissionsPage() {
         </select>
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Applicant</th>
               <th className="p-4">DOB</th>
@@ -322,22 +322,22 @@ export default function AdmissionsPage() {
               <th className="p-4">Received</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {applications === null && <TableSkeleton rows={5} cols={7} />}
             {applications?.map((a) => (
-              <tr key={a.id} className="transition-colors hover:bg-slate-50">
+              <tr key={a.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
                 <td className="p-4">
-                  <p className="font-medium text-slate-900">
+                  <p className="font-medium text-slate-900 dark:text-white">
                     {a.firstName} {a.lastName}
                   </p>
-                  {a.guardianEmail && <p className="text-xs text-slate-500">{a.guardianEmail}</p>}
+                  {a.guardianEmail && <p className="text-xs text-slate-500 dark:text-slate-400">{a.guardianEmail}</p>}
                 </td>
-                <td className="p-4 text-slate-600">{fmtDate(a.dob)}</td>
-                <td className="p-4 text-slate-600">{yearGroupLabel(a.preferredYearGroup)}</td>
-                <td className="p-4 text-slate-600">{a.applicationType === "NORMAL_ROUND" ? "Normal round" : "In-year"}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{fmtDate(a.dob)}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{yearGroupLabel(a.preferredYearGroup)}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{a.applicationType === "NORMAL_ROUND" ? "Normal round" : "In-year"}</td>
                 <td className="p-4">
-                  <p className="text-slate-900">{a.guardianName}</p>
-                  {a.guardianPhone && <p className="text-xs text-slate-500">{a.guardianPhone}</p>}
+                  <p className="text-slate-900 dark:text-white">{a.guardianName}</p>
+                  {a.guardianPhone && <p className="text-xs text-slate-500 dark:text-slate-400">{a.guardianPhone}</p>}
                 </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
@@ -353,11 +353,11 @@ export default function AdmissionsPage() {
                       ))}
                     </select>
                     {a.status === "WAITING_LIST" && a.waitingListPosition != null && (
-                      <span className="text-xs text-slate-500">#{a.waitingListPosition}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">#{a.waitingListPosition}</span>
                     )}
                   </div>
                 </td>
-                <td className="p-4 text-slate-600">{fmtDate(a.createdAt)}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{fmtDate(a.createdAt)}</td>
               </tr>
             ))}
             {applications?.length === 0 && (

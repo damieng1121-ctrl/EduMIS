@@ -27,49 +27,49 @@ export default async function ParentDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900">Welcome back{session.user.name ? `, ${session.user.name}` : ""}</h1>
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">Welcome back{session.user.name ? `, ${session.user.name}` : ""}</h1>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-600">Unread messages</p>
-          <p className="mt-2 text-3xl font-semibold text-slate-900">{unreadCount}</p>
-          <Link href="/parent/messages" className="mt-2 inline-block text-sm text-indigo-600 hover:underline">View messages</Link>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">Unread messages</p>
+          <p className="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">{unreadCount}</p>
+          <Link href="/parent/messages" className="mt-2 inline-block text-sm text-indigo-600 hover:underline dark:text-indigo-400">View messages</Link>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-600">Next booked appointment</p>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">Next booked appointment</p>
           {upcomingSlot ? (
             <div className="mt-2">
-              <p className="text-sm font-medium text-slate-900">
+              <p className="text-sm font-medium text-slate-900 dark:text-white">
                 {upcomingSlot.event.title} — {upcomingSlot.pupil?.firstName} {upcomingSlot.pupil?.lastName}
               </p>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 {new Date(upcomingSlot.startTime).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })} with {upcomingSlot.teacher.name ?? upcomingSlot.teacher.email}
               </p>
-              {upcomingSlot.event.locationNote && <p className="text-xs text-slate-600">{upcomingSlot.event.locationNote}</p>}
+              {upcomingSlot.event.locationNote && <p className="text-xs text-slate-600 dark:text-slate-400">{upcomingSlot.event.locationNote}</p>}
             </div>
           ) : (
-            <p className="mt-2 text-sm text-slate-600">No upcoming appointments booked.</p>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">No upcoming appointments booked.</p>
           )}
-          <Link href="/parent/parents-evenings" className="mt-2 inline-block text-sm text-indigo-600 hover:underline">View parents&apos; evenings</Link>
+          <Link href="/parent/parents-evenings" className="mt-2 inline-block text-sm text-indigo-600 hover:underline dark:text-indigo-400">View parents&apos; evenings</Link>
         </div>
       </div>
 
-      <h2 className="mt-8 text-lg font-semibold text-slate-900">Your children</h2>
+      <h2 className="mt-8 text-lg font-semibold text-slate-900 dark:text-white">Your children</h2>
       <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {links.map((l) => (
           <Link
             key={l.pupil.id}
             href={`/parent/children/${l.pupil.id}`}
-            className="rounded-xl border border-slate-200 bg-white p-5 hover:border-indigo-300 hover:shadow-sm"
+            className="rounded-xl border border-slate-200 bg-white p-5 hover:border-indigo-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-900"
           >
-            <p className="font-medium text-slate-900">{l.pupil.preferredName || l.pupil.firstName} {l.pupil.lastName}</p>
-            <p className="mt-1 text-sm text-slate-600">
+            <p className="font-medium text-slate-900 dark:text-white">{l.pupil.preferredName || l.pupil.firstName} {l.pupil.lastName}</p>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
               {l.pupil.yearGroup.replace("_", " ")}
               {l.pupil.formGroup ? ` · ${l.pupil.formGroup.name}` : ""}
             </p>
           </Link>
         ))}
-        {links.length === 0 && <p className="text-sm text-slate-600">No children are linked to your account yet.</p>}
+        {links.length === 0 && <p className="text-sm text-slate-600 dark:text-slate-400">No children are linked to your account yet.</p>}
       </div>
     </div>
   );

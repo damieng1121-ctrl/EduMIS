@@ -1,6 +1,6 @@
 /** Shimmer placeholder — used wherever a page currently shows nothing (or stale data) while its first fetch is in flight. */
 export function Skeleton({ className = "" }: { className?: string }) {
-  return <div className={`animate-pulse rounded-md bg-slate-200 ${className}`} />;
+  return <div className={`animate-pulse rounded-md bg-slate-200 dark:bg-slate-700 ${className}`} />;
 }
 
 /** Placeholder rows for a <table> whose data is `null` (not yet loaded) rather than `[]` (loaded, empty). */

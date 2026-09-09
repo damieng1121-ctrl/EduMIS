@@ -130,8 +130,8 @@ export default function CoverAdminPage() {
         subtitle="Mark a teacher absent for a day to raise cover needs for every lesson they'd normally teach, then assign who's covering."
       />
 
-      <form onSubmit={markAbsent} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-4">
-        <select required value={absentTeacherId} onChange={(e) => setAbsentTeacherId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+      <form onSubmit={markAbsent} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-4 dark:border-slate-700 dark:bg-slate-900">
+        <select required value={absentTeacherId} onChange={(e) => setAbsentTeacherId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
           <option value="">Staff member…</option>
           {teachers.map((t) => (
             <option key={t.id} value={t.id}>
@@ -139,23 +139,23 @@ export default function CoverAdminPage() {
             </option>
           ))}
         </select>
-        <input required type="date" value={absentDate} onChange={(e) => setAbsentDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-        <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notes (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+        <input required type="date" value={absentDate} onChange={(e) => setAbsentDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+        <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notes (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
         <Button type="submit" disabled={submitting}>
           {submitting ? "Marking absent…" : "Mark absent"}
         </Button>
-        {message && <p className="sm:col-span-4 text-sm text-green-700">{message}</p>}
-        {error && <p className="sm:col-span-4 text-sm text-red-600">{error}</p>}
+        {message && <p className="sm:col-span-4 text-sm text-green-700 dark:text-green-300">{message}</p>}
+        {error && <p className="sm:col-span-4 text-sm text-red-600 dark:text-red-400">{error}</p>}
       </form>
 
       <div className="mt-6 flex items-center justify-between">
-        <p className="text-sm font-semibold text-slate-900">Cover assignments</p>
-        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-1.5 text-sm" />
+        <p className="text-sm font-semibold text-slate-900 dark:text-white">Cover assignments</p>
+        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-600" />
       </div>
 
-      <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Lesson</th>
               <th className="p-4">Absent teacher</th>
@@ -164,25 +164,25 @@ export default function CoverAdminPage() {
               <th className="p-4"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {assignments === null && <TableSkeleton rows={5} cols={5} />}
             {assignments?.map((a) => (
               <tr key={a.id}>
                 <td className="p-4">
-                  <p className="font-medium text-slate-900">
+                  <p className="font-medium text-slate-900 dark:text-white">
                     {a.timetableSlot.subject.name} — {a.timetableSlot.formGroup.name}
                   </p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     Period {a.timetableSlot.periodNumber}
                     {a.timetableSlot.room ? ` · Room ${a.timetableSlot.room}` : ""}
                   </p>
                 </td>
-                <td className="p-4 text-slate-600">{personName(a.absentTeacher)}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{personName(a.absentTeacher)}</td>
                 <td className="p-4">
                   <select
                     value={a.coveringTeacher?.id ?? ""}
                     onChange={(e) => assignCoveringTeacher(a.id, e.target.value)}
-                    className="rounded-md border border-slate-300 px-2 py-1 text-sm"
+                    className="rounded-md border border-slate-300 px-2 py-1 text-sm dark:border-slate-600"
                   >
                     <option value="">Unassigned</option>
                     {teachers

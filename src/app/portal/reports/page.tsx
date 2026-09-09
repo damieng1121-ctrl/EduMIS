@@ -47,11 +47,11 @@ export default function ReportsPage() {
 }
 
 function AccessDenied() {
-  return <p className="mt-6 text-sm text-slate-700">You don&apos;t have access to this section.</p>;
+  return <p className="mt-6 text-sm text-slate-700 dark:text-slate-200">You don&apos;t have access to this section.</p>;
 }
 
 function Loading() {
-  return <p className="mt-6 text-sm text-slate-700">Loading…</p>;
+  return <p className="mt-6 text-sm text-slate-700 dark:text-slate-200">Loading…</p>;
 }
 
 function MisReports({
@@ -66,24 +66,24 @@ function MisReports({
   return (
     <div>
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="font-semibold text-slate-900">Attendance trend (last 8 weeks)</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="font-semibold text-slate-900 dark:text-white">Attendance trend (last 8 weeks)</h2>
           <AttendanceTrendChart trend={summary.attendanceTrend} />
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="font-semibold text-slate-900">Behaviour points by category</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="font-semibold text-slate-900 dark:text-white">Behaviour points by category</h2>
           <BehaviourPointsChart points={summary.behaviourPoints} />
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-slate-900">Assessment distribution</h2>
+            <h2 className="font-semibold text-slate-900 dark:text-white">Assessment distribution</h2>
             {summary.subjects.length > 0 && (
               <select
                 value={subjectId}
                 onChange={(e) => onSubjectChange(e.target.value)}
-                className="rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-700"
+                className="rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-700 dark:border-slate-600 dark:text-slate-200"
               >
                 <option value="">All subjects</option>
                 {summary.subjects.map((s) => (
@@ -97,8 +97,8 @@ function MisReports({
           <AssessmentDistributionChart data={summary.assessmentDistribution} />
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="font-semibold text-slate-900">Persistent absence (below 90%)</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="font-semibold text-slate-900 dark:text-white">Persistent absence (below 90%)</h2>
           {summary.persistentAbsence.length === 0 ? (
             <EmptyState
               icon={UserCheck}
@@ -108,20 +108,20 @@ function MisReports({
           ) : (
             <table className="mt-4 w-full text-sm">
               <thead>
-                <tr className="text-left text-slate-600">
+                <tr className="text-left text-slate-600 dark:text-slate-400">
                   <th className="pb-2 font-medium">Pupil</th>
                   <th className="pb-2 font-medium">Attendance</th>
                 </tr>
               </thead>
               <tbody>
                 {summary.persistentAbsence.map((p) => (
-                  <tr key={p.id} className="border-t border-slate-100">
+                  <tr key={p.id} className="border-t border-slate-100 dark:border-slate-800">
                     <td className="py-2">
-                      <Link href={`/portal/pupils/${p.id}`} className="text-indigo-700 hover:underline">
+                      <Link href={`/portal/pupils/${p.id}`} className="text-indigo-700 hover:underline dark:text-indigo-300">
                         {p.name}
                       </Link>
                     </td>
-                    <td className="py-2 text-red-600">{p.attendancePct}%</td>
+                    <td className="py-2 text-red-600 dark:text-red-400">{p.attendancePct}%</td>
                   </tr>
                 ))}
               </tbody>

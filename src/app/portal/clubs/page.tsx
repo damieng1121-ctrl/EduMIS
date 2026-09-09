@@ -121,7 +121,7 @@ export default function ClubsPage() {
     return (
       <div>
         <PageHeader module="clubs" title="Clubs" />
-        <p className="mt-4 text-sm text-slate-700">Set up an academic year first.</p>
+        <p className="mt-4 text-sm text-slate-700 dark:text-slate-200">Set up an academic year first.</p>
       </div>
     );
   }
@@ -141,9 +141,9 @@ export default function ClubsPage() {
       />
 
       {showForm && (
-        <form onSubmit={createClub} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3">
-          <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Club name" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <select required value={academicYearId} onChange={(e) => setAcademicYearId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <form onSubmit={createClub} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
+          <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Club name" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <select required value={academicYearId} onChange={(e) => setAcademicYearId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Academic year…</option>
             {academicYears?.map((y) => (
               <option key={y.id} value={y.id}>
@@ -155,20 +155,20 @@ export default function ClubsPage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description (optional)"
-            className="sm:col-span-3 rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="sm:col-span-3 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
             rows={2}
           />
-          <select value={dayOfWeek} onChange={(e) => setDayOfWeek(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select value={dayOfWeek} onChange={(e) => setDayOfWeek(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             {DAYS.map((d, i) => (
               <option key={d} value={i}>
                 {d}
               </option>
             ))}
           </select>
-          <input required type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input required type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input type="number" min="1" value={capacity} onChange={(e) => setCapacity(e.target.value)} placeholder="Capacity (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <select value={staffLeadId} onChange={(e) => setStaffLeadId(e.target.value)} className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <input required type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input required type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input type="number" min="1" value={capacity} onChange={(e) => setCapacity(e.target.value)} placeholder="Capacity (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <select value={staffLeadId} onChange={(e) => setStaffLeadId(e.target.value)} className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Staff lead (optional)</option>
             {staff?.map((s) => (
               <option key={s.id} value={s.id}>
@@ -189,18 +189,18 @@ export default function ClubsPage() {
           const active = c.memberships.filter((m) => m.status === "ACTIVE");
           const isExpanded = expandedId === c.id;
           return (
-            <div key={c.id} className="rounded-xl border border-slate-200 bg-white p-5">
+            <div key={c.id} className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-slate-900">{c.name}</p>
-                  <p className="text-xs text-slate-600">
+                  <p className="font-medium text-slate-900 dark:text-white">{c.name}</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
                     {DAYS[c.dayOfWeek]} · {c.startTime}–{c.endTime}
                     {c.staffLead && ` · ${c.staffLead.name ?? c.staffLead.email}`}
                   </p>
-                  {c.description && <p className="mt-1 text-xs text-slate-700">{c.description}</p>}
+                  {c.description && <p className="mt-1 text-xs text-slate-700 dark:text-slate-200">{c.description}</p>}
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-medium text-slate-600">
+                  <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
                     {activeCount}
                     {c.capacity ? ` / ${c.capacity}` : ""} members
                     {waitlist.length > 0 ? ` · ${waitlist.length} waitlisted` : ""}
@@ -217,9 +217,9 @@ export default function ClubsPage() {
               </div>
 
               {isExpanded && (
-                <div className="mt-4 border-t border-slate-100 pt-4">
+                <div className="mt-4 border-t border-slate-100 pt-4 dark:border-slate-800">
                   <div className="flex gap-2">
-                    <select value={addPupilId} onChange={(e) => setAddPupilId(e.target.value)} className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm">
+                    <select value={addPupilId} onChange={(e) => setAddPupilId(e.target.value)} className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
                       <option value="">Add pupil…</option>
                       {pupils?.map((p) => (
                         <option key={p.id} value={p.id}>
@@ -234,7 +234,7 @@ export default function ClubsPage() {
 
                   <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-600">Active</h3>
+                      <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">Active</h3>
                       <ul className="mt-2 space-y-1">
                         {active.map((m) => (
                           <li key={m.id} className="flex items-center justify-between text-sm">
@@ -246,11 +246,11 @@ export default function ClubsPage() {
                             </Button>
                           </li>
                         ))}
-                        {active.length === 0 && <li className="text-xs text-slate-500">No members yet.</li>}
+                        {active.length === 0 && <li className="text-xs text-slate-500 dark:text-slate-400">No members yet.</li>}
                       </ul>
                     </div>
                     <div>
-                      <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-600">Waitlist</h3>
+                      <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">Waitlist</h3>
                       <ul className="mt-2 space-y-1">
                         {waitlist.map((m) => (
                           <li key={m.id} className="flex items-center justify-between text-sm">
@@ -262,7 +262,7 @@ export default function ClubsPage() {
                             </Button>
                           </li>
                         ))}
-                        {waitlist.length === 0 && <li className="text-xs text-slate-500">Nobody waiting.</li>}
+                        {waitlist.length === 0 && <li className="text-xs text-slate-500 dark:text-slate-400">Nobody waiting.</li>}
                       </ul>
                     </div>
                   </div>

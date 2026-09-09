@@ -1,16 +1,25 @@
 @import "tailwindcss";
 
+/* Manual (class-based) dark mode instead of Tailwind v4's default
+   `prefers-color-scheme` media query — `dark:` utilities activate from a
+   `.dark` class on <html>, toggled by <ThemeToggle> and set as early as
+   possible (see the inline script in app/layout.tsx) to avoid a flash of
+   the wrong theme on load. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  /* This app is a light-only UI (every surface is styled with explicit
-     bg-white/slate classes) — there's no dark theme built for it. Without
-     this, a user with OS/browser dark mode on gets native form controls
-     (select, input) rendered with light-mode chrome but dark-mode text
-     color, since the browser's default UI doesn't follow this page's own
-     background. That makes dropdown/select text invisible (near-white on
-     the browser's white widget background) until manually selected. */
   color-scheme: light;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  /* Native form controls (select, input) follow color-scheme, not our own
+     classes — without this a <select> keeps light-mode chrome under a dark
+     page, making its text unreadable until it's focused. */
+  color-scheme: dark;
 }
 
 @theme inline {

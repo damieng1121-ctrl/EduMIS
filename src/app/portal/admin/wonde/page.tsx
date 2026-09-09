@@ -68,9 +68,9 @@ export default function WondeSettingsPage() {
         subtitle="Sync your school's roster and timetable data to third-party apps (reading platforms, MFL apps, and more) via Wonde."
       />
 
-      <section className="rounded-xl border border-slate-200 bg-white p-6">
-        <h2 className="font-semibold text-slate-900">What this is</h2>
-        <div className="mt-2 space-y-2 text-sm text-slate-700">
+      <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="font-semibold text-slate-900 dark:text-white">What this is</h2>
+        <div className="mt-2 space-y-2 text-sm text-slate-700 dark:text-slate-200">
           <p>
             Wonde is the UK education sector&apos;s standard service for syncing a school&apos;s MIS data out to
             approved third-party apps, so pupils and staff don&apos;t need separate logins set up by hand in every
@@ -78,7 +78,7 @@ export default function WondeSettingsPage() {
           </p>
           <p>
             To actually go live, your school needs its own Wonde partner agreement — sign up at{" "}
-            <a href="https://wonde.com" target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline">
+            <a href="https://wonde.com" target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline dark:text-indigo-400">
               wonde.com
             </a>{" "}
             and Wonde will issue an API token for your school. EduMIS doesn&apos;t arrange this on your behalf; the
@@ -87,23 +87,23 @@ export default function WondeSettingsPage() {
         </div>
       </section>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-6">
-        <h2 className="font-semibold text-slate-900">Connection details</h2>
+      <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="font-semibold text-slate-900 dark:text-white">Connection details</h2>
         {connection ? (
           <div className="mt-4 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700">Wonde School ID</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Wonde School ID</label>
               <input
                 value={wondeSchoolId}
                 onChange={(e) => setWondeSchoolId(e.target.value)}
                 disabled={!isAdmin}
                 placeholder="e.g. A123456789"
-                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-50 disabled:text-slate-500"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-600"
               />
-              <p className="mt-1 text-xs text-slate-500">Issued by Wonde once your school&apos;s partner agreement is set up.</p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Issued by Wonde once your school&apos;s partner agreement is set up.</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">API Token</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">API Token</label>
               <input
                 type="password"
                 value={apiToken}
@@ -111,14 +111,14 @@ export default function WondeSettingsPage() {
                 disabled={!isAdmin}
                 placeholder={connection.hasApiToken ? "•••• (already set)" : "Paste your Wonde API token"}
                 autoComplete="off"
-                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-50 disabled:text-slate-500"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-600"
               />
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 Stored encrypted. Leave blank to keep the token already on file — this field never shows the real value.
               </p>
             </div>
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
                 <input
                   type="checkbox"
                   checked={syncEnabled}
@@ -127,7 +127,7 @@ export default function WondeSettingsPage() {
                 />
                 Sync enabled
               </label>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 Turns syncing on once it&apos;s available — has no effect until the connector itself is built (see below).
               </p>
             </div>
@@ -136,34 +136,34 @@ export default function WondeSettingsPage() {
                 <Button onClick={save} disabled={saving}>
                   {saving ? "Saving…" : "Save"}
                 </Button>
-                {saved && <span className="text-sm text-emerald-600">Saved.</span>}
+                {saved && <span className="text-sm text-emerald-600 dark:text-emerald-400">Saved.</span>}
               </div>
             )}
-            {!isAdmin && <p className="text-sm text-slate-500">Only school admins can change these settings.</p>}
+            {!isAdmin && <p className="text-sm text-slate-500 dark:text-slate-400">Only school admins can change these settings.</p>}
           </div>
         ) : (
           <div className="mt-4 space-y-3">
-            <div className="h-9 animate-pulse rounded-md bg-slate-100" />
-            <div className="h-9 animate-pulse rounded-md bg-slate-100" />
-            <div className="h-9 animate-pulse rounded-md bg-slate-100" />
+            <div className="h-9 animate-pulse rounded-md bg-slate-100 dark:bg-slate-800" />
+            <div className="h-9 animate-pulse rounded-md bg-slate-100 dark:bg-slate-800" />
+            <div className="h-9 animate-pulse rounded-md bg-slate-100 dark:bg-slate-800" />
           </div>
         )}
       </section>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-6">
-        <h2 className="font-semibold text-slate-900">Sync status</h2>
+      <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="font-semibold text-slate-900 dark:text-white">Sync status</h2>
         {connection && (
           <div className="mt-4 space-y-4">
             <dl className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <dt className="text-slate-500">Last synced</dt>
-                <dd className="mt-0.5 font-medium text-slate-900">
+                <dt className="text-slate-500 dark:text-slate-400">Last synced</dt>
+                <dd className="mt-0.5 font-medium text-slate-900 dark:text-white">
                   {connection.lastSyncedAt ? new Date(connection.lastSyncedAt).toLocaleString("en-GB") : "Never"}
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-500">Last sync status</dt>
-                <dd className="mt-0.5 font-medium text-slate-900">{connection.lastSyncStatus ?? "—"}</dd>
+                <dt className="text-slate-500 dark:text-slate-400">Last sync status</dt>
+                <dd className="mt-0.5 font-medium text-slate-900 dark:text-white">{connection.lastSyncStatus ?? "—"}</dd>
               </div>
             </dl>
             <div>
@@ -172,7 +172,7 @@ export default function WondeSettingsPage() {
                   Sync now
                 </Button>
               </span>
-              <p className="mt-2 text-xs text-slate-500">
+              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                 Sync isn&apos;t available yet. Beyond needing your school&apos;s real Wonde credentials above, the
                 sync connector itself hasn&apos;t been built in this version of EduMIS — saving credentials here just
                 stores them securely, ready for when it is.

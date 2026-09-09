@@ -113,35 +113,35 @@ export default function PupilGuardiansPage() {
       />
 
       {showForm && (
-        <form onSubmit={addGuardian} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
-          <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <select value={relationship} onChange={(e) => setRelationship(e.target.value as Relationship)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <form onSubmit={addGuardian} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+          <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <select value={relationship} onChange={(e) => setRelationship(e.target.value as Relationship)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             {(Object.keys(RELATIONSHIP_LABELS) as Relationship[]).map((r) => (
               <option key={r} value={r}>{RELATIONSHIP_LABELS[r]}</option>
             ))}
           </select>
-          <input required value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First name" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input required value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last name" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+          <input required value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First name" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input required value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last name" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           <div className="flex flex-wrap gap-4 sm:col-span-2">
-            <label className="flex items-center gap-2 text-sm text-slate-700">
+            <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
               <input type="checkbox" checked={parentalResponsibility} onChange={(e) => setParentalResponsibility(e.target.checked)} />
               Parental responsibility
             </label>
-            <label className="flex items-center gap-2 text-sm text-slate-700">
+            <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
               <input type="checkbox" checked={isPrimaryContact} onChange={(e) => setIsPrimaryContact(e.target.checked)} />
               Primary contact
             </label>
-            <label className="flex items-center gap-2 text-sm text-slate-700">
+            <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
               <input type="checkbox" checked={isEmergencyContact} onChange={(e) => setIsEmergencyContact(e.target.checked)} />
               Emergency contact
             </label>
-            <label className="flex items-center gap-2 text-sm text-slate-700">
+            <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
               <input type="checkbox" checked={canCollect} onChange={(e) => setCanCollect(e.target.checked)} />
               Can collect pupil
             </label>
           </div>
-          {error && <p className="text-sm text-red-600 sm:col-span-2">{error}</p>}
-          <p className="text-xs text-slate-600 sm:col-span-2">
+          {error && <p className="text-sm text-red-600 sm:col-span-2 dark:text-red-400">{error}</p>}
+          <p className="text-xs text-slate-600 sm:col-span-2 dark:text-slate-400">
             If no account exists for this email, one will be created and an invite emailed to set a password.
           </p>
           <Button type="submit" disabled={submitting} className="sm:col-span-2">
@@ -150,9 +150,9 @@ export default function PupilGuardiansPage() {
         </form>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Name</th>
               <th className="p-4">Relationship</th>
@@ -160,24 +160,24 @@ export default function PupilGuardiansPage() {
               <th className="p-4"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {links?.map((l) => (
               <tr key={l.id}>
                 <td className="p-4">
-                  <p className="font-medium text-slate-900">{l.guardian.name ?? "—"}</p>
-                  <p className="text-xs text-slate-700">{l.guardian.email}</p>
+                  <p className="font-medium text-slate-900 dark:text-white">{l.guardian.name ?? "—"}</p>
+                  <p className="text-xs text-slate-700 dark:text-slate-200">{l.guardian.email}</p>
                 </td>
-                <td className="p-4 text-slate-600">{RELATIONSHIP_LABELS[l.relationship]}</td>
-                <td className="p-4 text-slate-600">
+                <td className="p-4 text-slate-600 dark:text-slate-400">{RELATIONSHIP_LABELS[l.relationship]}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">
                   <div className="flex flex-wrap gap-1">
-                    {l.parentalResponsibility && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs">PR</span>}
-                    {l.isPrimaryContact && <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-700">Primary</span>}
-                    {l.isEmergencyContact && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700">Emergency</span>}
-                    {l.canCollect && <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700">Can collect</span>}
+                    {l.parentalResponsibility && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs dark:bg-slate-800">PR</span>}
+                    {l.isPrimaryContact && <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">Primary</span>}
+                    {l.isEmergencyContact && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700 dark:bg-amber-900 dark:text-amber-300">Emergency</span>}
+                    {l.canCollect && <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700 dark:bg-green-900 dark:text-green-300">Can collect</span>}
                   </div>
                 </td>
                 <td className="p-4">
-                  <button onClick={() => unlink(l.guardianId)} className="text-xs text-red-600 hover:underline">
+                  <button onClick={() => unlink(l.guardianId)} className="text-xs text-red-600 hover:underline dark:text-red-400">
                     Unlink
                   </button>
                 </td>

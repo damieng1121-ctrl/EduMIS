@@ -73,7 +73,7 @@ export default function AuditLogPage() {
             setEntityType(e.target.value);
             setPage(1);
           }}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
         >
           <option value="">All record types</option>
           {ENTITY_TYPES.map((t) => (
@@ -84,7 +84,7 @@ export default function AuditLogPage() {
         </select>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         {entries === null ? (
           <table className="w-full text-left text-sm">
             <tbody>
@@ -95,7 +95,7 @@ export default function AuditLogPage() {
           <EmptyState icon={History} title="No activity yet" description="Record access and changes will show up here." />
         ) : (
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+            <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
               <tr>
                 <th className="p-4">When</th>
                 <th className="p-4">Who</th>
@@ -103,16 +103,16 @@ export default function AuditLogPage() {
                 <th className="p-4">Record</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {entries.map((e) => (
                 <tr key={e.id}>
-                  <td className="p-4 whitespace-nowrap text-slate-600">{new Date(e.createdAt).toLocaleString("en-GB")}</td>
+                  <td className="p-4 whitespace-nowrap text-slate-600 dark:text-slate-400">{new Date(e.createdAt).toLocaleString("en-GB")}</td>
                   <td className="p-4">
-                    <p className="font-medium text-slate-900">{e.user?.name ?? "Unknown"}</p>
-                    <p className="text-xs text-slate-700">{e.user?.email}</p>
+                    <p className="font-medium text-slate-900 dark:text-white">{e.user?.name ?? "Unknown"}</p>
+                    <p className="text-xs text-slate-700 dark:text-slate-200">{e.user?.email}</p>
                   </td>
-                  <td className="p-4 text-slate-900">{describeAction(e.action)}</td>
-                  <td className="p-4 text-slate-600">
+                  <td className="p-4 text-slate-900 dark:text-white">{describeAction(e.action)}</td>
+                  <td className="p-4 text-slate-600 dark:text-slate-400">
                     {e.entityType}
                     {e.entityId ? ` · ${e.entityId.slice(-8)}` : ""}
                   </td>
@@ -124,7 +124,7 @@ export default function AuditLogPage() {
       </div>
 
       {totalPages > 1 && (
-        <div className="mt-3 flex items-center justify-between text-sm text-slate-600">
+        <div className="mt-3 flex items-center justify-between text-sm text-slate-600 dark:text-slate-400">
           <span>
             Page {page} of {totalPages} · {total} entries
           </span>

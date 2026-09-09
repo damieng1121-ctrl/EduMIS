@@ -158,27 +158,27 @@ export default function PupilsPage() {
       />
 
       {needsSetup && isAdmin && (
-        <div className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 p-5">
+        <div className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 p-5 dark:border-indigo-800 dark:bg-indigo-500/10">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-indigo-900">Set up your first academic year &amp; form group</h2>
+            <h2 className="font-semibold text-indigo-900 dark:text-indigo-200">Set up your first academic year &amp; form group</h2>
             <Button variant="ghost" onClick={() => setShowSetup(!showSetup)}>
               {showSetup ? "Cancel" : "Get started"}
             </Button>
           </div>
-          <p className="mt-1 text-sm text-indigo-800">You need at least one academic year and form group before adding pupils.</p>
+          <p className="mt-1 text-sm text-indigo-800 dark:text-indigo-300">You need at least one academic year and form group before adding pupils.</p>
           {showSetup && (
             <form onSubmit={setupFirstYear} className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <input required value={yearName} onChange={(e) => setYearName(e.target.value)} placeholder="Year name, e.g. 2025/2026" className="rounded-md border border-slate-300 px-3 py-2 text-sm sm:col-span-2" />
-              <label className="text-xs text-slate-600">
+              <input required value={yearName} onChange={(e) => setYearName(e.target.value)} placeholder="Year name, e.g. 2025/2026" className="rounded-md border border-slate-300 px-3 py-2 text-sm sm:col-span-2 dark:border-slate-600" />
+              <label className="text-xs text-slate-600 dark:text-slate-400">
                 Start date
-                <input required type="date" value={yearStart} onChange={(e) => setYearStart(e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+                <input required type="date" value={yearStart} onChange={(e) => setYearStart(e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
               </label>
-              <label className="text-xs text-slate-600">
+              <label className="text-xs text-slate-600 dark:text-slate-400">
                 End date
-                <input required type="date" value={yearEnd} onChange={(e) => setYearEnd(e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+                <input required type="date" value={yearEnd} onChange={(e) => setYearEnd(e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
               </label>
-              <input required value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Form group name, e.g. 3W" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-              <select value={groupYearGroup} onChange={(e) => setGroupYearGroup(e.target.value as YearGroup)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+              <input required value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Form group name, e.g. 3W" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+              <select value={groupYearGroup} onChange={(e) => setGroupYearGroup(e.target.value as YearGroup)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
                 {YEAR_GROUPS.map((yg) => (
                   <option key={yg} value={yg}>{yearGroupLabel(yg)}</option>
                 ))}
@@ -196,12 +196,12 @@ export default function PupilsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by name…"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm sm:max-w-xs"
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm sm:max-w-xs dark:border-slate-600"
         />
         <select
           value={formGroupFilter}
           onChange={(e) => setFormGroupFilter(e.target.value)}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
         >
           <option value="">All form groups</option>
           {formGroups?.map((fg) => (
@@ -211,23 +211,23 @@ export default function PupilsPage() {
       </div>
 
       {showForm && (
-        <form onSubmit={createPupil} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
-          <input required value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First name" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input required value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last name" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <label className="text-xs text-slate-600">
+        <form onSubmit={createPupil} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+          <input required value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First name" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input required value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last name" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <label className="text-xs text-slate-600 dark:text-slate-400">
             Date of birth
-            <input required type="date" value={dob} onChange={(e) => setDob(e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+            <input required type="date" value={dob} onChange={(e) => setDob(e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           </label>
-          <select value={gender} onChange={(e) => setGender(e.target.value as "MALE" | "FEMALE")} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select value={gender} onChange={(e) => setGender(e.target.value as "MALE" | "FEMALE")} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="MALE">Male</option>
             <option value="FEMALE">Female</option>
           </select>
-          <select value={yearGroup} onChange={(e) => setYearGroup(e.target.value as YearGroup)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select value={yearGroup} onChange={(e) => setYearGroup(e.target.value as YearGroup)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             {YEAR_GROUPS.map((yg) => (
               <option key={yg} value={yg}>{yearGroupLabel(yg)}</option>
             ))}
           </select>
-          <select value={formGroupId} onChange={(e) => setFormGroupId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select value={formGroupId} onChange={(e) => setFormGroupId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">No form group</option>
             {formGroups?.map((fg) => (
               <option key={fg.id} value={fg.id}>{fg.name}</option>
@@ -239,9 +239,9 @@ export default function PupilsPage() {
         </form>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Name</th>
               <th className="p-4">Year group</th>
@@ -249,21 +249,21 @@ export default function PupilsPage() {
               <th className="p-4">SEND</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {pupils === null && <TableSkeleton rows={5} cols={4} />}
             {pupils?.map((p) => (
-              <tr key={p.id} className="transition-colors hover:bg-slate-50">
+              <tr key={p.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
                 <td className="p-4">
-                  <Link href={`/portal/pupils/${p.id}`} className="font-medium text-slate-900 hover:text-indigo-600 hover:underline">
+                  <Link href={`/portal/pupils/${p.id}`} className="font-medium text-slate-900 hover:text-indigo-600 hover:underline dark:text-white">
                     {p.lastName}, {p.preferredName || p.firstName}
                   </Link>
                   <div className="mt-0.5 flex gap-1">
-                    {p.pupilPremium && <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-medium text-green-700">PP</span>}
-                    {p.freeSchoolMeals && <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-700">FSM</span>}
+                    {p.pupilPremium && <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-medium text-green-700 dark:bg-green-900 dark:text-green-300">PP</span>}
+                    {p.freeSchoolMeals && <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">FSM</span>}
                   </div>
                 </td>
-                <td className="p-4 text-slate-600">{yearGroupLabel(p.yearGroup)}</td>
-                <td className="p-4 text-slate-600">{p.formGroup?.name ?? "—"}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{yearGroupLabel(p.yearGroup)}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{p.formGroup?.name ?? "—"}</td>
                 <td className="p-4">
                   {p.sendStatus !== "NONE" && (
                     <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${SEND_STYLES[p.sendStatus]}`}>

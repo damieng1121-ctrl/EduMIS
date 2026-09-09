@@ -139,7 +139,7 @@ export default function BehaviourPage() {
   return (
     <div>
       <PageHeader module="behaviour" title="Behaviour & wellbeing" />
-      <div className="mt-4 flex gap-1 rounded-lg bg-slate-100 p-1 w-fit">
+      <div className="mt-4 flex gap-1 rounded-lg bg-slate-100 p-1 w-fit dark:bg-slate-800">
         {TABS.map((t) => (
           <button
             key={t}
@@ -230,15 +230,15 @@ function IncidentsTab() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-700">{incidents ? `${incidents.length} incidents` : ""}</p>
+        <p className="text-sm text-slate-700 dark:text-slate-200">{incidents ? `${incidents.length} incidents` : ""}</p>
         <Button onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancel" : "Log incident"}
         </Button>
       </div>
 
       {showForm && (
-        <form onSubmit={createIncident} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
-          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <form onSubmit={createIncident} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Select pupil…</option>
             {pupils.map((p) => (
               <option key={p.id} value={p.id}>
@@ -246,26 +246,26 @@ function IncidentsTab() {
               </option>
             ))}
           </select>
-          <input required type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <select value={category} onChange={(e) => setCategory(e.target.value as BehaviourCategory)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <input required type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <select value={category} onChange={(e) => setCategory(e.target.value as BehaviourCategory)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="ACHIEVEMENT">Achievement</option>
             <option value="CONCERN">Concern</option>
             <option value="BULLYING">Bullying</option>
             <option value="SAFEGUARDING">Safeguarding</option>
           </select>
-          <input type="number" value={points} onChange={(e) => setPoints(e.target.value)} placeholder="Points" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input value={actionTaken} onChange={(e) => setActionTaken(e.target.value)} placeholder="Action taken" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <textarea required value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm" rows={3} />
-          <label className="flex items-center gap-2 text-sm text-slate-700">
+          <input type="number" value={points} onChange={(e) => setPoints(e.target.value)} placeholder="Points" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input value={actionTaken} onChange={(e) => setActionTaken(e.target.value)} placeholder="Action taken" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <textarea required value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" rows={3} />
+          <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
             <input type="checkbox" checked={followUpRequired} onChange={(e) => setFollowUpRequired(e.target.checked)} />
             Follow-up required
           </label>
           {followUpRequired && (
-            <input value={followUpNotes} onChange={(e) => setFollowUpNotes(e.target.value)} placeholder="Follow-up notes" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+            <input value={followUpNotes} onChange={(e) => setFollowUpNotes(e.target.value)} placeholder="Follow-up notes" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           )}
           {(category === "SAFEGUARDING" || category === "BULLYING") && (
-            <p className="sm:col-span-2 text-xs text-red-700">This incident will be marked confidential automatically and hidden from non-admin staff.</p>
+            <p className="sm:col-span-2 text-xs text-red-700 dark:text-red-400">This incident will be marked confidential automatically and hidden from non-admin staff.</p>
           )}
           <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Saving…" : "Save incident"}
@@ -273,9 +273,9 @@ function IncidentsTab() {
         </form>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Pupil</th>
               <th className="p-4">Date</th>
@@ -285,23 +285,23 @@ function IncidentsTab() {
               <th className="p-4">Recorded by</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {incidents === null && <TableSkeleton rows={5} cols={6} />}
             {incidents?.map((i) => (
               <tr key={i.id}>
-                <td className="p-4 font-medium text-slate-900">{pupilName(i.pupil)}</td>
-                <td className="p-4 text-slate-600">{fmtDate(i.date)}</td>
+                <td className="p-4 font-medium text-slate-900 dark:text-white">{pupilName(i.pupil)}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{fmtDate(i.date)}</td>
                 <td className="p-4">
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${CATEGORY_STYLES[i.category]}`}>{i.category}</span>
-                  {i.isConfidential && <span className="ml-1 text-xs text-red-600">confidential</span>}
+                  {i.isConfidential && <span className="ml-1 text-xs text-red-600 dark:text-red-400">confidential</span>}
                 </td>
-                <td className="p-4 text-slate-600">{i.points}</td>
-                <td className="p-4 text-slate-600">
+                <td className="p-4 text-slate-600 dark:text-slate-400">{i.points}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">
                   <p>{i.description}</p>
-                  {i.location && <p className="text-xs text-slate-500">at {i.location}</p>}
-                  {i.followUpRequired && <p className="text-xs text-amber-700">Follow-up required</p>}
+                  {i.location && <p className="text-xs text-slate-500 dark:text-slate-400">at {i.location}</p>}
+                  {i.followUpRequired && <p className="text-xs text-amber-700 dark:text-amber-300">Follow-up required</p>}
                 </td>
-                <td className="p-4 text-slate-600">{i.recordedBy.name ?? i.recordedBy.email}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{i.recordedBy.name ?? i.recordedBy.email}</td>
               </tr>
             ))}
             {incidents?.length === 0 && (
@@ -314,7 +314,7 @@ function IncidentsTab() {
           </tbody>
         </table>
       </div>
-      {!isAdmin && <p className="mt-2 text-xs text-slate-500">Confidential incidents recorded by other staff are hidden from you.</p>}
+      {!isAdmin && <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Confidential incidents recorded by other staff are hidden from you.</p>}
     </div>
   );
 }
@@ -388,13 +388,13 @@ function PointsTab() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-700">{entries ? `${entries.length} points entries` : ""}</p>
+        <p className="text-sm text-slate-700 dark:text-slate-200">{entries ? `${entries.length} points entries` : ""}</p>
         <Button onClick={() => setShowForm(!showForm)}>{showForm ? "Cancel" : "Award points"}</Button>
       </div>
 
       {showForm && (
-        <form onSubmit={awardPoints} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
-          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <form onSubmit={awardPoints} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Select pupil…</option>
             {pupils.map((p) => (
               <option key={p.id} value={p.id}>
@@ -408,25 +408,25 @@ function PointsTab() {
             value={points}
             onChange={(e) => setPoints(e.target.value)}
             placeholder="Points (use a negative number for a sanction)"
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600"
           />
-          <select value={category} onChange={(e) => setCategory(e.target.value as PointsCategory)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <select value={category} onChange={(e) => setCategory(e.target.value as PointsCategory)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             {(Object.keys(POINTS_CATEGORY_LABELS) as PointsCategory[]).map((c) => (
               <option key={c} value={c}>
                 {POINTS_CATEGORY_LABELS[c]}
               </option>
             ))}
           </select>
-          <input required value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+          <input required value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Saving…" : "Save"}
           </Button>
         </form>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Pupil</th>
               <th className="p-4">Date</th>
@@ -436,22 +436,22 @@ function PointsTab() {
               <th className="p-4">Awarded by</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {entries === null && <TableSkeleton rows={5} cols={6} />}
             {entries?.map((e) => (
               <tr key={e.id}>
-                <td className="p-4 font-medium text-slate-900">{pupilName(e.pupil)}</td>
-                <td className="p-4 text-slate-600">{fmtDate(e.date)}</td>
+                <td className="p-4 font-medium text-slate-900 dark:text-white">{pupilName(e.pupil)}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{fmtDate(e.date)}</td>
                 <td className="p-4">
-                  <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+                  <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                     {POINTS_CATEGORY_LABELS[e.category]}
                   </span>
                 </td>
                 <td className={`p-4 font-medium ${e.points >= 0 ? "text-green-700" : "text-red-700"}`}>
                   {e.points > 0 ? `+${e.points}` : e.points}
                 </td>
-                <td className="p-4 text-slate-600">{e.reason}</td>
-                <td className="p-4 text-slate-600">{e.awardedBy.name ?? e.awardedBy.email}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{e.reason}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{e.awardedBy.name ?? e.awardedBy.email}</td>
               </tr>
             ))}
             {entries?.length === 0 && (
@@ -467,9 +467,9 @@ function PointsTab() {
 
       <div className="mt-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm font-semibold text-slate-900">Leaderboard</p>
+          <p className="text-sm font-semibold text-slate-900 dark:text-white">Leaderboard</p>
           <div className="flex flex-wrap gap-2">
-            <select value={boardFormGroupId} onChange={(e) => setBoardFormGroupId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-1.5 text-sm">
+            <select value={boardFormGroupId} onChange={(e) => setBoardFormGroupId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-600">
               <option value="">All form groups</option>
               {formGroups.map((fg) => (
                 <option key={fg.id} value={fg.id}>
@@ -477,7 +477,7 @@ function PointsTab() {
                 </option>
               ))}
             </select>
-            <select value={boardYearGroup} onChange={(e) => setBoardYearGroup(e.target.value as YearGroup | "")} className="rounded-md border border-slate-300 px-3 py-1.5 text-sm">
+            <select value={boardYearGroup} onChange={(e) => setBoardYearGroup(e.target.value as YearGroup | "")} className="rounded-md border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-600">
               <option value="">All year groups</option>
               {(Object.keys(YEAR_GROUP_LABELS) as YearGroup[]).map((yg) => (
                 <option key={yg} value={yg}>
@@ -488,9 +488,9 @@ function PointsTab() {
           </div>
         </div>
 
-        <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+            <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
               <tr>
                 <th className="p-4">#</th>
                 <th className="p-4">Pupil</th>
@@ -499,15 +499,15 @@ function PointsTab() {
                 <th className="p-4">Total points</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {leaderboard === null && <TableSkeleton rows={5} cols={5} />}
               {leaderboard?.map((row, idx) => (
                 <tr key={row.pupilId}>
-                  <td className="p-4 text-slate-500">{idx + 1}</td>
-                  <td className="p-4 font-medium text-slate-900">{pupilName(row)}</td>
-                  <td className="p-4 text-slate-600">{row.formGroup?.name ?? "—"}</td>
-                  <td className="p-4 text-slate-600">{YEAR_GROUP_LABELS[row.yearGroup]}</td>
-                  <td className="p-4 font-semibold text-slate-900">{row.totalPoints}</td>
+                  <td className="p-4 text-slate-500 dark:text-slate-400">{idx + 1}</td>
+                  <td className="p-4 font-medium text-slate-900 dark:text-white">{pupilName(row)}</td>
+                  <td className="p-4 text-slate-600 dark:text-slate-400">{row.formGroup?.name ?? "—"}</td>
+                  <td className="p-4 text-slate-600 dark:text-slate-400">{YEAR_GROUP_LABELS[row.yearGroup]}</td>
+                  <td className="p-4 font-semibold text-slate-900 dark:text-white">{row.totalPoints}</td>
                 </tr>
               ))}
               {leaderboard?.length === 0 && (
@@ -579,13 +579,13 @@ function DetentionsTab() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-700">{detentions ? `${detentions.length} detentions` : ""}</p>
+        <p className="text-sm text-slate-700 dark:text-slate-200">{detentions ? `${detentions.length} detentions` : ""}</p>
         <Button onClick={() => setShowForm(!showForm)}>{showForm ? "Cancel" : "Schedule detention"}</Button>
       </div>
 
       {showForm && (
-        <form onSubmit={scheduleDetention} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
-          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <form onSubmit={scheduleDetention} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Select pupil…</option>
             {pupils.map((p) => (
               <option key={p.id} value={p.id}>
@@ -593,18 +593,18 @@ function DetentionsTab() {
               </option>
             ))}
           </select>
-          <input required type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <input required value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+          <input required type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <input required value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Saving…" : "Save"}
           </Button>
         </form>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Pupil</th>
               <th className="p-4">Date</th>
@@ -614,20 +614,20 @@ function DetentionsTab() {
               <th className="p-4"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {detentions === null && <TableSkeleton rows={5} cols={6} />}
             {detentions?.map((d) => (
               <tr key={d.id}>
-                <td className="p-4 font-medium text-slate-900">{pupilName(d.pupil)}</td>
-                <td className="p-4 text-slate-600">{fmtDate(d.date)}</td>
-                <td className="p-4 text-slate-600">
+                <td className="p-4 font-medium text-slate-900 dark:text-white">{pupilName(d.pupil)}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{fmtDate(d.date)}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">
                   <p>{d.reason}</p>
-                  {d.location && <p className="text-xs text-slate-500">at {d.location}</p>}
+                  {d.location && <p className="text-xs text-slate-500 dark:text-slate-400">at {d.location}</p>}
                 </td>
                 <td className="p-4">
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${DETENTION_STATUS_STYLES[d.status]}`}>{d.status}</span>
                 </td>
-                <td className="p-4 text-slate-600">{d.scheduledBy.name ?? d.scheduledBy.email}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">{d.scheduledBy.name ?? d.scheduledBy.email}</td>
                 <td className="p-4">
                   {d.status === "SCHEDULED" && (
                     <div className="flex gap-2">
@@ -730,15 +730,15 @@ function AccidentsTab() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-700">{accidents ? `${accidents.length} accident reports` : ""}</p>
+        <p className="text-sm text-slate-700 dark:text-slate-200">{accidents ? `${accidents.length} accident reports` : ""}</p>
         <Button onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancel" : "Log accident"}
         </Button>
       </div>
 
       {showForm && (
-        <form onSubmit={createAccident} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2">
-          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+        <form onSubmit={createAccident} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Select pupil…</option>
             {pupils.map((p) => (
               <option key={p.id} value={p.id}>
@@ -747,31 +747,31 @@ function AccidentsTab() {
             ))}
           </select>
           <div className="flex gap-2">
-            <input required type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-1/2 rounded-md border border-slate-300 px-3 py-2 text-sm" />
-            <input required type="time" value={time} onChange={(e) => setTime(e.target.value)} className="w-1/2 rounded-md border border-slate-300 px-3 py-2 text-sm" />
+            <input required type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-1/2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+            <input required type="time" value={time} onChange={(e) => setTime(e.target.value)} className="w-1/2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           </div>
-          <input required value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <select value={severity} onChange={(e) => setSeverity(e.target.value as AccidentSeverity)} className="rounded-md border border-slate-300 px-3 py-2 text-sm">
+          <input required value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <select value={severity} onChange={(e) => setSeverity(e.target.value as AccidentSeverity)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="MINOR">Minor</option>
             <option value="MODERATE">Moderate</option>
             <option value="SERIOUS">Serious</option>
           </select>
-          <input value={injuryType} onChange={(e) => setInjuryType(e.target.value)} placeholder="Injury type (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
-          <label className="flex items-center gap-2 text-sm text-slate-700">
+          <input value={injuryType} onChange={(e) => setInjuryType(e.target.value)} placeholder="Injury type (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
+          <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
             <input type="checkbox" checked={parentNotified} onChange={(e) => setParentNotified(e.target.checked)} />
             Parent already notified
           </label>
-          <textarea required value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What happened?" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm" rows={3} />
-          <textarea required value={actionTaken} onChange={(e) => setActionTaken(e.target.value)} placeholder="Action taken" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm" rows={2} />
+          <textarea required value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What happened?" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" rows={3} />
+          <textarea required value={actionTaken} onChange={(e) => setActionTaken(e.target.value)} placeholder="Action taken" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" rows={2} />
           <Button type="submit" disabled={submitting} className="sm:col-span-2">
             {submitting ? "Saving…" : "Save report"}
           </Button>
         </form>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
               <th className="p-4">Pupil</th>
               <th className="p-4">Date / time</th>
@@ -781,24 +781,24 @@ function AccidentsTab() {
               <th className="p-4"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {accidents === null && <TableSkeleton rows={5} cols={6} />}
             {accidents?.map((a) => (
               <tr key={a.id}>
-                <td className="p-4 font-medium text-slate-900">{pupilName(a.pupil)}</td>
-                <td className="p-4 text-slate-600">
+                <td className="p-4 font-medium text-slate-900 dark:text-white">{pupilName(a.pupil)}</td>
+                <td className="p-4 text-slate-600 dark:text-slate-400">
                   {fmtDate(a.date)} {a.time}
                 </td>
                 <td className="p-4">
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${SEVERITY_STYLES[a.severity]}`}>{a.severity}</span>
                 </td>
-                <td className="p-4 text-slate-600">
+                <td className="p-4 text-slate-600 dark:text-slate-400">
                   <p>{a.description}</p>
-                  <p className="text-xs text-slate-500">at {a.location}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">at {a.location}</p>
                 </td>
                 <td className="p-4">
                   {a.parentNotified ? (
-                    <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Notified</span>
+                    <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900 dark:text-green-300">Notified</span>
                   ) : (
                     <Button variant="ghost" onClick={() => markParentNotified(a.id)} className="text-xs">
                       Mark notified
