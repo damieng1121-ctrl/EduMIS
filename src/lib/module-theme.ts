@@ -27,6 +27,7 @@ import {
   UserPlus,
   CalendarDays,
   UserCog,
+  Bandage,
 } from "lucide-react";
 
 export type ModuleKey =
@@ -56,7 +57,8 @@ export type ModuleKey =
   | "audit-log"
   | "admissions"
   | "timetable"
-  | "cover";
+  | "cover"
+  | "first-aid";
 
 /**
  * Literal (never interpolated) Tailwind classes — required for the JIT
@@ -110,4 +112,5 @@ export const MODULE_THEME: Record<ModuleKey, { icon: LucideIcon; badge: string }
   admissions: { icon: UserPlus, badge: BADGE.sky },
   timetable: { icon: CalendarDays, badge: BADGE.teal },
   cover: { icon: UserCog, badge: BADGE.fuchsia },
+  "first-aid": { icon: Bandage, badge: BADGE.rose },
 };

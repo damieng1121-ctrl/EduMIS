@@ -21,6 +21,7 @@ function sanitizeFileName(name: string): string {
 }
 
 const MAX_LOGO_BYTES = 2 * 1024 * 1024; // 2MB — a nav-bar/login logo, not a photo library
+const MAX_PHOTO_BYTES = 4 * 1024 * 1024; // 4MB — a phone photo of a pupil, not a scan/document
 
 /** One logo per tenant — a fresh upload always replaces the previous file. */
 export async function saveTenantLogo(tenantId: string, fileName: string, data: Buffer): Promise<{ key: string }> {
@@ -28,6 +29,23 @@ export async function saveTenantLogo(tenantId: string, fileName: string, data: B
     throw new UploadTooLargeError(`File exceeds ${MAX_LOGO_BYTES / (1024 * 1024)}MB limit`);
   }
   const key = path.posix.join("tenant-logos", tenantId, sanitizeFileName(fileName));
+  const onDisk = resolveOnDisk(key);
+  await mkdir(path.dirname(onDisk), { recursive: true });
+  await writeFile(onDisk, data);
+  return { key };
+}
+
+/**
+ * One photo per pupil, namespaced under the tenant so one school can never
+ * reach another's uploads even given a raw key. A fresh upload always
+ * replaces the previous file (callers should delete the old key first via
+ * deleteUpload, same as the tenant logo flow).
+ */
+export async function savePupilPhoto(tenantId: string, pupilId: string, fileName: string, data: Buffer): Promise<{ key: string }> {
+  if (data.byteLength > MAX_PHOTO_BYTES) {
+    throw new UploadTooLargeError(`File exceeds ${MAX_PHOTO_BYTES / (1024 * 1024)}MB limit`);
+  }
+  const key = path.posix.join("pupil-photos", tenantId, pupilId, sanitizeFileName(fileName));
   const onDisk = resolveOnDisk(key);
   await mkdir(path.dirname(onDisk), { recursive: true });
   await writeFile(onDisk, data);

@@ -49,6 +49,7 @@ export default function InterventionsPage() {
   const [pupils, setPupils] = useState<Pupil[]>([]);
   const [interventions, setInterventions] = useState<Intervention[] | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Intervention | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -71,31 +72,56 @@ export default function InterventionsPage() {
   }
   useEffect(load, []);
 
-  async function createIntervention(e: React.FormEvent) {
+  function resetForm() {
+    setPupilId("");
+    setTitle("");
+    setSubjectArea("");
+    setGroupSize("");
+    setStartDate(new Date().toISOString().slice(0, 10));
+    setEndDate("");
+    setTargetOutcome("");
+    setShowForm(false);
+    setEditing(null);
+  }
+
+  function startEdit(i: Intervention) {
+    setEditing(i);
+    setTitle(i.title);
+    setSubjectArea(i.subjectArea ?? "");
+    setGroupSize(i.groupSize ? String(i.groupSize) : "");
+    setStartDate(i.startDate.slice(0, 10));
+    setEndDate(i.endDate ? i.endDate.slice(0, 10) : "");
+    setTargetOutcome(i.targetOutcome);
+    setShowForm(true);
+  }
+
+  async function submitIntervention(e: React.FormEvent) {
     e.preventDefault();
-    if (!pupilId) return;
+    if (!editing && !pupilId) return;
     setSubmitting(true);
     try {
-      await fetch("/api/interventions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pupilId,
-          title,
-          subjectArea: subjectArea || undefined,
-          groupSize: groupSize ? parseInt(groupSize, 10) : undefined,
-          startDate,
-          endDate: endDate || undefined,
-          targetOutcome,
-        }),
-      });
-      setPupilId("");
-      setTitle("");
-      setSubjectArea("");
-      setGroupSize("");
-      setEndDate("");
-      setTargetOutcome("");
-      setShowForm(false);
+      const payload = {
+        title,
+        subjectArea: subjectArea || undefined,
+        groupSize: groupSize ? parseInt(groupSize, 10) : undefined,
+        startDate,
+        endDate: endDate || undefined,
+        targetOutcome,
+      };
+      if (editing) {
+        await fetch(`/api/interventions/${editing.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await fetch("/api/interventions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pupilId, ...payload }),
+        });
+      }
+      resetForm();
       load();
     } finally {
       setSubmitting(false);
@@ -111,6 +137,13 @@ export default function InterventionsPage() {
     load();
   }
 
+  async function deleteIntervention(i: Intervention) {
+    if (!window.confirm(`Delete "${i.title}" for ${pupilName(i.pupil)}? This can't be undone.`)) return;
+    await fetch(`/api/interventions/${i.id}`, { method: "DELETE" });
+    if (expandedId === i.id) setExpandedId(null);
+    load();
+  }
+
   return (
     <div>
       <PageHeader
@@ -118,22 +151,31 @@ export default function InterventionsPage() {
         title="Interventions"
         subtitle={interventions ? `${interventions.length} interventions` : undefined}
         actions={
-          <Button variant={showForm ? "secondary" : "primary"} onClick={() => setShowForm(!showForm)}>
+          <Button variant={showForm ? "secondary" : "primary"} onClick={() => (showForm ? resetForm() : setShowForm(true))}>
             {showForm ? "Cancel" : "New intervention"}
           </Button>
         }
       />
 
       {showForm && (
-        <form onSubmit={createIntervention} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
-          <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
-            <option value="">Select pupil…</option>
-            {pupils.map((p) => (
-              <option key={p.id} value={p.id}>
-                {pupilName(p)}
-              </option>
-            ))}
-          </select>
+        <form onSubmit={submitIntervention} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm font-medium text-slate-900 sm:col-span-2 dark:text-white">
+            {editing ? "Edit intervention" : "New intervention"}
+          </p>
+          {editing ? (
+            <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+              Pupil: <span className="font-medium">{pupilName(editing.pupil)}</span>
+            </p>
+          ) : (
+            <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
+              <option value="">Select pupil…</option>
+              {pupils.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {pupilName(p)}
+                </option>
+              ))}
+            </select>
+          )}
           <input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           <input value={subjectArea} onChange={(e) => setSubjectArea(e.target.value)} placeholder="Subject area (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           <input type="number" min="1" value={groupSize} onChange={(e) => setGroupSize(e.target.value)} placeholder="Group size (optional)" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
@@ -143,7 +185,7 @@ export default function InterventionsPage() {
           </div>
           <textarea required value={targetOutcome} onChange={(e) => setTargetOutcome(e.target.value)} placeholder="Target outcome" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" rows={2} />
           <Button type="submit" disabled={submitting} className="sm:col-span-2">
-            {submitting ? "Saving…" : "Save intervention"}
+            {submitting ? "Saving…" : editing ? "Save changes" : "Save intervention"}
           </Button>
         </form>
       )}
@@ -187,9 +229,17 @@ export default function InterventionsPage() {
                       </select>
                     </td>
                     <td className="p-4">
-                      <Button variant="ghost" onClick={() => setExpandedId(expanded ? null : i.id)} className="text-xs">
-                        {expanded ? "Collapse" : `Notes (${i.notes.length})`}
-                      </Button>
+                      <div className="flex flex-wrap items-center justify-end gap-3">
+                        <Button variant="ghost" onClick={() => setExpandedId(expanded ? null : i.id)} className="text-xs">
+                          {expanded ? "Collapse" : `Notes (${i.notes.length})`}
+                        </Button>
+                        <Button variant="secondary" size="sm" onClick={() => startEdit(i)}>
+                          Edit
+                        </Button>
+                        <Button variant="danger" size="sm" onClick={() => deleteIntervention(i)}>
+                          Delete
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                   {expanded && (

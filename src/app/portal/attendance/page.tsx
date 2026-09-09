@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { TableSkeleton } from "@/components/ui/skeleton";
+import { PrintButton } from "@/components/ui/print-button";
 
 type FormGroup = { id: string; name: string; yearGroup: string };
 
@@ -105,7 +106,7 @@ export default function AttendancePage() {
 
   return (
     <div>
-      <PageHeader module="attendance" title="Attendance register" />
+      <PageHeader module="attendance" title="Attendance register" actions={<PrintButton label="Print register" />} />
 
       <div className="mt-4 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
         <label className="text-xs text-slate-600 dark:text-slate-400">

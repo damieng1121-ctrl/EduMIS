@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { printPage } from "@/lib/print";
 
 type AcademicYearOption = { id: string; name: string };
 
@@ -54,7 +55,7 @@ export function ReportControls({
           ))}
         </select>
       </div>
-      <Button onClick={() => window.print()}>
+      <Button onClick={printPage}>
         <Printer size={16} className="mr-1.5 inline" />
         Print / Save as PDF
       </Button>

@@ -43,7 +43,9 @@ export function ParentsEveningsClient({ formGroups, teachers }: { formGroups: Fo
   const [events, setEvents] = useState<EventSummary[] | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("16:00");
@@ -61,32 +63,73 @@ export function ParentsEveningsClient({ formGroups, teachers }: { formGroups: Fo
   }
   useEffect(load, []);
 
-  async function createEvent(e: React.FormEvent) {
+  function clearForm() {
+    setEditingId(null);
+    setTitle("");
+    setDate("");
+    setStartTime("16:00");
+    setEndTime("18:00");
+    setSlotMinutes(10);
+    setSelectedFormGroups([]);
+    setLocationNote("");
+  }
+
+  function startEdit(ev: EventSummary) {
+    setEditingId(ev.id);
+    setTitle(ev.title);
+    setDate(ev.date.slice(0, 10));
+    setStartTime(ev.startTime);
+    setEndTime(ev.endTime);
+    setSlotMinutes(ev.slotMinutes);
+    setSelectedFormGroups(ev.formGroupIds);
+    setLocationNote(ev.locationNote ?? "");
+    setShowForm(true);
+  }
+
+  async function submitEvent(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await fetch("/api/parents-evenings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title,
-          date,
-          startTime,
-          endTime,
-          slotMinutes,
-          formGroupIds: selectedFormGroups,
-          locationNote: locationNote || undefined,
-        }),
-      });
-      setTitle("");
-      setDate("");
-      setSelectedFormGroups([]);
-      setLocationNote("");
+      const payload = {
+        title,
+        date,
+        startTime,
+        endTime,
+        slotMinutes,
+        formGroupIds: selectedFormGroups,
+        locationNote: locationNote || undefined,
+      };
+      if (editingId) {
+        await fetch(`/api/parents-evenings/${editingId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await fetch("/api/parents-evenings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+      clearForm();
       setShowForm(false);
       load();
     } finally {
       setSubmitting(false);
     }
+  }
+
+  async function deleteEvent(ev: EventSummary) {
+    if (!window.confirm(`Delete "${ev.title}"? This can't be undone.`)) return;
+    setDeleteError(null);
+    const res = await fetch(`/api/parents-evenings/${ev.id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      setDeleteError(data?.error ?? "Couldn't delete that event.");
+      return;
+    }
+    load();
   }
 
   function toggleFormGroup(id: string) {
@@ -99,14 +142,25 @@ export function ParentsEveningsClient({ formGroups, teachers }: { formGroups: Fo
         module="parents-evenings"
         title="Parents' evenings"
         actions={
-          <Button variant={showForm ? "secondary" : "primary"} onClick={() => setShowForm(!showForm)}>
+          <Button
+            variant={showForm ? "secondary" : "primary"}
+            onClick={() => {
+              if (showForm) {
+                setShowForm(false);
+                clearForm();
+              } else {
+                clearForm();
+                setShowForm(true);
+              }
+            }}
+          >
             {showForm ? "Cancel" : "New event"}
           </Button>
         }
       />
 
       {showForm && (
-        <form onSubmit={createEvent} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+        <form onSubmit={submitEvent} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
           <input required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" className="rounded-md border border-slate-300 px-3 py-2 text-sm sm:col-span-2 dark:border-slate-600" />
           <input required type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           <input
@@ -142,10 +196,12 @@ export function ParentsEveningsClient({ formGroups, teachers }: { formGroups: Fo
           </div>
 
           <Button type="submit" disabled={submitting} className="sm:col-span-2">
-            {submitting ? "Creating…" : "Create event"}
+            {submitting ? (editingId ? "Saving…" : "Creating…") : editingId ? "Save changes" : "Create event"}
           </Button>
         </form>
       )}
+
+      {deleteError && <p className="mt-4 text-sm text-red-600 dark:text-red-400">{deleteError}</p>}
 
       <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
@@ -167,9 +223,17 @@ export function ParentsEveningsClient({ formGroups, teachers }: { formGroups: Fo
                 <td className="p-4 text-slate-600 dark:text-slate-400">{ev.startTime}–{ev.endTime}</td>
                 <td className="p-4 text-slate-600 dark:text-slate-400">{ev._count.slots}</td>
                 <td className="p-4">
-                  <Button variant="ghost" onClick={() => setSelectedEventId(ev.id)}>
-                    View slots
-                  </Button>
+                  <div className="flex items-center justify-end gap-2">
+                    <Button variant="ghost" onClick={() => setSelectedEventId(ev.id)}>
+                      View slots
+                    </Button>
+                    <Button variant="ghost" onClick={() => startEdit(ev)}>
+                      Edit
+                    </Button>
+                    <Button variant="secondary" size="sm" onClick={() => deleteEvent(ev)}>
+                      Delete
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}

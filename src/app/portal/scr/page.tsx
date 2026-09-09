@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { TableSkeleton } from "@/components/ui/skeleton";
+import { PrintButton } from "@/components/ui/print-button";
 
 type StaffProfile = {
   dbsCheckDate: string | null;
@@ -162,6 +163,7 @@ export default function ScrPage() {
         module="scr"
         title="Single Central Record"
         subtitle={staff ? `${completeCount} of ${staff.length} staff fully checked` : undefined}
+        actions={<PrintButton />}
       />
 
       <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">

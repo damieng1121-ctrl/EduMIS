@@ -80,3 +80,18 @@ export async function PATCH(req: Request, { params }: Params) {
     return updated;
   });
 }
+
+export async function DELETE(_req: Request, { params }: Params) {
+  return withApiErrors(async () => {
+    const session = await requireFeatureSession("ADMISSIONS");
+    if (!isAdmin(session.user.role)) throw new AuthError("Admins only", 403);
+    const { id } = await params;
+
+    const application = await prisma.admissionApplication.findUnique({ where: { id } });
+    if (!application || application.tenantId !== session.user.tenantId) throw new AuthError("Not found", 404);
+
+    await prisma.admissionApplication.delete({ where: { id } });
+
+    return { ok: true };
+  });
+}

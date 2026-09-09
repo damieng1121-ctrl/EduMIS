@@ -36,6 +36,7 @@ import {
   ChevronDown,
   HelpCircle,
   BookOpen,
+  Bandage,
   Mail,
   type LucideIcon,
 } from "lucide-react";
@@ -79,6 +80,7 @@ const nav: NavEntry[] = [
       { href: "/portal/attendance", label: "Attendance", icon: CalendarCheck, roles: null, requiresMis: true },
       { href: "/portal/behaviour", label: "Behaviour", icon: HeartHandshake, roles: null, requiresMis: true },
       { href: "/portal/send", label: "SEND", icon: ClipboardPlus, roles: null, requiresMis: true },
+      { href: "/portal/first-aid", label: "First Aid", icon: Bandage, roles: null, requiresMis: true },
       { href: "/portal/assessment", label: "Assessment", icon: ClipboardList, roles: null, requiresMis: true },
       { href: "/portal/targets", label: "Targets", icon: Target, roles: null, requiresMis: true },
       { href: "/portal/interventions", label: "Interventions", icon: Target, roles: null, requiresMis: true },

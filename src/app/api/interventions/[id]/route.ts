@@ -40,3 +40,17 @@ export async function PATCH(req: Request, { params }: Params) {
     });
   });
 }
+
+export async function DELETE(_req: Request, { params }: Params) {
+  return withApiErrors(async () => {
+    const session = await requireMisSession();
+    const { id } = await params;
+
+    const intervention = await prisma.intervention.findUnique({ where: { id } });
+    if (!intervention || intervention.tenantId !== session.user.tenantId) throw new AuthError("Not found", 404);
+
+    await prisma.intervention.delete({ where: { id } });
+
+    return { ok: true };
+  });
+}

@@ -73,6 +73,7 @@ export default function AdmissionsPage() {
   const [yearGroupFilter, setYearGroupFilter] = useState<YearGroup | "">("");
 
   const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Application | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [dob, setDob] = useState("");
@@ -102,34 +103,66 @@ export default function AdmissionsPage() {
 
   useEffect(load, [statusFilter, yearGroupFilter]);
 
-  async function createApplication(e: FormEvent) {
+  function resetForm() {
+    setFirstName("");
+    setLastName("");
+    setDob("");
+    setGender("MALE");
+    setPreferredYearGroup("RECEPTION");
+    setApplicationType("NORMAL_ROUND");
+    setGuardianName("");
+    setGuardianEmail("");
+    setGuardianPhone("");
+    setNotes("");
+    setShowForm(false);
+    setEditing(null);
+  }
+
+  function startEdit(a: Application) {
+    setEditing(a);
+    setFirstName(a.firstName);
+    setLastName(a.lastName);
+    setDob(a.dob.slice(0, 10));
+    setGender(a.gender);
+    setPreferredYearGroup(a.preferredYearGroup);
+    setApplicationType(a.applicationType);
+    setGuardianName(a.guardianName);
+    setGuardianEmail(a.guardianEmail ?? "");
+    setGuardianPhone(a.guardianPhone ?? "");
+    setNotes(a.notes ?? "");
+    setShowForm(true);
+  }
+
+  async function submitApplication(e: FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await fetch("/api/admissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          dob,
-          gender,
-          preferredYearGroup,
-          applicationType,
-          guardianName,
-          guardianEmail: guardianEmail || undefined,
-          guardianPhone: guardianPhone || undefined,
-          notes: notes || undefined,
-        }),
-      });
-      setFirstName("");
-      setLastName("");
-      setDob("");
-      setGuardianName("");
-      setGuardianEmail("");
-      setGuardianPhone("");
-      setNotes("");
-      setShowForm(false);
+      const payload = {
+        firstName,
+        lastName,
+        dob,
+        gender,
+        preferredYearGroup,
+        applicationType,
+        guardianName,
+        guardianEmail: guardianEmail || undefined,
+        guardianPhone: guardianPhone || undefined,
+        notes: notes || undefined,
+      };
+      if (editing) {
+        await fetch(`/api/admissions/${editing.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await fetch("/api/admissions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+      resetForm();
       load();
     } finally {
       setSubmitting(false);
@@ -142,6 +175,12 @@ export default function AdmissionsPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
     });
+    load();
+  }
+
+  async function deleteApplication(a: Application) {
+    if (!window.confirm(`Delete the application for ${a.firstName} ${a.lastName}? This can't be undone.`)) return;
+    await fetch(`/api/admissions/${a.id}`, { method: "DELETE" });
     load();
   }
 
@@ -164,7 +203,7 @@ export default function AdmissionsPage() {
         title="Admissions"
         subtitle="Prospective-pupil applications, from first contact through to a place accepted or declined."
         actions={
-          <Button size="sm" onClick={() => setShowForm((v) => !v)}>
+          <Button size="sm" onClick={() => (showForm ? resetForm() : setShowForm(true))}>
             {showForm ? "Cancel" : "Add application"}
           </Button>
         }
@@ -172,9 +211,12 @@ export default function AdmissionsPage() {
 
       {showForm && (
         <form
-          onSubmit={createApplication}
+          onSubmit={submitApplication}
           className="mt-4 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-3 dark:border-slate-700 dark:bg-slate-900"
         >
+          <p className="text-sm font-medium text-slate-900 sm:col-span-2 lg:col-span-3 dark:text-white">
+            {editing ? "Edit application" : "New application"}
+          </p>
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">First name</label>
             <input
@@ -276,7 +318,7 @@ export default function AdmissionsPage() {
           </div>
           <div className="sm:col-span-2 lg:col-span-3">
             <Button type="submit" disabled={submitting}>
-              {submitting ? "Saving…" : "Add application"}
+              {submitting ? "Saving…" : editing ? "Save changes" : "Add application"}
             </Button>
           </div>
         </form>
@@ -320,10 +362,11 @@ export default function AdmissionsPage() {
               <th className="p-4">Guardian</th>
               <th className="p-4">Status</th>
               <th className="p-4">Received</th>
+              <th className="p-4"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-            {applications === null && <TableSkeleton rows={5} cols={7} />}
+            {applications === null && <TableSkeleton rows={5} cols={8} />}
             {applications?.map((a) => (
               <tr key={a.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
                 <td className="p-4">
@@ -358,11 +401,21 @@ export default function AdmissionsPage() {
                   </div>
                 </td>
                 <td className="p-4 text-slate-600 dark:text-slate-400">{fmtDate(a.createdAt)}</td>
+                <td className="p-4">
+                  <div className="flex items-center justify-end gap-3">
+                    <Button variant="secondary" size="sm" onClick={() => startEdit(a)}>
+                      Edit
+                    </Button>
+                    <Button variant="danger" size="sm" onClick={() => deleteApplication(a)}>
+                      Delete
+                    </Button>
+                  </div>
+                </td>
               </tr>
             ))}
             {applications?.length === 0 && (
               <tr>
-                <td colSpan={7}>
+                <td colSpan={8}>
                   <EmptyState
                     icon={UserPlus}
                     title="No applications yet"

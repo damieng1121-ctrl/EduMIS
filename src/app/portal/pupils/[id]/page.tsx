@@ -7,6 +7,9 @@ import { canAccessMis } from "@/lib/roles";
 import { isAttendedSession, PERSISTENT_ABSENCE_THRESHOLD } from "@/lib/attendance-codes";
 import { audit } from "@/lib/audit";
 import type { YearGroup } from "@prisma/client";
+import { PupilPhoto } from "./pupil-photo";
+import { EditPupilForm } from "./edit-pupil-form";
+import { PrintButton } from "@/components/ui/print-button";
 
 function yearGroupLabel(yg: YearGroup): string {
   if (yg === "NURSERY") return "Nursery";
@@ -94,31 +97,61 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
 
   return (
     <div>
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
-            {pupil.preferredName || pupil.firstName} {pupil.lastName}
-          </h1>
-          <p className="mt-1 text-sm text-slate-700 dark:text-slate-200">
-            DOB {formatDate(pupil.dob)} &middot; {yearGroupLabel(pupil.yearGroup)}
-            {pupil.formGroup ? ` · ${pupil.formGroup.name}` : ""}
-          </p>
+      <div className="flex items-start justify-between print:hidden">
+        <div className="flex items-start gap-4">
+          <PupilPhoto pupilId={pupil.id} hasPhoto={Boolean(pupil.photoUrl)} />
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+              {pupil.preferredName || pupil.firstName} {pupil.lastName}
+            </h1>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-200">
+              DOB {formatDate(pupil.dob)} &middot; {yearGroupLabel(pupil.yearGroup)}
+              {pupil.formGroup ? ` · ${pupil.formGroup.name}` : ""}
+            </p>
+          </div>
         </div>
-        <div className="flex flex-wrap items-start justify-end gap-1.5">
-          <Link
-            href={`/portal/pupils/${pupil.id}/report`}
-            className="rounded-md border border-slate-300 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800"
-          >
-            Report
-          </Link>
-          {pupil.sendStatus !== "NONE" && (
-            <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${SEND_STYLES[pupil.sendStatus]}`}>
-              {pupil.sendStatus === "SEND_SUPPORT" ? "SEND Support" : "EHCP"}
-            </span>
-          )}
-          {pupil.pupilPremium && <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900 dark:text-green-300">Pupil Premium</span>}
-          {pupil.freeSchoolMeals && <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">FSM</span>}
-          {!pupil.isActive && <span className="rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-200">Inactive</span>}
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-wrap items-start justify-end gap-1.5">
+            <PrintButton label="Print profile" />
+            <Link
+              href={`/portal/pupils/${pupil.id}/report`}
+              className="rounded-md border border-slate-300 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              Report
+            </Link>
+            {pupil.sendStatus !== "NONE" && (
+              <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${SEND_STYLES[pupil.sendStatus]}`}>
+                {pupil.sendStatus === "SEND_SUPPORT" ? "SEND Support" : "EHCP"}
+              </span>
+            )}
+            {pupil.pupilPremium && <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900 dark:text-green-300">Pupil Premium</span>}
+            {pupil.freeSchoolMeals && <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">FSM</span>}
+            {!pupil.isActive && <span className="rounded-full bg-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-200">Inactive</span>}
+          </div>
+          <EditPupilForm
+            pupil={{
+              id: pupil.id,
+              firstName: pupil.firstName,
+              lastName: pupil.lastName,
+              preferredName: pupil.preferredName,
+              dob: pupil.dob.toISOString(),
+              gender: pupil.gender,
+              yearGroup: pupil.yearGroup,
+              formGroupId: pupil.formGroupId,
+              ethnicity: pupil.ethnicity,
+              homeLanguage: pupil.homeLanguage,
+              addressLine1: pupil.addressLine1,
+              addressLine2: pupil.addressLine2,
+              city: pupil.city,
+              postcode: pupil.postcode,
+              sendStatus: pupil.sendStatus,
+              pupilPremium: pupil.pupilPremium,
+              freeSchoolMeals: pupil.freeSchoolMeals,
+              medicalNotes: pupil.medicalNotes,
+              isActive: pupil.isActive,
+            }}
+            isAdmin={viewerIsAdmin}
+          />
         </div>
       </div>
 

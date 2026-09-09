@@ -55,3 +55,17 @@ export async function PATCH(req: Request, { params }: Params) {
     });
   });
 }
+
+export async function DELETE(_req: Request, { params }: Params) {
+  return withApiErrors(async () => {
+    const session = await requireMisSession();
+    const { id } = await params;
+
+    const assignment = await prisma.coverAssignment.findUnique({ where: { id } });
+    if (!assignment || assignment.tenantId !== session.user.tenantId) throw new AuthError("Not found", 404);
+
+    await prisma.coverAssignment.delete({ where: { id } });
+
+    return { ok: true };
+  });
+}

@@ -18,7 +18,7 @@ export async function GET(req: Request) {
       where,
       orderBy: { date: "desc" },
       include: {
-        pupil: { select: { firstName: true, lastName: true } },
+        pupil: { select: { id: true, firstName: true, lastName: true } },
         reportedBy: { select: { name: true, email: true } },
         firstAidGivenBy: { select: { name: true, email: true } },
       },
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
         reportedById: session.user.id,
       },
       include: {
-        pupil: { select: { firstName: true, lastName: true } },
+        pupil: { select: { id: true, firstName: true, lastName: true } },
         reportedBy: { select: { name: true, email: true } },
         firstAidGivenBy: { select: { name: true, email: true } },
       },

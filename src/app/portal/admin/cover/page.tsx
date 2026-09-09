@@ -122,6 +122,17 @@ export default function CoverAdminPage() {
     loadAssignments(date);
   }
 
+  async function deleteAssignment(a: CoverAssignment) {
+    if (
+      !window.confirm(
+        `Delete this cover assignment (${a.timetableSlot.subject.name} — ${a.timetableSlot.formGroup.name})? This can't be undone.`,
+      )
+    )
+      return;
+    await fetch(`/api/cover/${a.id}`, { method: "DELETE" });
+    loadAssignments(date);
+  }
+
   return (
     <div>
       <PageHeader
@@ -200,11 +211,16 @@ export default function CoverAdminPage() {
                   </span>
                 </td>
                 <td className="p-4">
-                  {a.status === "ASSIGNED" && (
-                    <Button variant="ghost" onClick={() => setStatus(a.id, "COMPLETED")} className="text-xs">
-                      Mark completed
+                  <div className="flex items-center justify-end gap-2">
+                    {a.status === "ASSIGNED" && (
+                      <Button variant="ghost" onClick={() => setStatus(a.id, "COMPLETED")} className="text-xs">
+                        Mark completed
+                      </Button>
+                    )}
+                    <Button variant="secondary" size="sm" onClick={() => deleteAssignment(a)}>
+                      Delete
                     </Button>
-                  )}
+                  </div>
                 </td>
               </tr>
             ))}

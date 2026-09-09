@@ -56,3 +56,26 @@ export async function PATCH(req: Request, { params }: Params) {
     return updated;
   });
 }
+
+export async function DELETE(_req: Request, { params }: Params) {
+  return withApiErrors(async () => {
+    const session = await requireMisSession();
+    const { id } = await params;
+
+    const plan = await prisma.sendPlan.findUnique({ where: { id } });
+    if (!plan || plan.tenantId !== session.user.tenantId) throw new AuthError("Not found", 404);
+
+    await prisma.sendPlan.delete({ where: { id } });
+
+    await audit({
+      tenantId: session.user.tenantId,
+      userId: session.user.id,
+      action: "send.deleted",
+      entityType: "SendPlan",
+      entityId: id,
+      metadata: { pupilId: plan.pupilId, status: plan.status },
+    });
+
+    return { ok: true };
+  });
+}

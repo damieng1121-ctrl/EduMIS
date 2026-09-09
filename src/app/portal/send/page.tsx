@@ -287,6 +287,19 @@ function PlanCard({ plan, onChanged }: { plan: SendPlan; onChanged: () => void }
   const [externalAgencies, setExternalAgencies] = useState(plan.externalAgencies ?? "");
   const [reviewDate, setReviewDate] = useState(plan.reviewDate ? plan.reviewDate.slice(0, 10) : "");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function remove() {
+    if (!window.confirm(`Delete this SEND plan for ${pupilName(plan.pupil)}? This can't be undone.`)) return;
+    setError(null);
+    const res = await fetch(`/api/send/${plan.id}`, { method: "DELETE" });
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      setError(data?.error ?? "Couldn't delete that plan.");
+      return;
+    }
+    onChanged();
+  }
 
   async function save() {
     setSubmitting(true);
@@ -318,10 +331,16 @@ function PlanCard({ plan, onChanged }: { plan: SendPlan; onChanged: () => void }
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[plan.status]}`}>{plan.status.replace("_", " ")}</span>
             {plan.primaryNeed && <span className="ml-2 text-xs text-slate-600 dark:text-slate-400">{plan.primaryNeed.replace("_", " ")}</span>}
           </div>
-          <Button variant="ghost" onClick={() => setEditing(true)} className="text-xs">
-            Edit
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="ghost" onClick={() => setEditing(true)} className="text-xs">
+              Edit
+            </Button>
+            <Button variant="danger" size="sm" onClick={remove}>
+              Delete
+            </Button>
+          </div>
         </div>
+        {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">{plan.description}</p>
         {plan.targets?.length > 0 && (
           <ul className="mt-2 space-y-1 text-xs text-slate-600 dark:text-slate-400">
