@@ -30,7 +30,7 @@ export async function GET(_req: Request, { params }: Params) {
     });
     if (!pupil) throw new AuthError("Not found", 404);
 
-    const [attendanceRecords, behaviourIncidents, latestSendPlan] = await Promise.all([
+    const [attendanceRecords, behaviourIncidents, latestSendPlan, assessmentResults, targets, mealRecords, accidentReports] = await Promise.all([
       prisma.attendanceRecord.findMany({
         where: { tenantId: session.user.tenantId, pupilId, mark: { not: "NOT_RECORDED" } },
         select: { mark: true },
@@ -47,6 +47,40 @@ export async function GET(_req: Request, { params }: Params) {
             select: { primaryNeed: true },
           })
         : Promise.resolve(null),
+      prisma.assessmentResult.findMany({
+        where: { tenantId: session.user.tenantId, pupilId },
+        orderBy: { date: "desc" },
+        take: 20,
+        select: { id: true, term: true, attainment: true, effort: true, date: true, subject: { select: { name: true } } },
+      }),
+      prisma.pupilTarget.findMany({
+        where: { tenantId: session.user.tenantId, pupilId },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        select: { id: true, title: true, description: true, targetDate: true, status: true, subject: { select: { name: true } } },
+      }),
+      prisma.mealRecord.findMany({
+        where: { tenantId: session.user.tenantId, pupilId },
+        orderBy: { date: "desc" },
+        take: 20,
+        select: { id: true, date: true, mealType: true },
+      }),
+      prisma.accidentReport.findMany({
+        where: { tenantId: session.user.tenantId, pupilId },
+        orderBy: { date: "desc" },
+        take: 20,
+        select: {
+          id: true,
+          date: true,
+          time: true,
+          location: true,
+          description: true,
+          injuryType: true,
+          actionTaken: true,
+          severity: true,
+          parentNotified: true,
+        },
+      }),
     ]);
 
     const attended = attendanceRecords.filter((r) => isAttendedSession(r.mark)).length;
@@ -65,6 +99,10 @@ export async function GET(_req: Request, { params }: Params) {
         pupil.sendStatus !== "NONE"
           ? { status: pupil.sendStatus, primaryNeed: latestSendPlan?.primaryNeed ?? null }
           : null,
+      assessmentResults,
+      targets,
+      mealRecords,
+      accidentReports,
     };
   });
 }

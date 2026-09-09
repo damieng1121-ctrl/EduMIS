@@ -52,3 +52,18 @@ textarea:focus-visible {
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
+
+/* Printing a dark-mode page would waste ink on a near-black background and
+   print near-white text on it — force the light palette for print
+   regardless of the `.dark` class, on top of each page's own `print:hidden`
+   classes on nav/buttons/etc. */
+@media print {
+  html.dark {
+    --background: #ffffff;
+    --foreground: #171717;
+    color-scheme: light;
+  }
+  body {
+    background: #ffffff !important;
+  }
+}

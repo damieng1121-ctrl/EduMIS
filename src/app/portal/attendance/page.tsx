@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { CalendarCheck } from "lucide-react";
+import { CalendarOff } from "lucide-react";
 import { ATTENDANCE_CODES, getAttendanceCode, isAttendedSession } from "@/lib/attendance-codes";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,21 @@ type FormGroup = { id: string; name: string; yearGroup: string };
 type RegisterEntry = {
   pupil: { id: string; firstName: string; lastName: string; preferredName: string | null };
   record: { statutoryCode: string; minutesLate: number | null; notes: string | null } | null;
+};
+
+const ABSENCE_REASON_LABELS: Record<string, string> = {
+  ILLNESS: "Illness",
+  MEDICAL_APPOINTMENT: "Medical / dental appointment",
+  RELIGIOUS_OBSERVANCE: "Religious observance",
+  OTHER: "Other",
+};
+
+type AbsenceReport = {
+  id: string;
+  reason: string;
+  note: string | null;
+  pupil: { id: string; firstName: string; lastName: string; formGroup: { name: string } | null };
+  reportedBy: { name: string | null; email: string | null };
 };
 
 function todayIso(): string {
@@ -30,6 +46,7 @@ export default function AttendancePage() {
   const [codes, setCodes] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState("");
+  const [absenceReports, setAbsenceReports] = useState<AbsenceReport[]>([]);
 
   useEffect(() => {
     fetch("/api/form-groups")
@@ -56,6 +73,13 @@ export default function AttendancePage() {
   }
 
   useEffect(loadRegister, [formGroupId, date, attSession]);
+
+  useEffect(() => {
+    if (!date) return;
+    fetch(`/api/absence-reports?date=${date}`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then(setAbsenceReports);
+  }, [date]);
 
   async function saveRegister() {
     if (!formGroupId) return;
@@ -139,6 +163,24 @@ export default function AttendancePage() {
         <span><span className="font-semibold text-slate-500 dark:text-slate-400">{summary.notRecorded}</span> not yet recorded</span>
         {savedMsg && <span className="text-indigo-600 dark:text-indigo-400">{savedMsg}</span>}
       </div>
+
+      {absenceReports.length > 0 && (
+        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
+          <p className="flex items-center gap-2 text-sm font-medium text-amber-900 dark:text-amber-200">
+            <CalendarOff size={15} className="shrink-0" />
+            {absenceReports.length} absence{absenceReports.length === 1 ? "" : "s"} reported by parents for this date
+          </p>
+          <ul className="mt-2 space-y-1 text-sm text-amber-800 dark:text-amber-300">
+            {absenceReports.map((r) => (
+              <li key={r.id}>
+                <strong>{r.pupil.firstName} {r.pupil.lastName}</strong>
+                {r.pupil.formGroup ? ` (${r.pupil.formGroup.name})` : ""} — {ABSENCE_REASON_LABELS[r.reason] ?? r.reason}
+                {r.note ? `: ${r.note}` : ""}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">

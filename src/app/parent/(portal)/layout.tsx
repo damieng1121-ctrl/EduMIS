@@ -8,9 +8,9 @@ export default async function ParentPortalLayout({ children }: { children: React
   if (session.user.role !== "PARENT") redirect("/portal");
 
   return (
-    <div className="flex min-h-screen flex-1">
+    <div className="flex min-h-screen flex-1 flex-col bg-slate-50 dark:bg-slate-950">
       <ParentNav userName={session.user.name ?? session.user.email ?? "Account"} />
-      <main className="flex-1 bg-slate-50 p-8 dark:bg-slate-950">{children}</main>
+      <main className="mx-auto w-full max-w-[1600px] flex-1 p-8 print:max-w-none print:p-0">{children}</main>
     </div>
   );
 }

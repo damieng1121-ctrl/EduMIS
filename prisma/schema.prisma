@@ -77,6 +77,7 @@ model Tenant {
   behaviourPointsEntries  BehaviourPointsEntry[]
   detentions              Detention[]
   accidentReports         AccidentReport[]
+  absenceReports          AbsenceReport[]
   exclusions              Exclusion[]
   sendPlans               SendPlan[]
   assessmentSubjects      AssessmentSubject[]
@@ -186,6 +187,7 @@ model User {
   detentionsScheduled         Detention[]              @relation("DetentionScheduledBy")
   accidentReportsReported     AccidentReport[]         @relation("AccidentReportedBy")
   accidentReportsFirstAid     AccidentReport[]         @relation("AccidentFirstAidBy")
+  absenceReportsFiled         AbsenceReport[]          @relation("AbsenceReportedBy")
   exclusionsRecorded          Exclusion[]              @relation("ExclusionRecordedBy")
   sendPlansCreated            SendPlan[]               @relation("SendPlanCreatedBy")
   assessmentResultsRecorded   AssessmentResult[]       @relation("AssessmentTeacher")
@@ -405,6 +407,7 @@ model Pupil {
   behaviourPoints    BehaviourPointsEntry[]
   detentions         Detention[]
   accidentReports    AccidentReport[]
+  absenceReports     AbsenceReport[]
   exclusions         Exclusion[]
   sendPlans          SendPlan[]
   assessmentResults  AssessmentResult[]
@@ -1014,6 +1017,38 @@ model ParentMessageRecipient {
 
   @@unique([messageId, guardianId])
   @@index([tenantId, guardianId])
+}
+
+/// A parent's advance notice of a child's absence ("my child is off sick
+/// today") — distinct from the register itself: staff still mark the actual
+/// AttendanceRecord, this is just a heads-up they see while doing so. Kept
+/// deliberately simple (no status/approval workflow) since a school can't
+/// refuse a parent's report of illness; it's information, not a request.
+model AbsenceReport {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  pupilId  String
+  pupil    Pupil  @relation(fields: [pupilId], references: [id], onDelete: Cascade)
+
+  reportedById String
+  reportedBy   User   @relation("AbsenceReportedBy", fields: [reportedById], references: [id])
+
+  startDate DateTime
+  endDate   DateTime
+  reason    AbsenceReason
+  note      String?       @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@index([tenantId, pupilId, startDate])
+}
+
+enum AbsenceReason {
+  ILLNESS
+  MEDICAL_APPOINTMENT
+  RELIGIOUS_OBSERVANCE
+  OTHER
 }
 
 enum CtfDirection {

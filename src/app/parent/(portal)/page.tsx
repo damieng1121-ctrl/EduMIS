@@ -27,7 +27,15 @@ export default async function ParentDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">Welcome back{session.user.name ? `, ${session.user.name}` : ""}</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">Welcome back{session.user.name ? `, ${session.user.name}` : ""}</h1>
+        <Link
+          href="/parent/report-absence"
+          className="inline-flex items-center gap-2 rounded-md bg-indigo-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-600"
+        >
+          Report an absence
+        </Link>
+      </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
