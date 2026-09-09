@@ -47,7 +47,7 @@ type PlatformUser = {
   tenant: { name: string } | null;
   isActive: boolean;
   twoFactorEnabled: boolean;
-  _count: { accounts: number };
+  lastLoginAt: string | null;
 };
 
 const PHASES = ["NURSERY", "PRIMARY", "SECONDARY", "ALL_THROUGH", "SPECIAL", "MULTI_ACADEMY_TRUST"];
@@ -1024,7 +1024,7 @@ export default function SuperAdminPage() {
                     <td className="p-4">
                       <p className="font-medium text-slate-900 dark:text-white">
                         {u.name ?? "—"}
-                        {u._count.accounts === 0 && (
+                        {!u.lastLoginAt && (
                           <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900 dark:text-amber-300">
                             Pending sign-in
                           </span>

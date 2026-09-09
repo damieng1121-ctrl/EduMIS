@@ -21,7 +21,7 @@ export async function GET() {
         isActive: true,
         twoFactorEnabled: true,
         createdAt: true,
-        _count: { select: { accounts: true } },
+        lastLoginAt: true,
       },
     });
   });

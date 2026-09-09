@@ -213,6 +213,14 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
     // as-is rather than duplicated here.
   },
   events: {
+    // Fires on every successful sign-in, any provider (Google, Microsoft,
+    // or the password-based staff-login/dev-login credentials providers) —
+    // unlike an Account row, which only OAuth providers ever create. This
+    // is what "Pending sign-in" in the Users tables actually checks.
+    async signIn({ user }) {
+      if (!user.id) return;
+      await prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
+    },
     async createUser({ user }) {
       if (!user.email || !user.id) return;
       const resolved = await resolveTenantAndRole(user.email);

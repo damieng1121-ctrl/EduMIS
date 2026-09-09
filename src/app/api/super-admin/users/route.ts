@@ -20,7 +20,7 @@ export async function GET() {
         tenant: { select: { name: true } },
         isActive: true,
         twoFactorEnabled: true,
-        _count: { select: { accounts: true } },
+        lastLoginAt: true,
       },
     });
   });

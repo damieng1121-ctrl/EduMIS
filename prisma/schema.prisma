@@ -157,9 +157,15 @@ model User {
   twoFactorSecret        String?
   twoFactorRecoveryCodes String[] @default([])
 
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  /// Set on every successful sign-in (see events.signIn in auth.ts) — used
+  /// to show a real "pending sign-in" state. This is JWT-session auth, so
+  /// there's no Session row to check, and a credentials (password) sign-in
+  /// never creates an Account row either — only an OAuth (Google/Microsoft)
+  /// sign-in does, which used to be (wrongly) the only signal checked.
+  lastLoginAt DateTime?
 
   /// Grants MIS classroom access (register-taking, behaviour, assessment, etc.) regardless of Role — a STAFF user can also be a class teacher.
   isTeacher          Boolean @default(false)
