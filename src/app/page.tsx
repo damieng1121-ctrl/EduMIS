@@ -54,6 +54,9 @@ export default function Home() {
             EduMIS
           </div>
           <nav className="flex items-center gap-4 text-sm">
+            <Link href="/parent/login" className="font-medium text-slate-600 hover:text-slate-900">
+              Parent portal
+            </Link>
             <Link href="/login" className="font-medium text-slate-600 hover:text-slate-900">
               Sign in
             </Link>
@@ -103,6 +106,12 @@ export default function Home() {
                 See what&apos;s included
               </a>
             </div>
+            <p className="mt-6 text-sm text-slate-600">
+              A parent or guardian?{" "}
+              <Link href="/parent/login" className="font-medium text-indigo-600 hover:underline">
+                Sign in to the parent portal
+              </Link>
+            </p>
           </div>
         </section>
 
