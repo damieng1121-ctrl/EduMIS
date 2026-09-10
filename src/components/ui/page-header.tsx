@@ -21,7 +21,7 @@ export function PageHeader({
   return (
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div className="flex items-center gap-3">
-        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${badge} text-white`}>
+        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-md ${badge}`}>
           <Icon size={20} />
         </span>
         <div>

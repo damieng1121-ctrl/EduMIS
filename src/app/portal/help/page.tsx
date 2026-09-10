@@ -72,7 +72,7 @@ export default function HelpPage() {
                       className="group rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900"
                     >
                       <summary className="flex cursor-pointer list-none items-start gap-3">
-                        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${badge} text-white`}>
+                        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${badge}`}>
                           <Icon size={16} />
                         </span>
                         <span className="min-w-0 flex-1">

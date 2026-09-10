@@ -21,20 +21,20 @@ function StatCard({
   color: "blue" | "green" | "indigo" | "red";
 }) {
   const badgeStyles = {
-    blue: "bg-blue-400",
-    green: "bg-green-400",
-    indigo: "bg-indigo-400",
-    red: "bg-red-400",
+    blue: "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400",
+    green: "bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400",
+    indigo: "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400",
+    red: "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400",
   }[color];
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-slate-700 dark:bg-slate-900">
+    <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-slate-600 dark:text-slate-400">{label}</p>
           <p className="mt-1 text-3xl font-semibold text-slate-900 dark:text-white">{value}</p>
         </div>
-        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${badgeStyles} text-white`}>
-          <Icon size={18} />
+        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md ${badgeStyles}`}>
+          <Icon size={17} />
         </span>
       </div>
       <p className="mt-3 text-xs text-slate-600 dark:text-slate-400">{caption}</p>
@@ -147,7 +147,7 @@ export default async function DashboardPage() {
             View all
           </Link>
         </div>
-        <div className="mt-3 divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white dark:divide-slate-700 dark:border-slate-700 dark:bg-slate-900">
+        <div className="mt-3 divide-y divide-slate-200 rounded-md border border-slate-200 bg-white dark:divide-slate-700 dark:border-slate-700 dark:bg-slate-900">
           {recentIncidents.length === 0 && (
             <EmptyState icon={HeartHandshake} title="No incidents logged yet" description="Nothing to review — behaviour incidents you log will show up here." />
           )}
