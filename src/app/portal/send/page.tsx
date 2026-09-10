@@ -70,7 +70,7 @@ export default function SendPage() {
         subtitle={plans ? `${sendPupils.length} pupils with SEND status` : undefined}
       />
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-4 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
@@ -141,7 +141,7 @@ function NewSendPlanPupilPicker({ pupils, onCreated }: { pupils: Pupil[]; onCrea
     return <NewPlanForm pupilId={pupilId} onCancel={() => setPupilId("")} onCreated={() => { setPupilId(""); onCreated(); }} />;
   }
   return (
-    <div className="mt-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+    <div className="mt-4 rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
       <p className="text-sm font-medium text-slate-900 dark:text-white">Start a new SEND plan</p>
       <select value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="mt-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
         <option value="">Select pupil…</option>
@@ -218,7 +218,7 @@ function NewPlanForm({ pupilId, onCancel, onCreated }: { pupilId: string; onCanc
   }
 
   return (
-    <form onSubmit={submit} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+    <form onSubmit={submit} className="mt-4 grid grid-cols-1 gap-3 rounded-md border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
       <select value={status} onChange={(e) => setStatus(e.target.value as SendStatus)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
         <option value="SEND_SUPPORT">SEND support</option>
         <option value="EHCP">EHCP</option>

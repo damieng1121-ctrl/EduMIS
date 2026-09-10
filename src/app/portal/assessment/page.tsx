@@ -143,7 +143,7 @@ export default function AssessmentPage() {
       />
 
       {isAdmin && (
-        <div className="mt-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="mt-4 rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Subjects</h2>
             <Button variant="ghost" onClick={() => setShowSubjectForm(!showSubjectForm)} className="text-xs font-medium">
@@ -175,7 +175,7 @@ export default function AssessmentPage() {
       )}
 
       {showResultForm && (
-        <form onSubmit={createResult} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
+        <form onSubmit={createResult} className="mt-4 grid grid-cols-1 gap-3 rounded-md border border-slate-200 bg-white p-5 sm:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
           <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Pupil…</option>
             {pupils?.map((p) => (
@@ -243,7 +243,7 @@ export default function AssessmentPage() {
         </select>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-4 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>

@@ -103,7 +103,7 @@ export default async function PupilReportPage({
         selectedTerm={selectedTerm}
       />
 
-      <div className="mx-auto max-w-3xl rounded-xl border border-slate-200 bg-white p-10 print:border-0 print:p-0 print:shadow-none dark:border-slate-700 dark:bg-slate-900">
+      <div className="mx-auto max-w-3xl rounded-md border border-slate-200 bg-white p-10 print:border-0 print:p-0 print:shadow-none dark:border-slate-700 dark:bg-slate-900">
         <div className="flex items-start justify-between border-b border-slate-200 pb-6 dark:border-slate-700">
           <div>
             <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">

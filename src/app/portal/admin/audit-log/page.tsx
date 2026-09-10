@@ -84,7 +84,7 @@ export default function AuditLogPage() {
         </select>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-4 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         {entries === null ? (
           <table className="w-full text-left text-sm">
             <tbody>

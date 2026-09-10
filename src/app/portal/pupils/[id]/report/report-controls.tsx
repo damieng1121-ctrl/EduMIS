@@ -29,7 +29,7 @@ export function ReportControls({
   }
 
   return (
-    <div className="print:hidden mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+    <div className="print:hidden mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
       <div className="flex flex-wrap gap-3">
         <select
           value={selectedYearId}

@@ -141,7 +141,7 @@ export default function CoverAdminPage() {
         subtitle="Mark a teacher absent for a day to raise cover needs for every lesson they'd normally teach, then assign who's covering."
       />
 
-      <form onSubmit={markAbsent} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-4 dark:border-slate-700 dark:bg-slate-900">
+      <form onSubmit={markAbsent} className="mt-4 grid grid-cols-1 gap-3 rounded-md border border-slate-200 bg-white p-5 sm:grid-cols-4 dark:border-slate-700 dark:bg-slate-900">
         <select required value={absentTeacherId} onChange={(e) => setAbsentTeacherId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
           <option value="">Staff member…</option>
           {teachers.map((t) => (
@@ -164,7 +164,7 @@ export default function CoverAdminPage() {
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded-md border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-600" />
       </div>
 
-      <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-3 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>

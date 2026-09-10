@@ -69,7 +69,7 @@ export default function ParentChildTimetablePage() {
         {formGroup ? `Weekly lesson grid for ${formGroup.name}` : "No form group assigned yet"}
       </p>
 
-      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-4 overflow-x-auto rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         {!formGroup ? (
           <p className="p-6 text-center text-sm text-slate-700 dark:text-slate-200">
             This child hasn&apos;t been assigned to a form group yet, so there&apos;s no timetable to show.

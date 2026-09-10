@@ -150,7 +150,7 @@ export function EditPupilForm({ pupil, isAdmin }: { pupil: Pupil; isAdmin: boole
       </div>
 
       {open && (
-        <form onSubmit={save} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+        <form onSubmit={save} className="mt-4 grid grid-cols-1 gap-3 rounded-md border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
           <input required value={fields.firstName} onChange={(e) => set("firstName", e.target.value)} placeholder="First name" className={inputClass} />
           <input required value={fields.lastName} onChange={(e) => set("lastName", e.target.value)} placeholder="Last name" className={inputClass} />
           <input value={fields.preferredName} onChange={(e) => set("preferredName", e.target.value)} placeholder="Preferred name (optional)" className={inputClass} />

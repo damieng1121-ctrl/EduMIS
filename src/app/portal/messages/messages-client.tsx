@@ -87,7 +87,7 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
       />
 
       {showForm && (
-        <form onSubmit={send} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <form onSubmit={send} className="mt-4 grid grid-cols-1 gap-3 rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <input required value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Subject" className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           <textarea required value={body} onChange={(e) => setBody(e.target.value)} placeholder="Message" rows={5} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
 
@@ -144,7 +144,7 @@ export function MessagesClient({ formGroups, pupils }: { formGroups: FormGroup[]
         </form>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-4 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>

@@ -156,19 +156,19 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <p className="text-sm text-slate-600 dark:text-slate-400">Attendance {yearForStats ? `(${yearForStats.name})` : ""}</p>
           <p className="mt-1 text-3xl font-semibold text-slate-900 dark:text-white">
             {attendancePct === null ? "—" : `${(attendancePct * 100).toFixed(1)}%`}
           </p>
           <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">{recordedSessions.length} sessions recorded</p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <p className="text-sm text-slate-600 dark:text-slate-400">UPN</p>
           <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">{pupil.upn ?? "Not allocated"}</p>
           <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">Admission no. {pupil.admissionNumber ?? "—"}</p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <p className="text-sm text-slate-600 dark:text-slate-400">Guardians</p>
           <Link href={`/portal/pupils/${pupil.id}/guardians`} className="mt-1 inline-block text-sm text-indigo-600 hover:underline dark:text-indigo-400">
             View / manage guardians &rarr;
@@ -177,13 +177,13 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
       </div>
 
       {isPersistentAbsence && (
-        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+        <div className="mt-4 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
           <strong>Persistent absence:</strong> attendance is below the {(PERSISTENT_ABSENCE_THRESHOLD * 100).toFixed(0)}% DfE threshold.
         </div>
       )}
 
       {pupil.sendStatus !== "NONE" && (
-        <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="mt-6 rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <h2 className="font-semibold text-slate-900 dark:text-white">SEND plan</h2>
           {sendPlan ? (
             <div className="mt-2 text-sm text-slate-700 dark:text-slate-200">
@@ -198,7 +198,7 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
       )}
 
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <h2 className="font-semibold text-slate-900 dark:text-white">Recent behaviour incidents</h2>
           {behaviourIncidents.length === 0 ? (
             <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">No incidents recorded.</p>
@@ -218,7 +218,7 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
           )}
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <h2 className="font-semibold text-slate-900 dark:text-white">Recent assessment results</h2>
           {assessmentResults.length === 0 ? (
             <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">No assessment results yet.</p>
@@ -238,7 +238,7 @@ export default async function PupilProfilePage({ params }: { params: Promise<{ i
         </div>
       </div>
 
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-6 rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="font-semibold text-slate-900 dark:text-white">Active interventions</h2>
         {interventions.length === 0 ? (
           <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">No active interventions.</p>

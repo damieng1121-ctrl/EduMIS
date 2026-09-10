@@ -108,7 +108,7 @@ export default function ParentChildPage() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <p className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">Attendance</p>
           <p className="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">
             {attendance.percent !== null ? `${(attendance.percent * 100).toFixed(1)}%` : "—"}
@@ -119,7 +119,7 @@ export default function ParentChildPage() {
           )}
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 sm:col-span-2 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 sm:col-span-2 dark:border-slate-700 dark:bg-slate-900">
           <p className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">SEND</p>
           {send ? (
             <div className="mt-2">
@@ -134,7 +134,7 @@ export default function ParentChildPage() {
 
       <h2 className="mt-8 text-lg font-semibold text-slate-900 dark:text-white">Academic progress</h2>
       <div className="mt-3 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Recent assessment results</h3>
           {assessmentResults.length === 0 ? (
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">No assessment results yet.</p>
@@ -156,7 +156,7 @@ export default function ParentChildPage() {
           )}
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Targets</h3>
           {targets.length === 0 ? (
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">No targets set.</p>
@@ -183,7 +183,7 @@ export default function ParentChildPage() {
       </div>
 
       <h2 className="mt-8 text-lg font-semibold text-slate-900 dark:text-white">Meal history</h2>
-      <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-3 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>
@@ -209,13 +209,13 @@ export default function ParentChildPage() {
 
       <h2 className="mt-8 text-lg font-semibold text-slate-900 dark:text-white">First aid &amp; accident reports</h2>
       {accidentReports.length === 0 ? (
-        <div className="mt-3 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="mt-3 rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <p className="text-sm text-slate-700 dark:text-slate-200">No first aid or accident reports on file.</p>
         </div>
       ) : (
         <ul className="mt-3 space-y-3">
           {accidentReports.map((r) => (
-            <li key={r.id} className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+            <li key={r.id} className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm font-medium text-slate-900 dark:text-white">
                   {formatDate(r.date)} <span className="font-normal text-slate-500 dark:text-slate-400">{r.time}</span> &middot; {r.location}
@@ -236,7 +236,7 @@ export default function ParentChildPage() {
       )}
 
       <h2 className="mt-8 text-lg font-semibold text-slate-900 dark:text-white">Behaviour</h2>
-      <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-3 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>

@@ -141,7 +141,7 @@ export default function ClubsPage() {
       />
 
       {showForm && (
-        <form onSubmit={createClub} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
+        <form onSubmit={createClub} className="mt-4 grid grid-cols-1 gap-3 rounded-md border border-slate-200 bg-white p-5 sm:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
           <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Club name" className="sm:col-span-2 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" />
           <select required value={academicYearId} onChange={(e) => setAcademicYearId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Academic year…</option>
@@ -189,7 +189,7 @@ export default function ClubsPage() {
           const active = c.memberships.filter((m) => m.status === "ACTIVE");
           const isExpanded = expandedId === c.id;
           return (
-            <div key={c.id} className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+            <div key={c.id} className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium text-slate-900 dark:text-white">{c.name}</p>

@@ -88,7 +88,7 @@ export default function ParentClubsPage() {
       )}
 
       {children.length === 0 && (
-        <p className="mt-4 rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
+        <p className="mt-4 rounded-md border border-slate-200 bg-white p-5 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
           No children are linked to your account yet.
         </p>
       )}
@@ -98,7 +98,7 @@ export default function ParentClubsPage() {
           const spacesLeft = c.capacity !== null ? c.capacity - c.activeCount : null;
           const isFull = spacesLeft !== null && spacesLeft <= 0;
           return (
-            <div key={c.id} className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+            <div key={c.id} className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="font-medium text-slate-900 dark:text-white">{c.name}</p>
@@ -157,7 +157,7 @@ export default function ParentClubsPage() {
           );
         })}
         {clubs.length === 0 && (
-          <p className="rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
+          <p className="rounded-md border border-slate-200 bg-white p-5 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
             No clubs are available at the moment.
           </p>
         )}

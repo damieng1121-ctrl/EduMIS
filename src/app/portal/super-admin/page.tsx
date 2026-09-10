@@ -446,7 +446,7 @@ export default function SuperAdminPage() {
             signs in from that domain is auto-provisioned as staff.
           </p>
 
-          <form onSubmit={createTenant} className="mt-6 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-6 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+          <form onSubmit={createTenant} className="mt-6 grid grid-cols-1 gap-4 rounded-md border border-slate-200 bg-white p-6 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">School name</label>
               <input
@@ -625,7 +625,7 @@ export default function SuperAdminPage() {
             {error && <p className="sm:col-span-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
           </form>
 
-          <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+          <div className="mt-6 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
                 <tr>
@@ -803,7 +803,7 @@ export default function SuperAdminPage() {
             module once you&apos;ve enabled it for them.
           </p>
 
-          <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+          <div className="mt-6 overflow-x-auto rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
                 <tr>
@@ -860,7 +860,7 @@ export default function SuperAdminPage() {
             tab, and add a Trust admin from the Users tab once the Trust exists.
           </p>
 
-          <form onSubmit={createTrust} className="mt-6 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-6 sm:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
+          <form onSubmit={createTrust} className="mt-6 grid grid-cols-1 gap-4 rounded-md border border-slate-200 bg-white p-6 sm:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">Trust name</label>
               <input
@@ -889,7 +889,7 @@ export default function SuperAdminPage() {
             {trustError && <p className="sm:col-span-3 text-sm text-red-600 dark:text-red-400">{trustError}</p>}
           </form>
 
-          <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+          <div className="mt-6 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
                 <tr>
@@ -943,7 +943,7 @@ export default function SuperAdminPage() {
           </div>
 
           {showInvite && (
-            <form onSubmit={inviteUser} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-4 dark:border-slate-700 dark:bg-slate-900">
+            <form onSubmit={inviteUser} className="mt-4 grid grid-cols-1 gap-3 rounded-md border border-slate-200 bg-white p-5 sm:grid-cols-4 dark:border-slate-700 dark:bg-slate-900">
               <input
                 required
                 type="email"
@@ -1006,7 +1006,7 @@ export default function SuperAdminPage() {
 
           {usersError && <p className="mt-4 text-sm text-red-600 dark:text-red-400">{usersError}</p>}
 
-          <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+          <div className="mt-4 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
                 <tr>

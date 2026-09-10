@@ -212,7 +212,7 @@ export default function AdmissionsPage() {
       {showForm && (
         <form
           onSubmit={submitApplication}
-          className="mt-4 grid grid-cols-1 gap-4 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-3 dark:border-slate-700 dark:bg-slate-900"
+          className="mt-4 grid grid-cols-1 gap-4 rounded-md border border-slate-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-3 dark:border-slate-700 dark:bg-slate-900"
         >
           <p className="text-sm font-medium text-slate-900 sm:col-span-2 lg:col-span-3 dark:text-white">
             {editing ? "Edit application" : "New application"}
@@ -351,7 +351,7 @@ export default function AdmissionsPage() {
         </select>
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-4 overflow-x-auto rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>

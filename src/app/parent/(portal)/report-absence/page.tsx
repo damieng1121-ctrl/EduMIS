@@ -83,7 +83,7 @@ export default function ReportAbsencePage() {
   return (
     <div className="mx-auto max-w-2xl">
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-rose-400 text-white">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
           <CalendarOff size={20} />
         </span>
         <div>
@@ -97,7 +97,7 @@ export default function ReportAbsencePage() {
       )}
 
       {children && children.length > 0 && (
-        <form onSubmit={submit} className="mt-6 space-y-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <form onSubmit={submit} className="mt-6 space-y-4 rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
             Child
             <select value={pupilId} onChange={(e) => setPupilId(e.target.value)} className={inputClass}>
@@ -150,7 +150,7 @@ export default function ReportAbsencePage() {
       {reports && reports.length > 0 && (
         <div className="mt-6">
           <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Previously reported</h2>
-          <ul className="mt-2 divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white dark:divide-slate-800 dark:border-slate-700 dark:bg-slate-900">
+          <ul className="mt-2 divide-y divide-slate-100 rounded-md border border-slate-200 bg-white dark:divide-slate-800 dark:border-slate-700 dark:bg-slate-900">
             {reports.map((r) => (
               <li key={r.id} className="p-4 text-sm">
                 <div className="flex items-center justify-between">

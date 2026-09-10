@@ -80,7 +80,7 @@ function SecurityPageInner() {
         </div>
       )}
 
-      <section className="mt-6 rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+      <section className="mt-6 rounded-md border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-semibold text-slate-900 dark:text-white">Two-factor authentication</h2>

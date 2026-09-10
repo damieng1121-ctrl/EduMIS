@@ -158,7 +158,7 @@ export default function InterventionsPage() {
       />
 
       {showForm && (
-        <form onSubmit={submitIntervention} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+        <form onSubmit={submitIntervention} className="mt-4 grid grid-cols-1 gap-3 rounded-md border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
           <p className="text-sm font-medium text-slate-900 sm:col-span-2 dark:text-white">
             {editing ? "Edit intervention" : "New intervention"}
           </p>
@@ -190,7 +190,7 @@ export default function InterventionsPage() {
         </form>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-4 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>

@@ -132,7 +132,7 @@ export default function AttendancePage() {
     <div>
       <PageHeader module="attendance" title="Attendance register" actions={<PrintButton label="Print register" />} />
 
-      <div className="mt-4 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-4 flex flex-wrap items-end gap-3 rounded-md border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
         <label className="text-xs text-slate-600 dark:text-slate-400">
           Form group
           <select value={formGroupId} onChange={(e) => setFormGroupId(e.target.value)} className="mt-1 block rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
@@ -165,7 +165,7 @@ export default function AttendancePage() {
       </div>
 
       {absenceReports.length > 0 && (
-        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
+        <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
           <p className="flex items-center gap-2 text-sm font-medium text-amber-900 dark:text-amber-200">
             <CalendarOff size={15} className="shrink-0" />
             {absenceReports.length} absence{absenceReports.length === 1 ? "" : "s"} reported by parents for this date
@@ -182,7 +182,7 @@ export default function AttendancePage() {
         </div>
       )}
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="mt-4 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
             <tr>

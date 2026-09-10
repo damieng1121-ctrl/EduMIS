@@ -137,14 +137,14 @@ export default function CtfPage() {
         subtitle="Export or import a pupil record in the DfE Common Transfer File format."
       />
 
-      <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+      <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
         This targets the well-documented core CTF structure (UPN, name, DOB, sex, address, ethnicity,
         SEN, FSM, school history) rather than a byte-verified copy of the current DfE XSD. Check a
         sample export against the receiving school&apos;s system before relying on it for a real transfer.
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <section className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <h2 className="font-semibold text-slate-900 dark:text-white">Export a pupil</h2>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Download a CTF file to send with a pupil moving to another school.</p>
           <div className="mt-4 flex flex-col gap-3 sm:flex-row">
@@ -171,7 +171,7 @@ export default function CtfPage() {
           </div>
         </section>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <section className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <h2 className="font-semibold text-slate-900 dark:text-white">Import a pupil</h2>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Upload a CTF file received from another school — you&apos;ll review it before it&apos;s saved.</p>
           <form onSubmit={handleImportUpload} className="mt-4 flex flex-col gap-3 sm:flex-row">
@@ -190,7 +190,7 @@ export default function CtfPage() {
       </div>
 
       {parsed && (
-        <section className="mt-6 rounded-xl border border-indigo-200 bg-indigo-50 p-5 dark:border-indigo-800 dark:bg-indigo-500/10">
+        <section className="mt-6 rounded-md border border-indigo-200 bg-indigo-50 p-5 dark:border-indigo-800 dark:bg-indigo-500/10">
           <h2 className="font-semibold text-indigo-900 dark:text-indigo-200">Review before saving</h2>
           <p className="mt-1 text-sm text-indigo-800 dark:text-indigo-300">
             This is what was read from the file. A CTF doesn&apos;t carry a year group or form group, so pick those below.
@@ -230,7 +230,7 @@ export default function CtfPage() {
 
       <section className="mt-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Recent exchanges</h2>
-        <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+        <div className="mt-3 overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-400">
               <tr>

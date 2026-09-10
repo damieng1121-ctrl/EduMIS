@@ -33,7 +33,7 @@ export default function ParentMessagesPage() {
 
       <div className="mt-4 space-y-2">
         {recipients?.map((r) => (
-          <div key={r.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+          <div key={r.id} className="overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
             <button onClick={() => open(r)} className="flex w-full items-center justify-between p-4 text-left">
               <div>
                 <p className={`text-sm ${r.readAt ? "font-medium text-slate-700" : "font-semibold text-slate-900"}`}>

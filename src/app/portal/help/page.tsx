@@ -69,7 +69,7 @@ export default function HelpPage() {
                   return (
                     <details
                       key={article.slug}
-                      className="group rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900"
+                      className="group rounded-md border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900"
                     >
                       <summary className="flex cursor-pointer list-none items-start gap-3">
                         <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${badge}`}>
@@ -94,7 +94,7 @@ export default function HelpPage() {
         })
       )}
 
-      <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm dark:border-slate-700 dark:bg-slate-800">
+      <div className="rounded-md border border-slate-200 bg-slate-50 p-5 text-sm dark:border-slate-700 dark:bg-slate-800">
         <p className="font-medium text-slate-900 dark:text-white">Still stuck?</p>
         <p className="mt-1 text-slate-600 dark:text-slate-400">Email support and we&apos;ll help you out directly.</p>
         <a

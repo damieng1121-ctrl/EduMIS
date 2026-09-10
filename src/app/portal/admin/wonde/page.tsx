@@ -68,7 +68,7 @@ export default function WondeSettingsPage() {
         subtitle="Sync your school's roster and timetable data to third-party apps (reading platforms, MFL apps, and more) via Wonde."
       />
 
-      <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+      <section className="rounded-md border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="font-semibold text-slate-900 dark:text-white">What this is</h2>
         <div className="mt-2 space-y-2 text-sm text-slate-700 dark:text-slate-200">
           <p>
@@ -87,7 +87,7 @@ export default function WondeSettingsPage() {
         </div>
       </section>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+      <section className="rounded-md border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="font-semibold text-slate-900 dark:text-white">Connection details</h2>
         {connection ? (
           <div className="mt-4 space-y-4">
@@ -150,7 +150,7 @@ export default function WondeSettingsPage() {
         )}
       </section>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+      <section className="rounded-md border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="font-semibold text-slate-900 dark:text-white">Sync status</h2>
         {connection && (
           <div className="mt-4 space-y-4">

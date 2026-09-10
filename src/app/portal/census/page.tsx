@@ -77,7 +77,7 @@ export default function CensusPage() {
             />
           </div>
 
-          <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <div className="mt-8 rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
             <h2 className="font-semibold text-slate-900 dark:text-white">Issues by field</h2>
             <ul className="mt-4 space-y-2 text-sm">
               {Object.entries(readiness.issuesByField).map(([field, count]) => (
@@ -89,7 +89,7 @@ export default function CensusPage() {
             </ul>
           </div>
 
-          <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <div className="mt-8 rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
             <h2 className="font-semibold text-slate-900 dark:text-white">Pupils with missing data</h2>
             {readiness.pupils.length === 0 ? (
               <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">No issues found — every active pupil has these fields set.</p>
@@ -131,7 +131,7 @@ export default function CensusPage() {
 
 function Stat({ label, value, highlight }: { label: string; value: string | number; highlight?: boolean }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+    <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
       <p className="text-sm text-slate-700 dark:text-slate-200">{label}</p>
       <p className={`mt-1 text-3xl font-semibold ${highlight ? "text-red-600" : "text-slate-900"}`}>{value}</p>
     </div>
@@ -241,7 +241,7 @@ function ExclusionsSection() {
   const thisYear = exclusions?.filter((x) => new Date(x.startDate) >= start) ?? [];
 
   return (
-    <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+    <div className="mt-8 rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="font-semibold text-slate-900 dark:text-white">Exclusions</h2>
@@ -482,7 +482,7 @@ function EyfsProfileSection() {
   useEffect(load, []);
 
   return (
-    <div className="mt-8 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+    <div className="mt-8 rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
       <h2 className="font-semibold text-slate-900 dark:text-white">EYFS Profile</h2>
       <p className="text-sm text-slate-600 dark:text-slate-400">Reception-year early learning goal (ELG) outcomes.</p>
 

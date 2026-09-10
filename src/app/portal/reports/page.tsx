@@ -66,17 +66,17 @@ function MisReports({
   return (
     <div>
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <h2 className="font-semibold text-slate-900 dark:text-white">Attendance trend (last 8 weeks)</h2>
           <AttendanceTrendChart trend={summary.attendanceTrend} />
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <h2 className="font-semibold text-slate-900 dark:text-white">Behaviour points by category</h2>
           <BehaviourPointsChart points={summary.behaviourPoints} />
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-slate-900 dark:text-white">Assessment distribution</h2>
             {summary.subjects.length > 0 && (
@@ -97,7 +97,7 @@ function MisReports({
           <AssessmentDistributionChart data={summary.assessmentDistribution} />
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <h2 className="font-semibold text-slate-900 dark:text-white">Persistent absence (below 90%)</h2>
           {summary.persistentAbsence.length === 0 ? (
             <EmptyState

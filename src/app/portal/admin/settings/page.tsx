@@ -83,7 +83,7 @@ export default function AdminSettingsPage() {
     <div className="mx-auto max-w-2xl space-y-8">
       <PageHeader module="settings" title="Settings" />
 
-      <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+      <section className="rounded-md border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="font-semibold text-slate-900 dark:text-white">School details</h2>
         {tenant && (
           <div className="mt-4 space-y-4">

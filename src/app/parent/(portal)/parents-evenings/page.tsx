@@ -92,7 +92,7 @@ export default function ParentParentsEveningsPage() {
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Your bookings</h2>
           <div className="mt-2 space-y-2">
             {myBookings.map(({ event, slot }) => (
-              <div key={slot.id} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+              <div key={slot.id} className="flex items-center justify-between rounded-md border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
                 <div>
                   <p className="text-sm font-medium text-slate-900 dark:text-white">
                     {event.title} — {slot.pupil?.firstName} {slot.pupil?.lastName}
@@ -116,7 +116,7 @@ export default function ParentParentsEveningsPage() {
         {events?.map((ev) => {
           const available = ev.slots.filter((s) => s.status === "AVAILABLE");
           return (
-            <div key={ev.id} className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+            <div key={ev.id} className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
               <p className="font-medium text-slate-900 dark:text-white">{ev.title}</p>
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 {new Date(ev.date).toLocaleDateString("en-GB")}, {ev.startTime}–{ev.endTime}

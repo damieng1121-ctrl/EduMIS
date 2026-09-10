@@ -38,12 +38,12 @@ export default async function ParentDashboardPage() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <p className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">Unread messages</p>
           <p className="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">{unreadCount}</p>
           <Link href="/parent/messages" className="mt-2 inline-block text-sm text-indigo-600 hover:underline dark:text-indigo-400">View messages</Link>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-md border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <p className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">Next booked appointment</p>
           {upcomingSlot ? (
             <div className="mt-2">
@@ -68,7 +68,7 @@ export default async function ParentDashboardPage() {
           <Link
             key={l.pupil.id}
             href={`/parent/children/${l.pupil.id}`}
-            className="rounded-xl border border-slate-200 bg-white p-5 hover:border-indigo-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-900"
+            className="rounded-md border border-slate-200 bg-white p-5 hover:border-indigo-300 dark:border-slate-700 dark:bg-slate-900"
           >
             <p className="font-medium text-slate-900 dark:text-white">{l.pupil.preferredName || l.pupil.firstName} {l.pupil.lastName}</p>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">

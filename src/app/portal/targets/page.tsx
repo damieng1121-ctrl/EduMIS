@@ -122,7 +122,7 @@ export default function TargetsPage() {
       />
 
       {showForm && (
-        <form onSubmit={createTarget} className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
+        <form onSubmit={createTarget} className="mt-4 grid grid-cols-1 gap-3 rounded-md border border-slate-200 bg-white p-5 sm:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
           <select required value={pupilId} onChange={(e) => setPupilId(e.target.value)} className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-600">
             <option value="">Pupil…</option>
             {pupils?.map((p) => (
@@ -170,7 +170,7 @@ export default function TargetsPage() {
 
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
         {COLUMNS.map((col) => (
-          <div key={col.status} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+          <div key={col.status} className="rounded-md border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
             <h2 className="text-sm font-semibold text-slate-900 dark:text-white">
               {col.label} <span className="text-slate-500 dark:text-slate-400">({targets?.filter((t) => t.status === col.status).length ?? 0})</span>
             </h2>
